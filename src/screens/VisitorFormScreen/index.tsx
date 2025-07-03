@@ -59,13 +59,13 @@ const VisitorFormScreen = () => {
       photoUri: photo.uri,
     });
 
-    // Optionally reset form
-    // setName('');
-    // setMobile('');
-    // setCompany('');
-    // setPurpose('');
-    // setEmail('');
-    // setPhoto(null);
+    Optionally reset form
+    setName('');
+    setMobile('');
+    setCompany('');
+    setPurpose('');
+    setEmail('');
+    setPhoto(null);
   };
 
   return (
