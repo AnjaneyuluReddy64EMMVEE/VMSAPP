@@ -59,7 +59,7 @@ const VisitorFormScreen = () => {
       photoUri: photo.uri,
     });
 
-    Optionally reset form
+    // Optionally reset form
     setName('');
     setMobile('');
     setCompany('');
