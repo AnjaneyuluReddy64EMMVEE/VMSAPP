@@ -4,16 +4,11 @@ import SplashScreen from '../screens/SplashScreen';
 import LoginScreen from '../screens/LoginScreen';
 import VisitorFormScreen from '../screens/VisitorFormScreen';
 import AdminDashboardScreen from '../screens/AdminDashboardScreen';
+import SuperAdminDrawerNavigator from './SuperAdminDrawerNavigator';
 
 
-export type RootStackParamList = {
-  Splash: undefined;
-  Login: undefined;
-  VisitorForm: undefined;
-  AdminDashboard: undefined;
-};
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator();
 
 const RootNavigator = () => {
   return (
@@ -22,6 +17,8 @@ const RootNavigator = () => {
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="VisitorForm" component={VisitorFormScreen} />
       <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} />
+      <Stack.Screen name="SuperAdminDrawer" component={SuperAdminDrawerNavigator} />
+
     </Stack.Navigator>
   );
 };

@@ -208,257 +208,271 @@
 // });
 
 
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  TextInput,
-  ActivityIndicator,
-  Image,
-  Alert,
-} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+// import React, { useState, useEffect } from 'react';
+// import {
+//   View,
+//   Text,
+//   StyleSheet,
+//   FlatList,
+//   TouchableOpacity,
+//   TextInput,
+//   ActivityIndicator,
+//   Image,
+//   Alert,
+// } from 'react-native';
+// import DateTimePicker from '@react-native-community/datetimepicker';
+// import { SafeAreaView } from 'react-native-safe-area-context';
+// import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-// Replace this with your actual RTK Query hook
-// import { useGetVisitorsQuery } from '../api/visitorsApi';
+// // Replace this with your actual RTK Query hook
+// // import { useGetVisitorsQuery } from '../api/visitorsApi';
+
+// const AdminDashboardScreen = () => {
+//   const [search, setSearch] = useState('');
+//   const [branch, setBranch] = useState('All');
+//   const [startDate, setStartDate] = useState(new Date(Date.now() - 180 * 86400000)); // last 180 days
+//   const [endDate, setEndDate] = useState(new Date());
+//   const [showStartPicker, setShowStartPicker] = useState(false);
+//   const [showEndPicker, setShowEndPicker] = useState(false);
+
+//   // Dummy data to simulate visitor list
+//   const visitors = [
+//     {
+//       id: '1',
+//       name: 'John Doe',
+//       mobile: '9876543210',
+//       company: 'ABC Ltd',
+//       purpose: 'Meeting',
+//       checkIn: '2025-07-02 10:15',
+//       checkOut: '2025-07-02 11:30',
+//       branch: 'Bangalore Plant',
+//       photo: 'https://randomuser.me/api/portraits/men/1.jpg',
+//     },
+//     {
+//       id: '2',
+//       name: 'Jane Smith',
+//       mobile: '9123456789',
+//       company: 'XYZ Corp',
+//       purpose: 'Inspection',
+//       checkIn: '2025-07-01 09:45',
+//       checkOut: null,
+//       branch: 'Corporate Office',
+//       photo: 'https://randomuser.me/api/portraits/women/2.jpg',
+//     },
+//   ];
+
+//   const filteredVisitors = visitors.filter(
+//     v =>
+//       (!search || v.name.toLowerCase().includes(search.toLowerCase())) &&
+//       (branch === 'All' || v.branch === branch)
+//   );
+
+//   const handleExport = () => {
+//     Alert.alert('Export', 'Export to Excel coming soon.');
+//   };
+
+//   const renderVisitor = ({ item }: any) => (
+//     <View style={styles.card}>
+//       <Image source={{ uri: item.photo }} style={styles.photo} />
+//       <View style={styles.details}>
+//         <Text style={styles.name}>{item.name}</Text>
+//         <Text>Company: {item.company}</Text>
+//         <Text>Purpose: {item.purpose}</Text>
+//         <Text>Check-In: {item.checkIn}</Text>
+//         <Text>Check-Out: {item.checkOut || 'Not Checked Out'}</Text>
+//         <Text>Branch: {item.branch}</Text>
+//       </View>
+//     </View>
+//   );
+
+//   return (
+//     <SafeAreaView style={styles.safe}>
+//       {/* <View style={styles.header}>
+//         <Text style={styles.headerText}>Admin Dashboard</Text>
+//         <TouchableOpacity onPress={handleExport}>
+//           <Icon name="file-excel" size={26} color="#fff" />
+//         </TouchableOpacity>
+//       </View> */}
+//       <View style={styles.header}>
+//         <Text style={styles.headerText}>Admin Dashboard</Text>
+//         <View style={{ flexDirection: 'row', gap: 16 }}>
+//           <TouchableOpacity >
+//             <Icon name="cog-outline" size={24} color="#fff" />
+//           </TouchableOpacity>
+//           <TouchableOpacity >
+//             <Icon name="logout" size={24} color="#fff" />
+//           </TouchableOpacity>
+//         </View>
+//       </View>
+
+//       {/* Search & Filter */}
+//       <View style={styles.filterContainer}>
+//         <TextInput
+//           style={styles.searchInput}
+//           placeholder="Search by name..."
+//           value={search}
+//           onChangeText={setSearch}
+//         />
+
+//         <TouchableOpacity style={styles.dateBtn} onPress={() => setShowStartPicker(true)}>
+//           <Text>From: {startDate.toDateString()}</Text>
+//         </TouchableOpacity>
+
+//         <TouchableOpacity style={styles.dateBtn} onPress={() => setShowEndPicker(true)}>
+//           <Text>To: {endDate.toDateString()}</Text>
+//         </TouchableOpacity>
+
+//         {showStartPicker && (
+//           <DateTimePicker
+//             value={startDate}
+//             mode="date"
+//             display="default"
+//             onChange={(_, date) => {
+//               setShowStartPicker(false);
+//               if (date) setStartDate(date);
+//             }}
+//           />
+//         )}
+
+//         {showEndPicker && (
+//           <DateTimePicker
+//             value={endDate}
+//             mode="date"
+//             display="default"
+//             onChange={(_, date) => {
+//               setShowEndPicker(false);
+//               if (date) setEndDate(date);
+//             }}
+//           />
+//         )}
+
+//         {/* Branch Picker (you can enhance this with a dropdown) */}
+//         <Text style={{ marginTop: 10, fontWeight: 'bold' }}>Branch:</Text>
+//         <View style={styles.branchRow}>
+//           {['All', 'Corporate Office', 'Bangalore Plant'].map(b => (
+//             <TouchableOpacity
+//               key={b}
+//               style={[
+//                 styles.branchButton,
+//                 branch === b && styles.branchSelected,
+//               ]}
+//               onPress={() => setBranch(b)}
+//             >
+//               <Text style={branch === b ? styles.branchTextSelected : styles.branchText}>
+//                 {b}
+//               </Text>
+//             </TouchableOpacity>
+//           ))}
+//         </View>
+//       </View>
+
+//       {/* Visitor List */}
+//       <FlatList
+//         data={filteredVisitors}
+//         keyExtractor={item => item.id}
+//         renderItem={renderVisitor}
+//         ListEmptyComponent={
+//           <Text style={{ textAlign: 'center', marginTop: 40 }}>
+//             No visitors found.
+//           </Text>
+//         }
+//       />
+//     </SafeAreaView>
+//   );
+// };
+
+// export default AdminDashboardScreen;
+
+// const styles = StyleSheet.create({
+//   safe: {
+//     flex: 1,
+//     backgroundColor: '#f0f6ff',
+//   },
+//   header: {
+//     backgroundColor: '#003366',
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     padding: 16,
+//     alignItems: 'center',
+//   },
+//   headerText: {
+//     fontSize: 20,
+//     color: 'white',
+//     fontWeight: 'bold',
+//   },
+//   filterContainer: {
+//     padding: 16,
+//     backgroundColor: '#fff',
+//   },
+//   searchInput: {
+//     borderWidth: 1,
+//     borderColor: '#aaa',
+//     borderRadius: 8,
+//     paddingHorizontal: 12,
+//     marginBottom: 10,
+//     height: 45,
+//   },
+//   dateBtn: {
+//     paddingVertical: 6,
+//     marginVertical: 4,
+//   },
+//   branchRow: {
+//     flexDirection: 'row',
+//     flexWrap: 'wrap',
+//     gap: 10,
+//     marginTop: 6,
+//   },
+//   branchButton: {
+//     paddingVertical: 6,
+//     paddingHorizontal: 12,
+//     backgroundColor: '#eee',
+//     borderRadius: 8,
+//     marginRight: 8,
+//     marginTop: 4,
+//   },
+//   branchSelected: {
+//     backgroundColor: '#003366',
+//   },
+//   branchText: {
+//     color: '#000',
+//   },
+//   branchTextSelected: {
+//     color: '#fff',
+//   },
+//   card: {
+//     backgroundColor: '#fff',
+//     margin: 10,
+//     padding: 14,
+//     borderRadius: 10,
+//     flexDirection: 'row',
+//     elevation: 2,
+//   },
+//   photo: {
+//     width: 64,
+//     height: 64,
+//     borderRadius: 8,
+//     marginRight: 12,
+//   },
+//   details: {
+//     flex: 1,
+//   },
+//   name: {
+//     fontWeight: 'bold',
+//     fontSize: 16,
+//     marginBottom: 4,
+//   },
+// });
+
+
+import { View, Text } from 'react-native'
+import React from 'react'
 
 const AdminDashboardScreen = () => {
-  const [search, setSearch] = useState('');
-  const [branch, setBranch] = useState('All');
-  const [startDate, setStartDate] = useState(new Date(Date.now() - 180 * 86400000)); // last 180 days
-  const [endDate, setEndDate] = useState(new Date());
-  const [showStartPicker, setShowStartPicker] = useState(false);
-  const [showEndPicker, setShowEndPicker] = useState(false);
-
-  // Dummy data to simulate visitor list
-  const visitors = [
-    {
-      id: '1',
-      name: 'John Doe',
-      mobile: '9876543210',
-      company: 'ABC Ltd',
-      purpose: 'Meeting',
-      checkIn: '2025-07-02 10:15',
-      checkOut: '2025-07-02 11:30',
-      branch: 'Bangalore Plant',
-      photo: 'https://randomuser.me/api/portraits/men/1.jpg',
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      mobile: '9123456789',
-      company: 'XYZ Corp',
-      purpose: 'Inspection',
-      checkIn: '2025-07-01 09:45',
-      checkOut: null,
-      branch: 'Corporate Office',
-      photo: 'https://randomuser.me/api/portraits/women/2.jpg',
-    },
-  ];
-
-  const filteredVisitors = visitors.filter(
-    v =>
-      (!search || v.name.toLowerCase().includes(search.toLowerCase())) &&
-      (branch === 'All' || v.branch === branch)
-  );
-
-  const handleExport = () => {
-    Alert.alert('Export', 'Export to Excel coming soon.');
-  };
-
-  const renderVisitor = ({ item }: any) => (
-    <View style={styles.card}>
-      <Image source={{ uri: item.photo }} style={styles.photo} />
-      <View style={styles.details}>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text>Company: {item.company}</Text>
-        <Text>Purpose: {item.purpose}</Text>
-        <Text>Check-In: {item.checkIn}</Text>
-        <Text>Check-Out: {item.checkOut || 'Not Checked Out'}</Text>
-        <Text>Branch: {item.branch}</Text>
-      </View>
-    </View>
-  );
-
   return (
-    <SafeAreaView style={styles.safe}>
-      {/* <View style={styles.header}>
-        <Text style={styles.headerText}>Admin Dashboard</Text>
-        <TouchableOpacity onPress={handleExport}>
-          <Icon name="file-excel" size={26} color="#fff" />
-        </TouchableOpacity>
-      </View> */}
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Admin Dashboard</Text>
-        <View style={{ flexDirection: 'row', gap: 16 }}>
-          <TouchableOpacity >
-            <Icon name="cog-outline" size={24} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity >
-            <Icon name="logout" size={24} color="#fff" />
-          </TouchableOpacity>
-        </View>
-      </View>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>AdminDashboardScreen</Text>
+    </View>
+  )
+}
 
-      {/* Search & Filter */}
-      <View style={styles.filterContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search by name..."
-          value={search}
-          onChangeText={setSearch}
-        />
-
-        <TouchableOpacity style={styles.dateBtn} onPress={() => setShowStartPicker(true)}>
-          <Text>From: {startDate.toDateString()}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.dateBtn} onPress={() => setShowEndPicker(true)}>
-          <Text>To: {endDate.toDateString()}</Text>
-        </TouchableOpacity>
-
-        {showStartPicker && (
-          <DateTimePicker
-            value={startDate}
-            mode="date"
-            display="default"
-            onChange={(_, date) => {
-              setShowStartPicker(false);
-              if (date) setStartDate(date);
-            }}
-          />
-        )}
-
-        {showEndPicker && (
-          <DateTimePicker
-            value={endDate}
-            mode="date"
-            display="default"
-            onChange={(_, date) => {
-              setShowEndPicker(false);
-              if (date) setEndDate(date);
-            }}
-          />
-        )}
-
-        {/* Branch Picker (you can enhance this with a dropdown) */}
-        <Text style={{ marginTop: 10, fontWeight: 'bold' }}>Branch:</Text>
-        <View style={styles.branchRow}>
-          {['All', 'Corporate Office', 'Bangalore Plant'].map(b => (
-            <TouchableOpacity
-              key={b}
-              style={[
-                styles.branchButton,
-                branch === b && styles.branchSelected,
-              ]}
-              onPress={() => setBranch(b)}
-            >
-              <Text style={branch === b ? styles.branchTextSelected : styles.branchText}>
-                {b}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-
-      {/* Visitor List */}
-      <FlatList
-        data={filteredVisitors}
-        keyExtractor={item => item.id}
-        renderItem={renderVisitor}
-        ListEmptyComponent={
-          <Text style={{ textAlign: 'center', marginTop: 40 }}>
-            No visitors found.
-          </Text>
-        }
-      />
-    </SafeAreaView>
-  );
-};
-
-export default AdminDashboardScreen;
-
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: '#f0f6ff',
-  },
-  header: {
-    backgroundColor: '#003366',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 16,
-    alignItems: 'center',
-  },
-  headerText: {
-    fontSize: 20,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  filterContainer: {
-    padding: 16,
-    backgroundColor: '#fff',
-  },
-  searchInput: {
-    borderWidth: 1,
-    borderColor: '#aaa',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 10,
-    height: 45,
-  },
-  dateBtn: {
-    paddingVertical: 6,
-    marginVertical: 4,
-  },
-  branchRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-    marginTop: 6,
-  },
-  branchButton: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    backgroundColor: '#eee',
-    borderRadius: 8,
-    marginRight: 8,
-    marginTop: 4,
-  },
-  branchSelected: {
-    backgroundColor: '#003366',
-  },
-  branchText: {
-    color: '#000',
-  },
-  branchTextSelected: {
-    color: '#fff',
-  },
-  card: {
-    backgroundColor: '#fff',
-    margin: 10,
-    padding: 14,
-    borderRadius: 10,
-    flexDirection: 'row',
-    elevation: 2,
-  },
-  photo: {
-    width: 64,
-    height: 64,
-    borderRadius: 8,
-    marginRight: 12,
-  },
-  details: {
-    flex: 1,
-  },
-  name: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 4,
-  },
-});
+export default AdminDashboardScreen
