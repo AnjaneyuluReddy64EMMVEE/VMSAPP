@@ -20,7 +20,7 @@ const LogoutScreen = () => (
 
 const SuperAdminDrawerNavigator = () => {
   return (
-    <Drawer.Navigator screenOptions={{ headerShown: true,drawerStyle:{width: 200,} }}>
+    <Drawer.Navigator screenOptions={{ headerShown: true,drawerStyle:{width: 250,} }}>
       <Drawer.Screen name="Home"  component={SuperAdminPanelScreen}/>
       <Drawer.Screen name="Visitors" component={VisitorsScreen} />
       <Drawer.Screen name="Security Users" component={SecurityUsersScreen} />
