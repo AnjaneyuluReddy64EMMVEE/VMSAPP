@@ -265,7 +265,7 @@ const users = [
   {
     email: '123',
     password: '123',
-    role: 'visitor',
+    role: 'security',
   },
 ];
 
@@ -281,8 +281,8 @@ const LoginScreen: React.FC = () => {
 
     if (user) {
       switch (user.role) {
-        case 'visitor':
-          navigation.navigate('VisitorForm');
+        case 'security':
+          navigation.navigate('SecurityDashboard');
           break;
         case 'admin':
           navigation.navigate('AdminDashboard', {

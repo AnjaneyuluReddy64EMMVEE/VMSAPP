@@ -1,14 +1,43 @@
+// import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+// export const usersApi = createApi({
+//   reducerPath: 'usersApi',
+//   baseQuery: fetchBaseQuery({ baseUrl: 'http://YOUR_BACKEND_URL/api/' }), // replace with real IP
+//   tagTypes: ['User'],
+//   endpoints: (builder) => ({
+//     getUsers: builder.query({
+//       query: () => 'users',
+//       providesTags: ['User'],
+//     }),
+//     updateUserRole: builder.mutation({
+//       query: ({ id, role }) => ({
+//         url: `users/${id}/role`,
+//         method: 'PUT',
+//         body: { role },
+//       }),
+//       invalidatesTags: ['User'],
+//     }),
+//   }),
+// });
+
+// export const { useGetUsersQuery, useUpdateUserRoleMutation } = usersApi;
+
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const usersApi = createApi({
   reducerPath: 'usersApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://YOUR_BACKEND_URL/api/' }), // replace with real IP
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'https://crazy-zoos-tickle.loca.lt/api/',
+  }),
   tagTypes: ['User'],
   endpoints: (builder) => ({
+    // GET all users
     getUsers: builder.query({
       query: () => 'users',
       providesTags: ['User'],
     }),
+
+    // PUT update user role
     updateUserRole: builder.mutation({
       query: ({ id, role }) => ({
         url: `users/${id}/role`,
@@ -17,7 +46,20 @@ export const usersApi = createApi({
       }),
       invalidatesTags: ['User'],
     }),
+
+    // POST login
+    loginUser: builder.mutation({
+      query: ({ email, password }) => ({
+        url: 'login',
+        method: 'POST',
+        body: { email, password },
+      }),
+    }),
   }),
 });
 
-export const { useGetUsersQuery, useUpdateUserRoleMutation } = usersApi;
+export const {
+  useGetUsersQuery,
+  useUpdateUserRoleMutation,
+  useLoginUserMutation,
+} = usersApi;

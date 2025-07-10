@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import RootNavigator from './src/navigation';
+import RootNavigator from './src/navigation/RootNavigator';
 
 const App = () => {
   return (

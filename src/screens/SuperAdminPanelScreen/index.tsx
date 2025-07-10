@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,24 +8,19 @@ import {
   Dimensions,
 } from 'react-native';
 import { LineChart, PieChart } from 'react-native-gifted-charts';
+import { Modal, TouchableOpacity, FlatList } from 'react-native'; 
 const { width } = Dimensions.get('window');
-// const screenWidth = Dimensions.get('window').width;
 
 const SuperAdminPanelScreen = () => {
+  const branches = ['All', 'Airport Office', 'Dabaspet', 'Head Office'];
+  const [selectedBranch, setSelectedBranch] = useState('All');
+  const [branchModalVisible, setBranchModalVisible] = useState(false);
+
   const totalVisitors = 12000;
   const todayVisitors = 50;
   const totalIn = 12;
 
-  // Dummy Data
-  // const lineData = [
-  //   { value: 50, label: '24' },
-  //   { value: 60, label: '25' },
-  //   { value: 55, label: '26' },
-  //   { value: 80, label: '27' },
-  //   { value: 40, label: '28' },
-  //   { value: 70, label: '29' },
-  //   { value: 65, label: '30' },
-  // ];
+
   const lineData = [
     { value: 40, label: 'Mon' },
     { value: 65, label: 'Tue' },
@@ -36,12 +31,7 @@ const SuperAdminPanelScreen = () => {
     { value: 100, label: 'Sun' },
   ];
 
-  // const pieData = [
-  //   { value: 80, label: 'Interview', color: '#ffa726' },
-  //   { value: 30, label: 'Maintenance', color: '#ef5350' },
-  //   { value: 60, label: 'Meeting', color: '#42a5f5' },
-  //   { value: 40, label: 'Site Visit', color: '#66bb6a' },
-  // ];
+  
   const pieData = [
     { value: 40, color: '#FF6384', text: 'Visitors' },
     { value: 30, color: '#36A2EB', text: 'Security' },
@@ -53,12 +43,37 @@ const SuperAdminPanelScreen = () => {
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Image style={styles.logo} />
-        <View style={styles.userInfo}>
-          <Text style={styles.office}>Airport Office</Text>
-          <Text style={styles.user}>John</Text>
-        </View>
-      </View>
+      <Image
+                source={{ uri: 'https://emmvee.com/wp-content/uploads/2019/08/emvlogo.png' }}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+  <TouchableOpacity onPress={() => setBranchModalVisible(true)} style={styles.branchDropdown}>
+    <Text style={styles.branchText}>{selectedBranch}</Text>
+  </TouchableOpacity>
+</View>
+
+<Modal visible={branchModalVisible} transparent animationType="fade">
+  <TouchableOpacity style={styles.modalOverlay} onPress={() => setBranchModalVisible(false)}>
+    <View style={styles.modalContent}>
+      <FlatList
+        data={branches}
+        keyExtractor={(item) => item}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.modalItem}
+            onPress={() => {
+              setSelectedBranch(item);
+              setBranchModalVisible(false);
+            }}>
+            <Text style={styles.modalItemText}>{item}</Text>
+          </TouchableOpacity>
+        )}
+      />
+    </View>
+  </TouchableOpacity>
+</Modal>
+
 
       {/* Welcome Message */}
       <Text style={styles.welcome}>Welcome back John</Text>
@@ -105,8 +120,8 @@ const SuperAdminPanelScreen = () => {
         <PieChart
           data={pieData}
           donut
-          showText
-          textColor="white"
+          // showText
+          // textColor="white"
           radius={100}
           innerRadius={60}
           focusOnPress
@@ -114,12 +129,12 @@ const SuperAdminPanelScreen = () => {
         />
         
       </View>
-      <View style={{ alignItems: 'center', marginVertical: 20 }}>
+      <View style={{ alignItems: 'flex-start', marginVertical: 20}}>
         {pieData.map((item, index) => (
           <View key={index} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
             <View
               style={{
-                width: 160,
+                width: 100,
                 height: 26,
                 backgroundColor: item.color,
                 marginRight: 8,
@@ -152,6 +167,47 @@ export default SuperAdminPanelScreen;
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: '#f8f9fa' },
+  branchDropdown: {
+  paddingVertical: 6,
+  paddingHorizontal: 12,
+  backgroundColor: '#e2e8f0',
+  borderRadius: 8,
+},logo: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  marginBottom: 10,
+},
+
+branchText: {
+  fontSize: 14,
+  fontWeight: '600',
+  color: '#1e293b',
+},
+modalOverlay: {
+  flex: 1,
+  backgroundColor: 'rgba(0,0,0,0.3)',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+modalContent: {
+  width: '80%',
+  backgroundColor: 'white',
+  borderRadius: 8,
+  paddingVertical: 12,
+  paddingHorizontal: 16,
+  elevation: 5,
+},
+modalItem: {
+  paddingVertical: 12,
+  borderBottomWidth: 1,
+  borderColor: '#ddd',
+},
+modalItemText: {
+  fontSize: 16,
+  color: '#1e293b',
+},
+
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   logo: { width: 100, height: 40, resizeMode: 'contain' },
   userInfo: { alignItems: 'flex-end' },
