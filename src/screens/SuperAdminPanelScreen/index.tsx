@@ -43,15 +43,15 @@ const SuperAdminPanelScreen = () => {
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-      <Image
-                source={{ uri: 'https://emmvee.com/wp-content/uploads/2019/08/emvlogo.png' }}
-                style={styles.logo}
-                resizeMode="contain"
-              />
-  <TouchableOpacity onPress={() => setBranchModalVisible(true)} style={styles.branchDropdown}>
-    <Text style={styles.branchText}>{selectedBranch}</Text>
-  </TouchableOpacity>
-</View>
+            <Image
+                      source={{ uri: 'https://emmvee.com/wp-content/uploads/2019/08/emvlogo.png' }}
+                      style={styles.logo}
+                      resizeMode="contain"
+                    />
+        <TouchableOpacity onPress={() => setBranchModalVisible(true)} style={styles.branchDropdown}>
+          <Text style={styles.branchText}>{selectedBranch}</Text>
+        </TouchableOpacity>
+      </View>
 
 <Modal visible={branchModalVisible} transparent animationType="fade">
   <TouchableOpacity style={styles.modalOverlay} onPress={() => setBranchModalVisible(false)}>
@@ -120,8 +120,8 @@ const SuperAdminPanelScreen = () => {
         <PieChart
           data={pieData}
           donut
-          // showText
-          // textColor="white"
+          showText
+          textColor="white"
           radius={100}
           innerRadius={60}
           focusOnPress
