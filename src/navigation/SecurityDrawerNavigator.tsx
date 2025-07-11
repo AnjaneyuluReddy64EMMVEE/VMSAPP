@@ -5,7 +5,6 @@ import { useNavigation, CommonActions } from '@react-navigation/native';
 
 // Import your screens
 import VisitorsScreen from '../screens/VisitorsScreen';
-import NotificationScreen from '../screens/SettingsScreen';
 import SuperAdminPanelScreen from '../screens/SuperAdminPanelScreen';
 import VisitorFormScreen from '../screens/VisitorFormScreen';
 
@@ -47,11 +46,14 @@ const LogoutScreen = () => {
 
 const SecurityDrawerNavigator = () => {
   return (
-    <Drawer.Navigator screenOptions={{ headerShown: true,drawerStyle:{width: 250,} }}>
-      <Drawer.Screen name="Form" component={VisitorFormScreen}/>
+    <Drawer.Navigator screenOptions={{headerShown: true,drawerStyle:{width: 250,},headerTitleStyle: {
+      fontWeight: 'bold',
+      fontSize: 20,
+    },
+ }}>
+      <Drawer.Screen name="Form" component={VisitorFormScreen} />
       <Drawer.Screen name="Home"  component={SuperAdminPanelScreen}/>
       <Drawer.Screen name="Visitors" component={VisitorsScreen} />
-      {/* <Drawer.Screen name="Notifications" component={NotificationScreen} /> */}
       <Drawer.Screen name="Logout" component={LogoutScreen} />
     </Drawer.Navigator>
   );

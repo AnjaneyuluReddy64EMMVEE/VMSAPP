@@ -19,6 +19,7 @@ const SuperAdminPanelScreen = () => {
   const totalVisitors = 12000;
   const todayVisitors = 50;
   const totalIn = 12;
+  const totalOut = 10;
 
 
   const lineData = [
@@ -82,9 +83,9 @@ const SuperAdminPanelScreen = () => {
       {/* Stat Cards */}
       <View style={styles.cardRow}>
         <Card title="Total Count" value={totalVisitors.toString()} />
-        <Card title="Today's Visitor" value={todayVisitors.toString()} />
+        <Card title="Pending" value={todayVisitors.toString()} />
         <Card title="Total In" value={totalIn.toString()} />
-        <Card title="Today's Visitor" value="12" />
+        <Card title="Total Out" value={totalOut.toString()} />
       </View>
 
       <Text style={styles.title}>Weekly Visitor Insights</Text>
@@ -159,10 +160,6 @@ const Card = ({ title, value }: { title: string; value: string }) => (
   </View>
 );
 
-
-
-
-
 export default SuperAdminPanelScreen;
 
 const styles = StyleSheet.create({
@@ -217,6 +214,7 @@ modalItemText: {
   subText: { fontSize: 14, color: '#666', marginBottom: 20 },
   cardRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 20 },
   card: {
+    alignItems: 'center',
     width: '48%',
     backgroundColor: '#fff',
     padding: 16,
@@ -241,114 +239,3 @@ modalItemText: {
       textAlign: 'center',
     },
 });
-
-// import React from 'react';
-// import { View, Text, StyleSheet, Dimensions, ScrollView } from 'react-native';
-// import { LineChart, PieChart } from 'react-native-gifted-charts';
-
-// const { width } = Dimensions.get('window');
-
-// const SuperAdminPanelScreen = () => {
-//   const lineData = [
-//     { value: 40, label: 'Mon' },
-//     { value: 65, label: 'Tue' },
-//     { value: 55, label: 'Wed' },
-//     { value: 80, label: 'Thu' },
-//     { value: 70, label: 'Fri' },
-//     { value: 90, label: 'Sat' },
-//     { value: 100, label: 'Sun' },
-//   ];
-
-//   // const pieData = [
-//   //   { value: 40, color: '#3B82F6', text: '40%' },
-//   //   { value: 30, color: '#10B981', text: '30%' },
-//   //   { value: 20, color: '#F59E0B', text: '20%' },
-//   //   { value: 10, color: '#EF4444', text: '10%' },
-//   // ];
-//   const pieData = [
-//     { value: 40, color: '#FF6384', text: 'Visitors' },
-//     { value: 30, color: '#36A2EB', text: 'Security' },
-//     { value: 20, color: '#FFCE56', text: 'Hosts' },
-//     { value: 10, color: '#4BC0C0', text: 'Others' },
-//   ];
-//   return (
-//     <ScrollView contentContainerStyle={styles.container}>
-//       <Text style={styles.title}>Weekly Visitor Insights</Text>
-
-//       <LineChart
-//         data={lineData}
-//         areaChart
-//         curved
-//         thickness={3}
-//         hideDataPoints={false}
-//         color="#3B82F6"
-//         startFillColor="#3B82F6"
-//         endFillColor="white"
-//         startOpacity={0.4}
-//         endOpacity={0.1}
-//         noOfSections={4}
-//         animateOnDataChange
-//         animationDuration={1200}
-//         isAnimated
-//         yAxisColor="#CBD5E1"
-//         xAxisColor="#CBD5E1"
-//         yAxisTextStyle={{ color: '#64748B' }}
-//         xAxisLabelTextStyle={{ color: '#64748B' }}
-//         rulesColor="#E2E8F0"
-//         backgroundColor="#F8FAFC"
-//         spacing={width / 10}
-//         initialSpacing={20}
-//         maxValue={120}
-//       />
-
-//       <Text style={[styles.title, { marginTop: 40 }]}>Visitor Type Breakdown</Text>
-//       <View style={{ alignItems: 'center' }}>
-//         <PieChart
-//           data={pieData}
-//           donut
-//           showText
-//           textColor="white"
-//           radius={100}
-//           innerRadius={60}
-//           focusOnPress
-//           showValuesAsLabels
-//         />
-        
-//       </View>
-//       <View style={{ alignItems: 'center', marginVertical: 20 }}>
-//         {pieData.map((item, index) => (
-//           <View key={index} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-//             <View
-//               style={{
-//                 width: 16,
-//                 height: 16,
-//                 backgroundColor: item.color,
-//                 marginRight: 8,
-//                 borderRadius: 4,
-//               }}
-//             />
-//             <Text style={{ fontSize: 16 }}>{item.text}</Text>
-//           </View>
-//         ))}
-//       </View>
-//     </ScrollView>
-//   );
-// };
-
-// export default SuperAdminPanelScreen;
-
-// const styles = StyleSheet.create({
-//   container: {
-//     padding: 20,
-//     paddingTop: 60,
-//     backgroundColor: '#F8FAFC',
-//     flexGrow: 1,
-//   },
-//   title: {
-//     fontSize: 22,
-//     fontWeight: 'bold',
-//     marginBottom: 20,
-//     color: '#1E293B',
-//     textAlign: 'center',
-//   },
-// });
