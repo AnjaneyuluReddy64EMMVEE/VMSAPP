@@ -50,8 +50,8 @@ const users = [
 
 const LoginScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('super');
+  const [password, setPassword] = useState('super123');
   const passwordRef = useRef<TextInput>(null);
 
   const handleLogin = () => {

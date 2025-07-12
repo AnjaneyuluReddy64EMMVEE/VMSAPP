@@ -283,7 +283,6 @@
 //   },
 // ];
 
-
 //   const filteredVisitors = visitorData.filter(visitor => {
 //     return (
 //       (statusFilter === 'All' || visitor.status === statusFilter) &&
@@ -482,9 +481,7 @@
 //   },
 // });
 
-
-
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -499,7 +496,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { format } from 'date-fns';
-
+import { Header } from '../../components/Header';
+import { showErrorMessage } from '../../utils/Globals';
 
 const VisitorsScreen = () => {
   const [searchDate, setSearchDate] = useState(new Date());
@@ -513,158 +511,157 @@ const VisitorsScreen = () => {
   const [modalStatus, setModalStatus] = useState('Pending');
 
   const [visitorData, setVisitorData] = useState([
-  {
-    id: '1',
-    name: 'Jane Doe',
-    phone: '9876543210',
-    email: 'jane@example.com',
-    badge: '',
-    location: 'Airport Office',
-    status: 'Pending',
-    purpose: 'Meeting',
-    personToMeet: 'John Smith',
-    inTime: '',
-    outTime: '',
-    avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
-    govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/847/847969.png',
-  },
-  {
-    id: '2',
-    name: 'Ravi Kumar',
-    phone: '9988776655',
-    email: 'ravi@example.com',
-    badge: '',
-    location: 'Headquarters',
-    status: 'Pending',
-    purpose: 'Site Visit',
-    personToMeet: 'Anita Sharma',
-    inTime: '',
-    outTime: '',
-    avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
-    govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2910/2910768.png',
-  },
-  {
-    id: '3',
-    name: 'Priya Sen',
-    phone: '9123456780',
-    email: 'priya@example.com',
-    badge: '',
-    location: 'Solar Plant',
-    status: 'Pending',
-    purpose: 'Interview',
-    personToMeet: 'Manish Patel',
-    inTime: '',
-    outTime: '',
-    avatar: 'https://cdn-icons-png.flaticon.com/512/194/194937.png',
-    govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/848/848043.png',
-  },
-  {
-    id: '4',
-    name: 'Sunil Mehra',
-    phone: '9090909090',
-    email: 'sunil@example.com',
-    badge: '',
-    location: 'Factory Gate 1',
-    status: 'Pending',
-    purpose: 'Delivery',
-    personToMeet: 'Logistics Team',
-    inTime: '',
-    outTime: '',
-    avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
-    govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/4341/4341094.png',
-  },
-  {
-    id: '5',
-    name: 'Meena Reddy',
-    phone: '9871234567',
-    email: 'meena@example.com',
-    badge: '',
-    location: 'Admin Block',
-    status: 'Pending',
-    purpose: 'Maintenance',
-    personToMeet: 'Rajesh Iyer',
-    inTime: '',
-    outTime: '',
-    avatar: 'https://cdn-icons-png.flaticon.com/512/194/194937.png',
-    govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2907/2907511.png',
-  },
-  {
-    id: '6',
-    name: 'Amit Sinha',
-    phone: '9812345678',
-    email: 'amit@example.com',
-    badge: '',
-    location: 'Warehouse',
-    status: 'Pending',
-    purpose: 'Audit',
-    personToMeet: 'Nisha Jain',
-    inTime: '',
-    outTime: '',
-    avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
-    govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2910/2910768.png',
-  },
-  {
-    id: '7',
-    name: 'Sneha Kapoor',
-    phone: '9765432109',
-    email: 'sneha@example.com',
-    badge: '',
-    location: 'Airport Office',
-    status: 'Pending',
-    purpose: 'Client Visit',
-    personToMeet: 'Arun Khanna',
-    inTime: '',
-    outTime: '',
-    avatar: 'https://cdn-icons-png.flaticon.com/512/194/194937.png',
-    govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2910/2910768.png',
-  },
-  {
-    id: '8',
-    name: 'Kunal Das',
-    phone: '9654321098',
-    email: 'kunal@example.com',
-    badge: '',
-    location: 'Control Room',
-    status: 'Pending',
-    purpose: 'IT Support',
-    personToMeet: 'IT Admin',
-    inTime: '',
-    outTime: '',
-    avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
-    govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/847/847969.png',
-  },
-  {
-    id: '9',
-    name: 'Lavanya Mishra',
-    phone: '9543210987',
-    email: 'lavanya@example.com',
-    badge: '',
-    location: 'Main Office',
-    status: 'Pending',
-    purpose: 'Demo Presentation',
-    personToMeet: 'Product Team',
-    inTime: '',
-    outTime: '',
-    avatar: 'https://cdn-icons-png.flaticon.com/512/194/194937.png',
-    govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/848/848043.png',
-  },
-  {
-    id: '10',
-    name: 'Gaurav Jain',
-    phone: '9432109876',
-    email: 'gaurav@example.com',
-    badge: '',
-    location: 'Corporate Lobby',
-    status: 'Pending',
-    purpose: 'Board Meeting',
-    personToMeet: 'CEO Office',
-    inTime: '',
-    outTime: '',
-    avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
-    govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2910/2910768.png',
-  },
-]);
-
+    {
+      id: '1',
+      name: 'Jane Doe',
+      phone: '9876543210',
+      email: 'jane@example.com',
+      badge: '',
+      location: 'Airport Office',
+      status: 'Pending',
+      purpose: 'Meeting',
+      personToMeet: 'John Smith',
+      inTime: '',
+      outTime: '',
+      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
+      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/847/847969.png',
+    },
+    {
+      id: '2',
+      name: 'Ravi Kumar',
+      phone: '9988776655',
+      email: 'ravi@example.com',
+      badge: '',
+      location: 'Headquarters',
+      status: 'Pending',
+      purpose: 'Site Visit',
+      personToMeet: 'Anita Sharma',
+      inTime: '',
+      outTime: '',
+      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
+      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2910/2910768.png',
+    },
+    {
+      id: '3',
+      name: 'Priya Sen',
+      phone: '9123456780',
+      email: 'priya@example.com',
+      badge: '',
+      location: 'Solar Plant',
+      status: 'Pending',
+      purpose: 'Interview',
+      personToMeet: 'Manish Patel',
+      inTime: '',
+      outTime: '',
+      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194937.png',
+      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/848/848043.png',
+    },
+    {
+      id: '4',
+      name: 'Sunil Mehra',
+      phone: '9090909090',
+      email: 'sunil@example.com',
+      badge: '',
+      location: 'Factory Gate 1',
+      status: 'Pending',
+      purpose: 'Delivery',
+      personToMeet: 'Logistics Team',
+      inTime: '',
+      outTime: '',
+      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
+      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/4341/4341094.png',
+    },
+    {
+      id: '5',
+      name: 'Meena Reddy',
+      phone: '9871234567',
+      email: 'meena@example.com',
+      badge: '',
+      location: 'Admin Block',
+      status: 'Pending',
+      purpose: 'Maintenance',
+      personToMeet: 'Rajesh Iyer',
+      inTime: '',
+      outTime: '',
+      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194937.png',
+      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2907/2907511.png',
+    },
+    {
+      id: '6',
+      name: 'Amit Sinha',
+      phone: '9812345678',
+      email: 'amit@example.com',
+      badge: '',
+      location: 'Warehouse',
+      status: 'Pending',
+      purpose: 'Audit',
+      personToMeet: 'Nisha Jain',
+      inTime: '',
+      outTime: '',
+      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
+      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2910/2910768.png',
+    },
+    {
+      id: '7',
+      name: 'Sneha Kapoor',
+      phone: '9765432109',
+      email: 'sneha@example.com',
+      badge: '',
+      location: 'Airport Office',
+      status: 'Pending',
+      purpose: 'Client Visit',
+      personToMeet: 'Arun Khanna',
+      inTime: '',
+      outTime: '',
+      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194937.png',
+      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2910/2910768.png',
+    },
+    {
+      id: '8',
+      name: 'Kunal Das',
+      phone: '9654321098',
+      email: 'kunal@example.com',
+      badge: '',
+      location: 'Control Room',
+      status: 'Pending',
+      purpose: 'IT Support',
+      personToMeet: 'IT Admin',
+      inTime: '',
+      outTime: '',
+      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
+      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/847/847969.png',
+    },
+    {
+      id: '9',
+      name: 'Lavanya Mishra',
+      phone: '9543210987',
+      email: 'lavanya@example.com',
+      badge: '',
+      location: 'Main Office',
+      status: 'Pending',
+      purpose: 'Demo Presentation',
+      personToMeet: 'Product Team',
+      inTime: '',
+      outTime: '',
+      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194937.png',
+      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/848/848043.png',
+    },
+    {
+      id: '10',
+      name: 'Gaurav Jain',
+      phone: '9432109876',
+      email: 'gaurav@example.com',
+      badge: '',
+      location: 'Corporate Lobby',
+      status: 'Pending',
+      purpose: 'Board Meeting',
+      personToMeet: 'CEO Office',
+      inTime: '',
+      outTime: '',
+      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
+      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2910/2910768.png',
+    },
+  ]);
 
   const filteredVisitors = visitorData.filter(visitor => {
     return (
@@ -674,7 +671,7 @@ const VisitorsScreen = () => {
     );
   });
 
-  const handleView = (visitor) => {
+  const handleView = visitor => {
     setSelectedVisitor(visitor);
     setModalBadge(visitor.badge);
     setModalStatus(visitor.status);
@@ -711,7 +708,6 @@ const VisitorsScreen = () => {
         <Text style={styles.text}>{item.email}</Text>
         <Text style={styles.text}>Badge: {item.badge || 'N/A'}</Text>
         <Text style={styles.text}>Location: {item.location}</Text>
-
       </View>
       <View style={styles.rightSection}>
         <Text
@@ -722,29 +718,45 @@ const VisitorsScreen = () => {
               : item.status === 'Checked In'
               ? styles.statusIn
               : styles.statusOut,
-          ]}>
+          ]}
+        >
           {item.status}
         </Text>
         <Text style={styles.text}>Purpose: {item.purpose}</Text>
         <Text style={styles.text}>To Meet: {item.personToMeet}</Text>
-        <Text style={styles.text}>{item.inTime} - {item.outTime || 'N/A'}</Text>
-        <TouchableOpacity style={styles.viewButton} onPress={() => handleView(item)}>
+        <Text style={styles.text}>
+          {item.inTime} - {item.outTime || 'N/A'}
+        </Text>
+        <TouchableOpacity
+          style={styles.viewButton}
+          onPress={() => handleView(item)}
+        >
           <Text style={styles.viewText}>View</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 
+  // useEffect(() => {
+  //   console.log('Visitor Data Updated:', visitorData);
+
+  //   showErrorMessage({
+  //     message: 'fetched visitor data successfully',
+  //     duration: 3000,
+  //   });
+  // }, []);
+
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.container}>
-        <Text style={styles.heading}>Visitor List</Text>
+        <Header screenName="Visitor List" showGoBack />
 
         {/* Filters */}
         <View style={styles.filters}>
           <TouchableOpacity
             onPress={() => setShowDatePicker(true)}
-            style={styles.filterInput}>
+            style={styles.filterInput}
+          >
             <Text>{searchDate.toLocaleDateString()}</Text>
           </TouchableOpacity>
 
@@ -783,10 +795,10 @@ const VisitorsScreen = () => {
                   ? 'Checked In'
                   : prev === 'Checked In'
                   ? 'Checked Out'
-                  : 'All'
+                  : 'All',
               )
             }
-            >
+          >
             <Text>{statusFilter}</Text>
           </TouchableOpacity>
         </View>
@@ -799,10 +811,7 @@ const VisitorsScreen = () => {
         />
 
         {/* Modal */}
-        <Modal
-          visible={modalVisible}
-          transparent
-          animationType="slide">
+        <Modal visible={modalVisible} transparent animationType="slide">
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Update Visitor</Text>
@@ -816,12 +825,17 @@ const VisitorsScreen = () => {
                 style={styles.statusDropdown}
                 onPress={() => {
                   if (modalStatus === 'Pending') setModalStatus('Checked In');
-                  else if (modalStatus === 'Checked In') setModalStatus('Checked Out');
-                }}>
+                  else if (modalStatus === 'Checked In')
+                    setModalStatus('Checked Out');
+                }}
+              >
                 <Text>{modalStatus}</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.saveButton} onPress={handleUpdate}>
+              <TouchableOpacity
+                style={styles.saveButton}
+                onPress={handleUpdate}
+              >
                 <Text style={styles.saveText}>Save</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
@@ -842,16 +856,29 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 16 },
   heading: { fontSize: 22, fontWeight: '700', marginBottom: 12 },
   filters: {
-    flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 12,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginBottom: 12,
   },
   filterInput: {
-    flexDirection: 'row', alignItems: 'center', gap: 6,
-    backgroundColor: '#fff', padding: 10, borderRadius: 8,
-    flexGrow: 1, minWidth: '45%', elevation: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 8,
+    flexGrow: 1,
+    minWidth: '45%',
+    elevation: 2,
   },
   card: {
-    backgroundColor: '#fff', flexDirection: 'row', borderRadius: 12,
-    padding: 12, marginBottom: 10, elevation: 2,
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 10,
+    elevation: 2,
   },
   avatar: { width: 44, height: 44, borderRadius: 22, marginRight: 10 },
   details: { flex: 1 },
@@ -859,35 +886,55 @@ const styles = StyleSheet.create({
   name: { fontSize: 16, fontWeight: '600' },
   text: { fontSize: 12, color: '#444' },
   status: {
-    fontWeight: '600', paddingVertical: 4, paddingHorizontal: 10,
-    borderRadius: 12, fontSize: 12, marginBottom: 4,
+    fontWeight: '600',
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+    fontSize: 12,
+    marginBottom: 4,
   },
   statusIn: { backgroundColor: '#ccf5d3', color: '#2e7d32' },
   statusOut: { backgroundColor: '#ffeeba', color: '#8d6e63' },
   statusPending: { backgroundColor: '#ffe0e0', color: '#c62828' },
   viewButton: {
-    marginTop: 6, backgroundColor: '#007bff',
-    paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
+    marginTop: 6,
+    backgroundColor: '#007bff',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
   },
   viewText: { color: 'white', fontWeight: '600', fontSize: 12 },
   modalContainer: {
-    flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)'
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalContent: {
-    width: '80%', backgroundColor: '#fff', padding: 20,
-    borderRadius: 10, elevation: 10,
+    width: '80%',
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    elevation: 10,
   },
   modalTitle: { fontSize: 18, fontWeight: '600', marginBottom: 12 },
   modalInput: {
-    borderWidth: 1, borderColor: '#ccc', padding: 10,
-    borderRadius: 6, marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    borderRadius: 6,
+    marginBottom: 12,
   },
   statusDropdown: {
-    backgroundColor: '#f2f2f2', padding: 10, borderRadius: 6,
+    backgroundColor: '#f2f2f2',
+    padding: 10,
+    borderRadius: 6,
     marginBottom: 12,
   },
   saveButton: {
-    backgroundColor: '#28a745', padding: 12, borderRadius: 6,
+    backgroundColor: '#28a745',
+    padding: 12,
+    borderRadius: 6,
   },
   saveText: { color: '#fff', textAlign: 'center', fontWeight: '600' },
 });

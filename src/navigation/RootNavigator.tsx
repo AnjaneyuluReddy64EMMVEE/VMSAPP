@@ -7,18 +7,26 @@ import SuperAdminDrawerNavigator from './SuperAdminDrawerNavigator';
 import SecurityDrawerNavigator from './SecurityDrawerNavigator';
 import AdminDrawerNavigator from './AdminDrawerNavigator';
 
-
-
 const Stack = createNativeStackNavigator();
 
 const RootNavigator = () => {
   return (
-    <Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator
+      initialRouteName="Splash"
+      screenOptions={{ headerShown: false }}
+    >
       <Stack.Screen name="Splash" component={SplashScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="SecurityDashboard" component={SecurityDrawerNavigator} />
+
+      <Stack.Screen
+        name="SecurityDashboard"
+        component={SecurityDrawerNavigator}
+      />
       <Stack.Screen name="AdminDashboard" component={AdminDrawerNavigator} />
-      <Stack.Screen name="SuperAdminDashboard" component={SuperAdminDrawerNavigator} />
+      <Stack.Screen
+        name="SuperAdminDashboard"
+        component={SuperAdminDrawerNavigator}
+      />
     </Stack.Navigator>
   );
 };
