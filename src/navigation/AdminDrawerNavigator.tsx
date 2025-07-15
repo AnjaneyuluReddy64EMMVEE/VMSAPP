@@ -1,17 +1,15 @@
-import React,{useEffect} from 'react';
-import { View,ActivityIndicator, Alert } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, ActivityIndicator, Alert } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 
 // Import your screens
 import VisitorsScreen from '../screens/VisitorsScreen';
-import NotificationScreen from '../screens/SettingsScreen';
+import NotificationScreen from '../screens/NotificationScreen';
 import SuperAdminPanelScreen from '../screens/SuperAdminPanelScreen';
 import SecurityUsersScreen from '../screens/SecurityUsersScreen';
 
-
 const Drawer = createDrawerNavigator();
-
 
 const LogoutScreen = () => {
   const navigation = useNavigation();
@@ -28,7 +26,7 @@ const LogoutScreen = () => {
             CommonActions.reset({
               index: 0,
               routes: [{ name: 'Login' }],
-            })
+            }),
           );
         },
       },
@@ -42,13 +40,12 @@ const LogoutScreen = () => {
   );
 };
 
-
-
-
 const AdminDrawerNavigator = () => {
   return (
-    <Drawer.Navigator screenOptions={{ headerShown: true,drawerStyle:{width: 250,} }}>
-      <Drawer.Screen name="Home"  component={SuperAdminPanelScreen}/>
+    <Drawer.Navigator
+      screenOptions={{ headerShown: true, drawerStyle: { width: 250 } }}
+    >
+      <Drawer.Screen name="Home" component={SuperAdminPanelScreen} />
       <Drawer.Screen name="Visitors" component={VisitorsScreen} />
       <Drawer.Screen name="Security Users" component={SecurityUsersScreen} />
       <Drawer.Screen name="Notifications" component={NotificationScreen} />
@@ -58,4 +55,3 @@ const AdminDrawerNavigator = () => {
 };
 
 export default AdminDrawerNavigator;
-

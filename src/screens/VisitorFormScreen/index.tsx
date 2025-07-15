@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   View,
@@ -28,7 +27,8 @@ import {
 } from 'react-native-responsive-screen';
 import { useNavigation } from '@react-navigation/native';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
-
+import Header from '../../components/Header';
+import InputField from '../../components/InputField';
 
 const VisitorFormScreen = () => {
   const [firstName, setFirstName] = useState('');
@@ -49,7 +49,6 @@ const VisitorFormScreen = () => {
   const officeOptions = ['Dabaspet', 'Head Office'];
   const purposeOptions = ['Meeting', 'Delivery', 'Interview', 'Other'];
 
-
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
       const granted = await PermissionsAndroid.request(
@@ -58,7 +57,7 @@ const VisitorFormScreen = () => {
           title: 'Camera Permission',
           message: 'App needs camera access to take photos.',
           buttonPositive: 'OK',
-        }
+        },
       );
       return granted === PermissionsAndroid.RESULTS.GRANTED;
     } else {
@@ -151,7 +150,10 @@ const VisitorFormScreen = () => {
 
   const handleSubmit = () => {
     if (!isFormValid()) {
-      Alert.alert('Error', 'Please fill all mandatory fields and upload required files.');
+      Alert.alert(
+        'Error',
+        'Please fill all mandatory fields and upload required files.',
+      );
       return;
     }
 
@@ -180,23 +182,41 @@ const VisitorFormScreen = () => {
     setGovtIdFile(null);
   };
 
-  const renderDropdown = (label, value, options, onSelect, modalVisible, setModalVisible) => (
+  const renderDropdown = (
+    label,
+    value,
+    options,
+    onSelect,
+    modalVisible,
+    setModalVisible,
+  ) => (
     <>
       {/* <Text style={styles.dropdownLabel}>{label}</Text> */}
-      <TouchableOpacity style={styles.dropdownInput} onPress={() => setModalVisible(true)}>
-        <Text style={{ color: value ? '#000' : '#999' }}>{value || `Select ${label}`}</Text>
+      <TouchableOpacity
+        style={styles.dropdownInput}
+        onPress={() => setModalVisible(true)}
+      >
+        <Text style={{ color: value ? '#000' : '#999' }}>
+          {value || `Select ${label}`}
+        </Text>
       </TouchableOpacity>
       <Modal visible={modalVisible} transparent animationType="fade">
-        <TouchableOpacity style={styles.modalOverlay} onPress={() => setModalVisible(false)}>
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          onPress={() => setModalVisible(false)}
+        >
           <View style={styles.modalContent}>
             <FlatList
               data={options}
-              keyExtractor={(item) => item}
+              keyExtractor={item => item}
               renderItem={({ item }) => (
-                <TouchableOpacity style={styles.option} onPress={() => {
-                  onSelect(item);
-                  setModalVisible(false);
-                }}>
+                <TouchableOpacity
+                  style={styles.option}
+                  onPress={() => {
+                    onSelect(item);
+                    setModalVisible(false);
+                  }}
+                >
                   <Text style={styles.optionText}>{item}</Text>
                 </TouchableOpacity>
               )}
@@ -206,40 +226,114 @@ const VisitorFormScreen = () => {
       </Modal>
     </>
   );
+  const inputFields = [
+    {
+      key: 'firstName',
+      placeholder: 'First Name',
+      value: firstName,
+      onChangeText: setFirstName,
+    },
+    {
+      key: 'lastName',
+      placeholder: 'Last Name',
+      value: lastName,
+      onChangeText: setLastName,
+    },
+    {
+      key: 'mobile',
+      placeholder: 'Mobile Number',
+      value: mobile,
+      onChangeText: setMobile,
+      keyboardType: 'phone-pad',
+      maxLength: 10,
+    },
+    {
+      key: 'email',
+      placeholder: 'Email ID (optional)',
+      value: email,
+      onChangeText: setEmail,
+      keyboardType: 'email-address',
+    },
+    {
+      key: 'personToMeet',
+      placeholder: 'Person to Meet',
+      value: personToMeet,
+      onChangeText: setpersonToMeet,
+    },
+   
+  ];
 
   return (
-    <SafeAreaView style={styles.safe}> 
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+    <SafeAreaView style={styles.safe}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={{ flex: 1 }}
+      >
         <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.header}>Visitor Registration</Text>
+          <Header title="Form" showMenuButton />
 
-          <TextInput style={styles.input} placeholder="First Name" value={firstName} onChangeText={setFirstName} />
-          <TextInput style={styles.input} placeholder="Last Name" value={lastName} onChangeText={setLastName} />
-          <TextInput style={styles.input} placeholder="Mobile Number" value={mobile} onChangeText={setMobile} keyboardType="phone-pad" maxLength={10} />
-          <TextInput style={styles.input} placeholder="Email ID (optional)" value={email} onChangeText={setEmail} keyboardType="email-address" />
-          <TextInput style={styles.input} placeholder="Person to Meet" value={personToMeet} onChangeText={setpersonToMeet} />
+          {inputFields.map(field => (
+            <InputField
+              key={field.key}
+              placeholder={field.placeholder}
+              value={field.value}
+              onChangeText={field.onChangeText}
+              keyboardType={field.keyboardType}
+              maxLength={field.maxLength}
+            />
+          ))}
 
-          {renderDropdown('Office Location', officeLocation, officeOptions, setOfficeLocation, officeModalVisible, setOfficeModalVisible)}
-          {renderDropdown('Purpose of Visit', purpose, purposeOptions, setPurpose, purposeModalVisible, setPurposeModalVisible)}
+          {renderDropdown(
+            'Office Location',
+            officeLocation,
+            officeOptions,
+            setOfficeLocation,
+            officeModalVisible,
+            setOfficeModalVisible,
+          )}
+          {renderDropdown(
+            'Purpose of Visit',
+            purpose,
+            purposeOptions,
+            setPurpose,
+            purposeModalVisible,
+            setPurposeModalVisible,
+          )}
 
           {purpose === 'Other' && (
-            <TextInput
-              style={styles.input}
+            <InputField
+              key="otherReason"
               placeholder="Please specify the reason"
               value={otherReason}
               onChangeText={setOtherReason}
             />
           )}
 
-          <TouchableOpacity onPress={handleGovtIdUpload} style={styles.uploadButton}>
-            <Text style={styles.uploadText}>{govtIdFile ? 'ID Uploaded ✅' : 'Upload Govt ID (Image or PDF)'}</Text>
+          <TouchableOpacity
+            onPress={handleGovtIdUpload}
+            style={styles.uploadButton}
+          >
+            <Text style={styles.uploadText}>
+              {govtIdFile ? 'ID Uploaded ✅' : 'Upload Govt ID (Image or PDF)'}
+            </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.photoButton} onPress={handleSelectImage}>
-            <Text style={styles.photoText}>{photo ? 'Change Photo' : 'Take or Upload Photo'}</Text>
+          <TouchableOpacity
+            style={styles.photoButton}
+            onPress={handleSelectImage}
+          >
+            <Text style={styles.photoText}>
+              {photo ? 'Change Photo' : 'Take or Upload Photo'}
+            </Text>
           </TouchableOpacity>
 
-          {photo && <Image source={{ uri: photo.uri }} style={styles.imagePreview} resizeMode="cover" />}
+          {photo && (
+            <Image
+              source={{ uri: photo.uri }}
+              style={styles.imagePreview}
+              resizeMode="cover"
+            />
+          )}
 
           <TouchableOpacity
             style={[styles.submitButton, { opacity: isFormValid() ? 1 : 0.5 }]}
@@ -259,25 +353,82 @@ export default VisitorFormScreen;
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#f0f6ff' },
   container: { padding: 20, paddingBottom: 40 },
-  header: { fontSize: 24, fontWeight: 'bold', color: '#003366', marginBottom: 25, alignSelf: 'center' },
-  input: { height: 52, borderColor: '#ccc', borderWidth: 1, marginBottom: 15, borderRadius: 12, paddingHorizontal: 16, backgroundColor: 'white', fontSize: 16 },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#003366',
+    marginBottom: 25,
+    alignSelf: 'center',
+  },
+  input: {
+    height: 52,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginBottom: 15,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    backgroundColor: 'white',
+    fontSize: 16,
+  },
   dropdownLabel: { marginBottom: 5, fontSize: 14, color: '#333' },
-  dropdownInput: { height: 52, borderColor: '#ccc', borderWidth: 1, borderRadius: 12, paddingHorizontal: 16, justifyContent: 'center', marginBottom: 15, backgroundColor: 'white' },
-  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.3)', justifyContent: 'center', padding: 20 },
-  modalContent: { backgroundColor: 'white', borderRadius: 8, paddingVertical: 10 },
-  option: { paddingVertical: 12, paddingHorizontal: 16, borderBottomWidth: 1, borderColor: '#eee' },
+  dropdownInput: {
+    height: 52,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    justifyContent: 'center',
+    marginBottom: 15,
+    backgroundColor: 'white',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    paddingVertical: 10,
+  },
+  option: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderColor: '#eee',
+  },
   optionText: { fontSize: 16, color: '#333' },
-  uploadButton: { backgroundColor: '#007AFF', padding: 12, borderRadius: 8, alignItems: 'center', marginVertical: 10 },
+  uploadButton: {
+    backgroundColor: '#007AFF',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
   uploadText: { color: '#fff', fontWeight: 'bold' },
-  photoButton: { backgroundColor: '#003366', padding: 14, borderRadius: 12, alignItems: 'center', marginBottom: 15 },
+  photoButton: {
+    backgroundColor: '#003366',
+    padding: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 15,
+  },
   photoText: { color: 'white', fontWeight: '600', fontSize: 16 },
-  imagePreview: { width: wp('90%'), height: hp('20%'), borderRadius: 12, marginBottom: 20 },
-  submitButton: { backgroundColor: '#007BFF', paddingVertical: 15, borderRadius: 12, alignItems: 'center' },
+  imagePreview: {
+    width: wp('90%'),
+    height: hp('20%'),
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  submitButton: {
+    backgroundColor: '#007BFF',
+    paddingVertical: 15,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
   submitText: { color: 'white', fontWeight: 'bold', fontSize: 16 },
 });
-
-
-
 
 // import React, { useState, useEffect } from 'react';
 // import {
@@ -455,7 +606,7 @@ const styles = StyleSheet.create({
 //   );
 
 //   return (
-//     <SafeAreaView style={styles.safe}> 
+//     <SafeAreaView style={styles.safe}>
 //       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
 //         <ScrollView contentContainerStyle={styles.container}>
 //           <Text style={styles.header}>Visitor Registration</Text>

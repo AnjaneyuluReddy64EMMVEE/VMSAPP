@@ -46,7 +46,7 @@ const LogoutScreen = () => {
 
 const SecurityDrawerNavigator = () => {
   return (
-    <Drawer.Navigator screenOptions={{headerShown: true,drawerStyle:{width: 250,},headerTitleStyle: {
+    <Drawer.Navigator screenOptions={{headerShown: false,drawerStyle:{width: 250,},headerTitleStyle: {
       fontWeight: 'bold',
       fontSize: 20,
     },
