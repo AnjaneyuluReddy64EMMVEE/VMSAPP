@@ -307,6 +307,367 @@
 //   },
 // });
 
+// import React, { useState } from 'react';
+// import {
+//   View,
+//   Text,
+//   FlatList,
+//   TouchableOpacity,
+//   Image,
+//   Alert,
+//   StyleSheet,
+// } from 'react-native';
+// import Header from '../../components/Header';
+// import AddUserModal from '../../components/AddUserModal';
+// import UserCard from '../../components/UserCard';
+// import { SafeAreaView } from 'react-native';
+
+// const mockAdminUsers = [
+//   {
+//     id: '1',
+//     name: 'Ravi Kumar',
+//     email: 'ravi.admin@emmvee.in',
+//     branch: 'Head Office',
+//     password: 'Admin@123',
+//   },
+//   {
+//     id: '2',
+//     name: 'Pooja Reddy',
+//     email: 'pooja.admin@emmvee.in',
+//     branch: 'Dabaspet',
+//     password: 'Pooja@456',
+//   },
+//   {
+//     id: '3',
+//     name: 'Manoj Shetty',
+//     email: 'manoj.s@emmvee.in',
+//     branch: 'Head Office',
+//     password: 'Manoj@789',
+//   },
+//   {
+//     id: '4',
+//     name: 'Neha Jain',
+//     email: 'neha.j@emmvee.in',
+//     branch: 'Dabaspet',
+//     password: 'Neha@321',
+//   },
+//   {
+//     id: '5',
+//     name: 'Ravi Kumar',
+//     email: 'ravi.admin@emmvee.in',
+//     branch: 'Head Office',
+//     password: 'Admin@123',
+//   },
+//   {
+//     id: '6',
+//     name: 'Pooja Reddy',
+//     email: 'pooja.admin@emmvee.in',
+//     branch: 'Dabaspet',
+//     password: 'Pooja@456',
+//   },
+//   {
+//     id: '7',
+//     name: 'Manoj Shetty',
+//     email: 'manoj.s@emmvee.in',
+//     branch: 'Head Office',
+//     password: 'Manoj@789',
+//   },
+//   {
+//     id: '8',
+//     name: 'Neha Jain',
+//     email: 'neha.j@emmvee.in',
+//     branch: 'Dabaspet',
+//     password: 'Neha@321',
+//   },
+// ];
+
+// const branches = ['Head Office', 'Dabaspet'];
+
+// const AdminUsersScreen = () => {
+//   const [adminUsers, setAdminUsers] = useState(mockAdminUsers);
+//   const [modalVisible, setModalVisible] = useState(false);
+//   const [newName, setNewName] = useState('');
+//   const [newEmail, setNewEmail] = useState('');
+//   const [newPassword, setNewPassword] = useState('');
+//   const [newBranch, setNewBranch] = useState(branches[0]);
+
+//   const handleDelete = (id: string) => {
+//     Alert.alert(
+//       'Confirm Delete',
+//       'Are you sure you want to remove this user?',
+//       [
+//         { text: 'Cancel', style: 'cancel' },
+//         {
+//           text: 'Delete',
+//           style: 'destructive',
+//           onPress: () =>
+//             setAdminUsers(prev => prev.filter(user => user.id !== id)),
+//         },
+//       ],
+//     );
+//   };
+
+//   const handleAdd = () => {
+//     if (!newName || !newEmail || !newPassword || !newBranch) {
+//       Alert.alert('Please fill all fields');
+//       return;
+//     }
+
+//     const newUser = {
+//       id: Date.now().toString(),
+//       name: newName,
+//       email: newEmail,
+//       branch: newBranch,
+//       password: newPassword,
+//     };
+
+//     setAdminUsers(prev => [...prev, newUser]);
+//     setModalVisible(false);
+//     setNewName('');
+//     setNewEmail('');
+//     setNewPassword('');
+//     setNewBranch(branches[0]);
+//   };
+
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       <Header title="Admin Users" showBackButton />
+
+//       <View style={styles.headerRow}>
+//         <Image
+//           source={{
+//             uri: 'https://emmvee.com/wp-content/uploads/2019/08/emvlogo.png',
+//           }}
+//           style={styles.logo}
+//         />
+//         <TouchableOpacity
+//           style={styles.addButton}
+//           onPress={() => setModalVisible(true)}
+//         >
+//           <Text style={styles.addButtonText}>+ Add Admin</Text>
+//         </TouchableOpacity>
+//       </View>
+
+//       <FlatList
+//         data={adminUsers}
+//         keyExtractor={item => item.id}
+//         renderItem={({ item }) => (
+//           <UserCard {...item} onDelete={handleDelete} />
+//         )}
+//         contentContainerStyle={{ paddingBottom: 20 }}
+//       />
+
+//       <AddUserModal
+//         title="Add Admin User"
+//         visible={modalVisible}
+//         name={newName}
+//         email={newEmail}
+//         password={newPassword}
+//         branch={newBranch}
+//         branches={branches}
+//         setName={setNewName}
+//         setEmail={setNewEmail}
+//         setPassword={setNewPassword}
+//         setBranch={setNewBranch}
+//         onClose={() => setModalVisible(false)}
+//         onAdd={handleAdd}
+//       />
+//     </SafeAreaView>
+//   );
+// };
+
+// export default AdminUsersScreen;
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#f0f6ff',
+//     paddingHorizontal: 16,
+//     paddingTop: 20,
+//   },
+//   headerRow: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+//     marginBottom: 20,
+//   },
+//   logo: {
+//     width: 100,
+//     height: 40,
+//     resizeMode: 'contain',
+//   },
+//   addButton: {
+//     backgroundColor: '#007AFF',
+//     paddingHorizontal: 16,
+//     paddingVertical: 8,
+//     borderRadius: 6,
+//   },
+//   addButtonText: {
+//     color: '#fff',
+//     fontWeight: 'bold',
+//   },
+// });
+
+// import React, { useState } from 'react';
+// import {
+//   View,
+//   Text,
+//   FlatList,
+//   TouchableOpacity,
+//   Image,
+//   Alert,
+//   StyleSheet,
+//   SafeAreaView,
+//   ActivityIndicator,
+// } from 'react-native';
+
+// import Header from '../../components/Header';
+// import AddUserModal from '../../components/AddUserModal';
+// import UserCard from '../../components/UserCard';
+
+// import {
+//   useGetAllAdminsQuery,
+//   useCreateAdminMutation,
+//   useDeleteAdminMutation,
+// } from '../../api';
+// import { useAuth } from '../../contexts/AuthContext';
+
+// const branches = ['Head Office', 'Dabaspet'];
+
+// const AdminUsersScreen = () => {
+//   const { userName, userRole } = useAuth();
+
+//   const { data: adminUsers = [], isLoading, refetch } = useGetAllAdminsQuery();
+//   const [createAdmin] = useCreateAdminMutation();
+//   const [deleteAdmin] = useDeleteAdminMutation();
+
+//   const [modalVisible, setModalVisible] = useState(false);
+//   const [newName, setNewName] = useState('');
+//   const [newEmail, setNewEmail] = useState('');
+//   const [newPassword, setNewPassword] = useState('');
+//   const [newBranch, setNewBranch] = useState(branches[0]);
+
+//   const handleDelete = (id: string) => {
+//     Alert.alert('Confirm Delete', 'Are you sure?', [
+//       { text: 'Cancel', style: 'cancel' },
+//       {
+//         text: 'Delete',
+//         style: 'destructive',
+//         onPress: async () => {
+//           await deleteAdmin(id);
+//           refetch();
+//         },
+//       },
+//     ]);
+//   };
+
+//   const handleAdd = async () => {
+//     if (!newName || !newEmail || !newPassword || !newBranch) {
+//       Alert.alert('Please fill all fields');
+//       return;
+//     }
+
+//     try {
+//       await createAdmin({
+//         name: newName,
+//         email: newEmail,
+//         password: newPassword,
+//         branch: newBranch,
+//       });
+//       setModalVisible(false);
+//       setNewName('');
+//       setNewEmail('');
+//       setNewPassword('');
+//       setNewBranch(branches[0]);
+//       refetch();
+//     } catch (err) {
+//       Alert.alert('Error', 'Failed to add admin.');
+//     }
+//   };
+
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       <Header title="Admin Users" showBackButton />
+
+//       <View style={styles.headerRow}>
+//         <Image
+//           source={{
+//             uri: 'https://emmvee.com/wp-content/uploads/2019/08/emvlogo.png',
+//           }}
+//           style={styles.logo}
+//         />
+//         <TouchableOpacity
+//           style={styles.addButton}
+//           onPress={() => setModalVisible(true)}
+//         >
+//           <Text style={styles.addButtonText}>+ Add Admin</Text>
+//         </TouchableOpacity>
+//       </View>
+
+//       {isLoading ? (
+//         <ActivityIndicator size="large" color="#007AFF" style={{ marginTop: 20 }} />
+//       ) : (
+//         <FlatList
+//           data={adminUsers}
+//           keyExtractor={item => item.id}
+//           renderItem={({ item }) => (
+//             <UserCard {...item} onDelete={handleDelete} />
+//           )}
+//           contentContainerStyle={{ paddingBottom: 20 }}
+//         />
+//       )}
+
+//       <AddUserModal
+//         title="Add Admin User"
+//         visible={modalVisible}
+//         name={newName}
+//         email={newEmail}
+//         password={newPassword}
+//         branch={newBranch}
+//         branches={branches}
+//         setName={setNewName}
+//         setEmail={setNewEmail}
+//         setPassword={setNewPassword}
+//         setBranch={setNewBranch}
+//         onClose={() => setModalVisible(false)}
+//         onAdd={handleAdd}
+//       />
+//     </SafeAreaView>
+//   );
+// };
+
+// export default AdminUsersScreen;
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#f0f6ff',
+//     paddingHorizontal: 16,
+//     paddingTop: 20,
+//   },
+//   headerRow: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+//     marginBottom: 20,
+//   },
+//   logo: {
+//     width: 100,
+//     height: 40,
+//     resizeMode: 'contain',
+//   },
+//   addButton: {
+//     backgroundColor: '#007AFF',
+//     paddingHorizontal: 16,
+//     paddingVertical: 8,
+//     borderRadius: 6,
+//   },
+//   addButtonText: {
+//     color: '#fff',
+//     fontWeight: 'bold',
+//   },
+// });
+
 import React, { useState } from 'react';
 import {
   View,
@@ -316,117 +677,91 @@ import {
   Image,
   Alert,
   StyleSheet,
+  SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
+
 import Header from '../../components/Header';
 import AddUserModal from '../../components/AddUserModal';
 import UserCard from '../../components/UserCard';
-import { SafeAreaView } from 'react-native';
 
-const mockAdminUsers = [
-  {
-    id: '1',
-    name: 'Ravi Kumar',
-    email: 'ravi.admin@emmvee.in',
-    branch: 'Head Office',
-    password: 'Admin@123',
-  },
-  {
-    id: '2',
-    name: 'Pooja Reddy',
-    email: 'pooja.admin@emmvee.in',
-    branch: 'Dabaspet',
-    password: 'Pooja@456',
-  },
-  {
-    id: '3',
-    name: 'Manoj Shetty',
-    email: 'manoj.s@emmvee.in',
-    branch: 'Head Office',
-    password: 'Manoj@789',
-  },
-  {
-    id: '4',
-    name: 'Neha Jain',
-    email: 'neha.j@emmvee.in',
-    branch: 'Dabaspet',
-    password: 'Neha@321',
-  },
-  {
-    id: '5',
-    name: 'Ravi Kumar',
-    email: 'ravi.admin@emmvee.in',
-    branch: 'Head Office',
-    password: 'Admin@123',
-  },
-  {
-    id: '6',
-    name: 'Pooja Reddy',
-    email: 'pooja.admin@emmvee.in',
-    branch: 'Dabaspet',
-    password: 'Pooja@456',
-  },
-  {
-    id: '7',
-    name: 'Manoj Shetty',
-    email: 'manoj.s@emmvee.in',
-    branch: 'Head Office',
-    password: 'Manoj@789',
-  },
-  {
-    id: '8',
-    name: 'Neha Jain',
-    email: 'neha.j@emmvee.in',
-    branch: 'Dabaspet',
-    password: 'Neha@321',
-  },
-];
+import {
+  useGetAllAdminsQuery,
+  useCreateAdminMutation,
+  useDeleteAdminMutation,
+} from '../../api';
+import { useAuth } from '../../contexts/AuthContext';
 
 const branches = ['Head Office', 'Dabaspet'];
 
 const AdminUsersScreen = () => {
-  const [adminUsers, setAdminUsers] = useState(mockAdminUsers);
+  const { userName, userRole } = useAuth();
+
+  const { data: adminUsers = [], isLoading, refetch } = useGetAllAdminsQuery();
+  console.log('adminUsers', adminUsers);
+  const [createAdmin] = useCreateAdminMutation();
+  const [deleteAdmin] = useDeleteAdminMutation();
+
   const [modalVisible, setModalVisible] = useState(false);
   const [newName, setNewName] = useState('');
+  const [employeeId, setEmployeeId] = useState('');
   const [newEmail, setNewEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newBranch, setNewBranch] = useState(branches[0]);
 
   const handleDelete = (id: string) => {
-    Alert.alert(
-      'Confirm Delete',
-      'Are you sure you want to remove this user?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: () =>
-            setAdminUsers(prev => prev.filter(user => user.id !== id)),
+    Alert.alert('Confirm Delete', 'Are you sure?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          await deleteAdmin(id);
+          refetch();
         },
-      ],
-    );
+      },
+    ]);
   };
 
-  const handleAdd = () => {
-    if (!newName || !newEmail || !newPassword || !newBranch) {
-      Alert.alert('Please fill all fields');
+  const handleAdd = async () => {
+    if (
+      !newName ||
+      !employeeId ||
+      !newEmail ||
+      !phoneNumber ||
+      !newPassword ||
+      !newBranch
+    ) {
+      Alert.alert('Validation Error', 'Please fill all the fields.');
       return;
     }
 
-    const newUser = {
-      id: Date.now().toString(),
-      name: newName,
-      email: newEmail,
-      branch: newBranch,
-      password: newPassword,
-    };
+    try {
+      await createAdmin({
+        userName: newName,
+        employeeId,
+        email: newEmail,
+        phoneNumber,
+        password: newPassword,
+        officeLocation: [newBranch],
+        role: 'admin',
+      });
 
-    setAdminUsers(prev => [...prev, newUser]);
-    setModalVisible(false);
-    setNewName('');
-    setNewEmail('');
-    setNewPassword('');
-    setNewBranch(branches[0]);
+      // ✅ Clear form & close modal
+      setModalVisible(false);
+      setNewName('');
+      setEmployeeId('');
+      setNewEmail('');
+      setPhoneNumber('');
+      setNewPassword('');
+      setNewBranch(branches[0]);
+
+      refetch(); // 🔄 Reload admin list
+    } catch (err) {
+      console.error('Add admin error:', err);
+      Alert.alert('Error', 'Failed to add admin. Please try again.');
+    }
   };
 
   return (
@@ -448,26 +783,38 @@ const AdminUsersScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <FlatList
-        data={adminUsers}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <UserCard {...item} onDelete={handleDelete} />
-        )}
-        contentContainerStyle={{ paddingBottom: 20 }}
-      />
+      {isLoading ? (
+        <ActivityIndicator
+          size="large"
+          color="#007AFF"
+          style={{ marginTop: 20 }}
+        />
+      ) : (
+        <FlatList
+          data={adminUsers}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => (
+            <UserCard {...item} onDelete={handleDelete} />
+          )}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        />
+      )}
 
       <AddUserModal
         title="Add Admin User"
         visible={modalVisible}
         name={newName}
+        setName={setNewName}
+        employeeId={employeeId}
+        setEmployeeId={setEmployeeId}
         email={newEmail}
+        setEmail={setNewEmail}
+        phoneNumber={phoneNumber}
+        setPhoneNumber={setPhoneNumber}
         password={newPassword}
+        setPassword={setNewPassword}
         branch={newBranch}
         branches={branches}
-        setName={setNewName}
-        setEmail={setNewEmail}
-        setPassword={setNewPassword}
         setBranch={setNewBranch}
         onClose={() => setModalVisible(false)}
         onAdd={handleAdd}

@@ -82,9 +82,6 @@
 
 // const styles = StyleSheet.create({});
 
-
-
-
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -130,7 +127,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     padding: 0,
-    backgroundColor: '#f0f6ff',
+    // backgroundColor: '#f0f6ff',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 10,

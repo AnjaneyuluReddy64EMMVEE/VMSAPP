@@ -6,7 +6,7 @@ import { useNavigation, CommonActions } from '@react-navigation/native';
 // Import your screens
 import VisitorsScreen from '../screens/VisitorsScreen';
 import NotificationScreen from '../screens/NotificationScreen';
-import SuperAdminPanelScreen from '../screens/SuperAdminPanelScreen';
+import Home from '../screens/Home';
 import SecurityUsersScreen from '../screens/SecurityUsersScreen';
 
 const Drawer = createDrawerNavigator();
@@ -43,9 +43,9 @@ const LogoutScreen = () => {
 const AdminDrawerNavigator = () => {
   return (
     <Drawer.Navigator
-      screenOptions={{ headerShown: true, drawerStyle: { width: 250 } }}
+      screenOptions={{ headerShown: false, drawerStyle: { width: 250 } }}
     >
-      <Drawer.Screen name="Home" component={SuperAdminPanelScreen} />
+      <Drawer.Screen name="Home" component={Home} />
       <Drawer.Screen name="Visitors" component={VisitorsScreen} />
       <Drawer.Screen name="Security Users" component={SecurityUsersScreen} />
       <Drawer.Screen name="Notifications" component={NotificationScreen} />

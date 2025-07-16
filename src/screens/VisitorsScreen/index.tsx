@@ -753,7 +753,6 @@
 //         {/* <Header screenName="Visitor List" showGoBack /> */}
 //         <Header title="Visitor" showBackButton />
 
-
 //         {/* Filters */}
 //         <View style={styles.filters}>
 //           <TouchableOpacity
@@ -942,171 +941,394 @@
 //   saveText: { color: '#fff', textAlign: 'center', fontWeight: '600' },
 // });
 
+// import React, { useState, useEffect } from 'react';
+// import { View, FlatList, SafeAreaView } from 'react-native';
+// import { format } from 'date-fns';
+// import Header from '../../components/Header';
+// import { showErrorMessage } from '../../utils/Globals';
+// import VisitorFilterBar from '../../components/VisitorFilterBar';
+// import UpdateVisitorModal from '../../components/UpdateVisitorModal';
+// import VisitorCard from '../../components/VisitorCard';
 
-import React, { useState, useEffect } from 'react';
-import { View, FlatList, SafeAreaView } from 'react-native';
-import { format } from 'date-fns';
+// const VisitorsScreen = () => {
+//   const [visitorData, setVisitorData] = useState([
+//     {
+//       id: '1',
+//       name: 'Jane Doe',
+//       phone: '9876543210',
+//       email: 'jane@example.com',
+//       badge: '',
+//       location: 'Airport Office',
+//       status: 'Pending',
+//       purpose: 'Meeting',
+//       personToMeet: 'John Smith',
+//       inTime: '',
+//       outTime: '',
+//       avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
+//       govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/847/847969.png',
+//     },
+//     {
+//       id: '2',
+//       name: 'Ravi Kumar',
+//       phone: '9988776655',
+//       email: 'ravi@example.com',
+//       badge: '',
+//       location: 'Headquarters',
+//       status: 'Pending',
+//       purpose: 'Site Visit',
+//       personToMeet: 'Anita Sharma',
+//       inTime: '',
+//       outTime: '',
+//       avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
+//       govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2910/2910768.png',
+//     },
+//     {
+//       id: '3',
+//       name: 'Priya Sen',
+//       phone: '9123456780',
+//       email: 'priya@example.com',
+//       badge: '',
+//       location: 'Solar Plant',
+//       status: 'Pending',
+//       purpose: 'Interview',
+//       personToMeet: 'Manish Patel',
+//       inTime: '',
+//       outTime: '',
+//       avatar: 'https://cdn-icons-png.flaticon.com/512/194/194937.png',
+//       govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/848/848043.png',
+//     },
+//     {
+//       id: '4',
+//       name: 'Sunil Mehra',
+//       phone: '9090909090',
+//       email: 'sunil@example.com',
+//       badge: '',
+//       location: 'Factory Gate 1',
+//       status: 'Pending',
+//       purpose: 'Delivery',
+//       personToMeet: 'Logistics Team',
+//       inTime: '',
+//       outTime: '',
+//       avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
+//       govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/4341/4341094.png',
+//     },
+//     {
+//       id: '5',
+//       name: 'Meena Reddy',
+//       phone: '9871234567',
+//       email: 'meena@example.com',
+//       badge: '',
+//       location: 'Admin Block',
+//       status: 'Pending',
+//       purpose: 'Maintenance',
+//       personToMeet: 'Rajesh Iyer',
+//       inTime: '',
+//       outTime: '',
+//       avatar: 'https://cdn-icons-png.flaticon.com/512/194/194937.png',
+//       govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2907/2907511.png',
+//     },
+//     {
+//       id: '6',
+//       name: 'Amit Sinha',
+//       phone: '9812345678',
+//       email: 'amit@example.com',
+//       badge: '',
+//       location: 'Warehouse',
+//       status: 'Pending',
+//       purpose: 'Audit',
+//       personToMeet: 'Nisha Jain',
+//       inTime: '',
+//       outTime: '',
+//       avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
+//       govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2910/2910768.png',
+//     },
+//     {
+//       id: '7',
+//       name: 'Sneha Kapoor',
+//       phone: '9765432109',
+//       email: 'sneha@example.com',
+//       badge: '',
+//       location: 'Airport Office',
+//       status: 'Pending',
+//       purpose: 'Client Visit',
+//       personToMeet: 'Arun Khanna',
+//       inTime: '',
+//       outTime: '',
+//       avatar: 'https://cdn-icons-png.flaticon.com/512/194/194937.png',
+//       govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2910/2910768.png',
+//     },
+//     {
+//       id: '8',
+//       name: 'Kunal Das',
+//       phone: '9654321098',
+//       email: 'kunal@example.com',
+//       badge: '',
+//       location: 'Control Room',
+//       status: 'Pending',
+//       purpose: 'IT Support',
+//       personToMeet: 'IT Admin',
+//       inTime: '',
+//       outTime: '',
+//       avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
+//       govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/847/847969.png',
+//     },
+//     {
+//       id: '9',
+//       name: 'Lavanya Mishra',
+//       phone: '9543210987',
+//       email: 'lavanya@example.com',
+//       badge: '',
+//       location: 'Main Office',
+//       status: 'Pending',
+//       purpose: 'Demo Presentation',
+//       personToMeet: 'Product Team',
+//       inTime: '',
+//       outTime: '',
+//       avatar: 'https://cdn-icons-png.flaticon.com/512/194/194937.png',
+//       govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/848/848043.png',
+//     },
+//     {
+//       id: '10',
+//       name: 'Gaurav Jain',
+//       phone: '9432109876',
+//       email: 'gaurav@example.com',
+//       badge: '',
+//       location: 'Corporate Lobby',
+//       status: 'Pending',
+//       purpose: 'Board Meeting',
+//       personToMeet: 'CEO Office',
+//       inTime: '',
+//       outTime: '',
+//       avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
+//       govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2910/2910768.png',
+//     },
+//   ]);
+//   const [searchDate, setSearchDate] = useState(new Date());
+//   const [showDatePicker, setShowDatePicker] = useState(false);
+//   const [phone, setPhone] = useState('');
+//   const [badge, setBadge] = useState('');
+//   const [statusFilter, setStatusFilter] = useState('All');
+
+//   const [modalVisible, setModalVisible] = useState(false);
+//   const [selectedVisitor, setSelectedVisitor] = useState(null);
+//   const [modalBadge, setModalBadge] = useState('');
+//   const [modalStatus, setModalStatus] = useState('Pending');
+
+//   const filteredVisitors = visitorData.filter(visitor => {
+//     return (
+//       (statusFilter === 'All' || visitor.status === statusFilter) &&
+//       visitor.phone.includes(phone) &&
+//       visitor.badge.includes(badge)
+//     );
+//   });
+
+//   const handleView = visitor => {
+//     setSelectedVisitor(visitor);
+//     setModalBadge(visitor.badge);
+//     setModalStatus(visitor.status);
+//     setModalVisible(true);
+//   };
+
+//   const handleUpdate = () => {
+//     const updated = visitorData.map(v => {
+//       if (v.id === selectedVisitor.id) {
+//         const updatedVisitor = {
+//           ...v,
+//           badge: modalBadge,
+//           status: modalStatus,
+//           inTime:
+//             modalStatus === 'Checked In' && v.status === 'Pending'
+//               ? format(new Date(), 'hh:mm a')
+//               : v.inTime,
+//           outTime:
+//             modalStatus === 'Checked Out' && v.status === 'Checked In'
+//               ? format(new Date(), 'hh:mm a')
+//               : v.outTime,
+//         };
+//         return updatedVisitor;
+//       }
+//       return v;
+//     });
+
+//     setVisitorData(updated);
+//     setModalVisible(false);
+//   };
+
+//   // useEffect(() => {
+//   //   showErrorMessage({
+//   //     message: 'Fetched visitor data successfully',
+//   //     duration: 3000,
+//   //   });
+//   // }, []);
+
+//   return (
+//     <SafeAreaView style={{ flex: 1, backgroundColor: '#f9fbfd' }}>
+//       <View style={{ flex: 1, padding: 16 }}>
+//         <Header title="Visitor" showBackButton />
+
+//         <VisitorFilterBar
+//           searchDate={searchDate}
+//           setSearchDate={setSearchDate}
+//           showDatePicker={showDatePicker}
+//           setShowDatePicker={setShowDatePicker}
+//           phone={phone}
+//           setPhone={setPhone}
+//           badge={badge}
+//           setBadge={setBadge}
+//           statusFilter={statusFilter}
+//           setStatusFilter={setStatusFilter}
+//         />
+
+//         <FlatList
+//           data={filteredVisitors}
+//           renderItem={({ item }) => <VisitorCard item={item} onView={handleView} />}
+//           keyExtractor={item => item.id}
+//         />
+
+//         <UpdateVisitorModal
+//           visible={modalVisible}
+//           onClose={() => setModalVisible(false)}
+//           onSave={handleUpdate}
+//           modalBadge={modalBadge}
+//           setModalBadge={setModalBadge}
+//           modalStatus={modalStatus}
+//           setModalStatus={setModalStatus}
+//         />
+//       </View>
+//     </SafeAreaView>
+//   );
+// };
+
+// export default VisitorsScreen;
+
+// import React, { useState, useEffect, useContext } from 'react';
+// import { View, FlatList, SafeAreaView, ActivityIndicator } from 'react-native';
+// import { format } from 'date-fns';
+// import Header from '../../components/Header';
+// import { showErrorMessage } from '../../utils/Globals';
+// import VisitorFilterBar from '../../components/VisitorFilterBar';
+// import UpdateVisitorModal from '../../components/UpdateVisitorModal';
+// import VisitorCard from '../../components/VisitorCard';
+// import { useGetVisitorsByBranchQuery } from '../../api';
+// import { useAuth } from '../../contexts/AuthContext';
+// // assume you store branch here
+
+// const VisitorsScreen = () => {
+//   const { userBranch } = useAuth();
+//   console.log(`visitorkvr`, userBranch);
+//   const selectedBranch = userBranch || 'All';
+
+//   const [searchDate, setSearchDate] = useState(new Date());
+//   const [showDatePicker, setShowDatePicker] = useState(false);
+//   const [phone, setPhone] = useState('');
+//   const [badge, setBadge] = useState('');
+//   const [statusFilter, setStatusFilter] = useState('All');
+
+//   const [modalVisible, setModalVisible] = useState(false);
+//   const [selectedVisitor, setSelectedVisitor] = useState(null);
+//   const [modalBadge, setModalBadge] = useState('');
+//   const [modalStatus, setModalStatus] = useState('Pending');
+
+//   // Fetch visitors by branch
+//   const {
+//     data: visitorData = [],
+//     isLoading,
+//     refetch,
+//   } = useGetVisitorsByBranchQuery(selectedBranch);
+
+//   const filteredVisitors = visitorData.filter(visitor => {
+//     return (
+//       (statusFilter === 'All' || visitor.status === statusFilter) &&
+//       visitor.phone.includes(phone) &&
+//       visitor.badge.includes(badge)
+//     );
+//   });
+
+//   const handleView = visitor => {
+//     setSelectedVisitor(visitor);
+//     setModalBadge(visitor.badge);
+//     setModalStatus(visitor.status);
+//     setModalVisible(true);
+//   };
+
+//   const handleUpdate = () => {
+//     // You should also update this on server via a mutation
+//     showErrorMessage({
+//       message: 'Update feature should call backend!',
+//       duration: 3000,
+//     });
+//     setModalVisible(false);
+//   };
+
+//   return (
+//     <SafeAreaView style={{ flex: 1, backgroundColor: '#f9fbfd' }}>
+//       <View style={{ flex: 1, padding: 16 }}>
+//         <Header title="Visitor" showBackButton />
+
+//         <VisitorFilterBar
+//           searchDate={searchDate}
+//           setSearchDate={setSearchDate}
+//           showDatePicker={showDatePicker}
+//           setShowDatePicker={setShowDatePicker}
+//           phone={phone}
+//           setPhone={setPhone}
+//           badge={badge}
+//           setBadge={setBadge}
+//           statusFilter={statusFilter}
+//           setStatusFilter={setStatusFilter}
+//         />
+
+//         {isLoading ? (
+//           <ActivityIndicator
+//             size="large"
+//             color="#003366"
+//             style={{ marginTop: 50 }}
+//           />
+//         ) : (
+//           <FlatList
+//             data={filteredVisitors}
+//             renderItem={({ item }) => (
+//               <VisitorCard item={item} onView={handleView} />
+//             )}
+//             keyExtractor={item => item.id}
+//             onRefresh={refetch}
+//             refreshing={isLoading}
+//           />
+//         )}
+
+//         <UpdateVisitorModal
+//           visible={modalVisible}
+//           onClose={() => setModalVisible(false)}
+//           onSave={handleUpdate}
+//           modalBadge={modalBadge}
+//           setModalBadge={setModalBadge}
+//           modalStatus={modalStatus}
+//           setModalStatus={setModalStatus}
+//         />
+//       </View>
+//     </SafeAreaView>
+//   );
+// };
+
+// export default VisitorsScreen;
+
+import React, { useState } from 'react';
+import { View, FlatList, SafeAreaView, ActivityIndicator } from 'react-native';
 import Header from '../../components/Header';
 import { showErrorMessage } from '../../utils/Globals';
 import VisitorFilterBar from '../../components/VisitorFilterBar';
 import UpdateVisitorModal from '../../components/UpdateVisitorModal';
 import VisitorCard from '../../components/VisitorCard';
-
-
+import { useGetVisitorsByBranchQuery } from '../../api';
+import { useAuth } from '../../contexts/AuthContext';
 
 const VisitorsScreen = () => {
-  const [visitorData, setVisitorData] = useState([
-    {
-      id: '1',
-      name: 'Jane Doe',
-      phone: '9876543210',
-      email: 'jane@example.com',
-      badge: '',
-      location: 'Airport Office',
-      status: 'Pending',
-      purpose: 'Meeting',
-      personToMeet: 'John Smith',
-      inTime: '',
-      outTime: '',
-      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
-      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/847/847969.png',
-    },
-    {
-      id: '2',
-      name: 'Ravi Kumar',
-      phone: '9988776655',
-      email: 'ravi@example.com',
-      badge: '',
-      location: 'Headquarters',
-      status: 'Pending',
-      purpose: 'Site Visit',
-      personToMeet: 'Anita Sharma',
-      inTime: '',
-      outTime: '',
-      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
-      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2910/2910768.png',
-    },
-    {
-      id: '3',
-      name: 'Priya Sen',
-      phone: '9123456780',
-      email: 'priya@example.com',
-      badge: '',
-      location: 'Solar Plant',
-      status: 'Pending',
-      purpose: 'Interview',
-      personToMeet: 'Manish Patel',
-      inTime: '',
-      outTime: '',
-      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194937.png',
-      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/848/848043.png',
-    },
-    {
-      id: '4',
-      name: 'Sunil Mehra',
-      phone: '9090909090',
-      email: 'sunil@example.com',
-      badge: '',
-      location: 'Factory Gate 1',
-      status: 'Pending',
-      purpose: 'Delivery',
-      personToMeet: 'Logistics Team',
-      inTime: '',
-      outTime: '',
-      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
-      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/4341/4341094.png',
-    },
-    {
-      id: '5',
-      name: 'Meena Reddy',
-      phone: '9871234567',
-      email: 'meena@example.com',
-      badge: '',
-      location: 'Admin Block',
-      status: 'Pending',
-      purpose: 'Maintenance',
-      personToMeet: 'Rajesh Iyer',
-      inTime: '',
-      outTime: '',
-      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194937.png',
-      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2907/2907511.png',
-    },
-    {
-      id: '6',
-      name: 'Amit Sinha',
-      phone: '9812345678',
-      email: 'amit@example.com',
-      badge: '',
-      location: 'Warehouse',
-      status: 'Pending',
-      purpose: 'Audit',
-      personToMeet: 'Nisha Jain',
-      inTime: '',
-      outTime: '',
-      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
-      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2910/2910768.png',
-    },
-    {
-      id: '7',
-      name: 'Sneha Kapoor',
-      phone: '9765432109',
-      email: 'sneha@example.com',
-      badge: '',
-      location: 'Airport Office',
-      status: 'Pending',
-      purpose: 'Client Visit',
-      personToMeet: 'Arun Khanna',
-      inTime: '',
-      outTime: '',
-      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194937.png',
-      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2910/2910768.png',
-    },
-    {
-      id: '8',
-      name: 'Kunal Das',
-      phone: '9654321098',
-      email: 'kunal@example.com',
-      badge: '',
-      location: 'Control Room',
-      status: 'Pending',
-      purpose: 'IT Support',
-      personToMeet: 'IT Admin',
-      inTime: '',
-      outTime: '',
-      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
-      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/847/847969.png',
-    },
-    {
-      id: '9',
-      name: 'Lavanya Mishra',
-      phone: '9543210987',
-      email: 'lavanya@example.com',
-      badge: '',
-      location: 'Main Office',
-      status: 'Pending',
-      purpose: 'Demo Presentation',
-      personToMeet: 'Product Team',
-      inTime: '',
-      outTime: '',
-      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194937.png',
-      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/848/848043.png',
-    },
-    {
-      id: '10',
-      name: 'Gaurav Jain',
-      phone: '9432109876',
-      email: 'gaurav@example.com',
-      badge: '',
-      location: 'Corporate Lobby',
-      status: 'Pending',
-      purpose: 'Board Meeting',
-      personToMeet: 'CEO Office',
-      inTime: '',
-      outTime: '',
-      avatar: 'https://cdn-icons-png.flaticon.com/512/194/194938.png',
-      govtIdUrl: 'https://cdn-icons-png.flaticon.com/512/2910/2910768.png',
-    },
-  ]);
+  const { userBranch } = useAuth();
+
+  // Default to 'All' if no branch is set
+  const selectedBranch = userBranch || 'All';
+  console.log(`visitorkvr`, userBranch);
+
   const [searchDate, setSearchDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [phone, setPhone] = useState('');
@@ -1118,6 +1340,14 @@ const VisitorsScreen = () => {
   const [modalBadge, setModalBadge] = useState('');
   const [modalStatus, setModalStatus] = useState('Pending');
 
+  // ✅ Fetch visitors using the selected branch
+  const {
+    data: visitorData = [],
+    isLoading,
+    refetch,
+  } = useGetVisitorsByBranchQuery(selectedBranch);
+
+  // ✅ Filter logic
   const filteredVisitors = visitorData.filter(visitor => {
     return (
       (statusFilter === 'All' || visitor.status === statusFilter) &&
@@ -1134,36 +1364,13 @@ const VisitorsScreen = () => {
   };
 
   const handleUpdate = () => {
-    const updated = visitorData.map(v => {
-      if (v.id === selectedVisitor.id) {
-        const updatedVisitor = {
-          ...v,
-          badge: modalBadge,
-          status: modalStatus,
-          inTime:
-            modalStatus === 'Checked In' && v.status === 'Pending'
-              ? format(new Date(), 'hh:mm a')
-              : v.inTime,
-          outTime:
-            modalStatus === 'Checked Out' && v.status === 'Checked In'
-              ? format(new Date(), 'hh:mm a')
-              : v.outTime,
-        };
-        return updatedVisitor;
-      }
-      return v;
+    // 🚨 Placeholder for backend mutation logic
+    showErrorMessage({
+      message: 'Update feature should call backend!',
+      duration: 3000,
     });
-
-    setVisitorData(updated);
     setModalVisible(false);
   };
-
-  // useEffect(() => {
-  //   showErrorMessage({
-  //     message: 'Fetched visitor data successfully',
-  //     duration: 3000,
-  //   });
-  // }, []);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f9fbfd' }}>
@@ -1183,11 +1390,23 @@ const VisitorsScreen = () => {
           setStatusFilter={setStatusFilter}
         />
 
-        <FlatList
-          data={filteredVisitors}
-          renderItem={({ item }) => <VisitorCard item={item} onView={handleView} />}
-          keyExtractor={item => item.id}
-        />
+        {isLoading ? (
+          <ActivityIndicator
+            size="large"
+            color="#003366"
+            style={{ marginTop: 50 }}
+          />
+        ) : (
+          <FlatList
+            data={filteredVisitors}
+            renderItem={({ item }) => (
+              <VisitorCard item={item} onView={handleView} />
+            )}
+            keyExtractor={item => item.id}
+            onRefresh={refetch}
+            refreshing={isLoading}
+          />
+        )}
 
         <UpdateVisitorModal
           visible={modalVisible}
