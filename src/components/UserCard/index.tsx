@@ -2,28 +2,42 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 interface AdminUserCardProps {
-  id: string;
-  name: string;
+  _id: string;
+  userName: string;
+  employeeId: string;
   email: string;
-  branch: string;
+  phoneNumber: string;
+  officeLocation: string[];
+  role: string;
   password: string;
-  onDelete: (id: string) => void;
+  onDelete: (employeeId: string) => void;
 }
 
 const UserCard: React.FC<AdminUserCardProps> = ({
-  id,
-  name,
+  userName,
+  employeeId,
   email,
-  branch,
+  phoneNumber,
+  officeLocation,
+  role,
   password,
   onDelete,
 }) => (
   <View style={styles.card}>
-    <Text style={styles.name}>{name}</Text>
-    <Text style={styles.email}>{email}</Text>
-    <Text style={styles.branch}>Branch: {branch}</Text>
+    <Text style={styles.name}>{userName}</Text>
+    <Text style={styles.role}>Role: {role}</Text>
+    {/* <Text style={styles.email}>Email: {email}</Text> */}
+    <Text style={styles.email}>Phone: {phoneNumber}</Text>
+    <Text style={styles.email}>Emp ID: {employeeId}</Text>
+    <Text style={styles.branch}>
+      Branch: {officeLocation?.join(', ') || 'N/A'}
+    </Text>
     <Text style={styles.email}>Password: {password}</Text>
-    <TouchableOpacity onPress={() => onDelete(id)} style={styles.deleteButton}>
+
+    <TouchableOpacity
+      onPress={() => onDelete(employeeId)} // ✅ Pass employeeId
+      style={styles.deleteButton}
+    >
       <Text style={styles.deleteText}>Remove</Text>
     </TouchableOpacity>
   </View>
@@ -47,22 +61,27 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
   },
+  role: {
+    fontSize: 14,
+    color: '#008000',
+    marginBottom: 4,
+  },
   email: {
     fontSize: 14,
     color: '#555',
-    marginVertical: 4,
+    marginVertical: 2,
   },
   branch: {
     fontSize: 14,
     color: '#007AFF',
-    marginBottom: 8,
+    marginVertical: 2,
   },
   deleteButton: {
     backgroundColor: '#b03a3a',
     paddingVertical: 8,
     borderRadius: 6,
     alignItems: 'center',
-    marginTop: 5,
+    marginTop: 10,
   },
   deleteText: {
     color: 'white',

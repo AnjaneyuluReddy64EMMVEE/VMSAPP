@@ -68,9 +68,9 @@ const App = () => {
     <Provider store={store}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
-          <AuthProvider> {/* ✅ Wrap everything inside AuthProvider */}
+          <AuthProvider> 
             <NavigationContainer>
-              <StatusBar barStyle="light-content" backgroundColor="#003366" />
+              {/* <StatusBar barStyle="light-content" backgroundColor="#003366" /> */}
               <RootNavigator />
             </NavigationContainer>
           </AuthProvider>

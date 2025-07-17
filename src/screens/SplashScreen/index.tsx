@@ -7,23 +7,24 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const SplashScreen = () => {
   const navigation = useNavigation<any>();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      navigation.replace('Login');
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     navigation.replace('Login');
+  //   }, 2000);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.logoContainer}>
         <Image
-          source={{ uri: 'https://emmvee.com/wp-content/uploads/2019/08/emvlogo.png' }}
+          source={{
+            uri: 'https://emmvee.com/wp-content/uploads/2019/08/emvlogo.png',
+          }}
           style={styles.logo}
           resizeMode="contain"
         />
-    
-      </View> 
+      </View>
       <View style={styles.textContainer}>
         <Text style={styles.text}>GATEVUE</Text>
       </View>
@@ -37,7 +38,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#003366',
     justifyContent: 'flex-start',
     alignItems: 'center',
-  },logoContainer: {
+  },
+  logoContainer: {
     flex: 0.2,
     justifyContent: 'flex-end',
     alignItems: 'center',
@@ -46,8 +48,8 @@ const styles = StyleSheet.create({
     width: 180,
     height: 100,
     marginBottom: 20,
-    
-  },textContainer: {
+  },
+  textContainer: {
     flex: 0.6,
     justifyContent: 'center',
     alignItems: 'center',

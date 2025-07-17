@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, TextInput, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  View,
+  TextInput,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const VisitorFilterBar = ({
@@ -53,12 +59,12 @@ const VisitorFilterBar = ({
         onPress={() =>
           setStatusFilter(prev =>
             prev === 'All'
-              ? 'Pending'
-              : prev === 'Pending'
-              ? 'Checked In'
-              : prev === 'Checked In'
-              ? 'Checked Out'
-              : 'All'
+              ? 'pending'
+              : prev === 'pending'
+              ? 'checkedIn'
+              : prev === 'checkedIn'
+              ? 'checkedOut'
+              : 'All',
           )
         }
       >

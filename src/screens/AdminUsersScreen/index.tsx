@@ -698,7 +698,7 @@ const AdminUsersScreen = () => {
   const { userName, userRole } = useAuth();
 
   const { data: adminUsers = [], isLoading, refetch } = useGetAllAdminsQuery();
-  console.log('adminUsers', adminUsers);
+
   const [createAdmin] = useCreateAdminMutation();
   const [deleteAdmin] = useDeleteAdminMutation();
 
@@ -710,15 +710,20 @@ const AdminUsersScreen = () => {
   const [newPassword, setNewPassword] = useState('');
   const [newBranch, setNewBranch] = useState(branches[0]);
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (employeeId: string) => {
     Alert.alert('Confirm Delete', 'Are you sure?', [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete',
         style: 'destructive',
         onPress: async () => {
-          await deleteAdmin(id);
-          refetch();
+          try {
+            await deleteAdmin(employeeId).unwrap(); // ✅ important
+            // refetch(); // ❌ Not needed if invalidate works
+          } catch (err) {
+            console.error('Delete error:', err);
+            Alert.alert('Error', 'Failed to delete admin');
+          }
         },
       },
     ]);
@@ -792,7 +797,7 @@ const AdminUsersScreen = () => {
       ) : (
         <FlatList
           data={adminUsers}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item._id} // ✅ not item.id
           renderItem={({ item }) => (
             <UserCard {...item} onDelete={handleDelete} />
           )}

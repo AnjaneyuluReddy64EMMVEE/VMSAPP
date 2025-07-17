@@ -112,6 +112,7 @@ const RootNavigator = () => {
       <Stack.Screen
         name="SecurityDashboard"
         component={SecurityDrawerNavigator}
+        
       />
     </Stack.Navigator>
   );

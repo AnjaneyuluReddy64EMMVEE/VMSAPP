@@ -1,1 +1,7 @@
-export const BRANCHES = ['All', 'Airport Office', 'Dabaspet', 'Head Office'];
+export const BRANCHES = [
+  'All',
+  'AirPort',
+  'Dabaspet',
+  'Head Office',
+  'Sulabelli',
+];

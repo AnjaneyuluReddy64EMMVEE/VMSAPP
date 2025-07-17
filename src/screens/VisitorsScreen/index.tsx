@@ -1201,21 +1201,26 @@
 
 // export default VisitorsScreen;
 
-// import React, { useState, useEffect, useContext } from 'react';
-// import { View, FlatList, SafeAreaView, ActivityIndicator } from 'react-native';
-// import { format } from 'date-fns';
+// import React, { useState } from 'react';
+// import {
+//   View,
+//   FlatList,
+//   SafeAreaView,
+//   ActivityIndicator,
+//   Text,
+// } from 'react-native';
+
 // import Header from '../../components/Header';
 // import { showErrorMessage } from '../../utils/Globals';
 // import VisitorFilterBar from '../../components/VisitorFilterBar';
 // import UpdateVisitorModal from '../../components/UpdateVisitorModal';
 // import VisitorCard from '../../components/VisitorCard';
+
 // import { useGetVisitorsByBranchQuery } from '../../api';
 // import { useAuth } from '../../contexts/AuthContext';
-// // assume you store branch here
 
 // const VisitorsScreen = () => {
 //   const { userBranch } = useAuth();
-//   console.log(`visitorkvr`, userBranch);
 //   const selectedBranch = userBranch || 'All';
 
 //   const [searchDate, setSearchDate] = useState(new Date());
@@ -1229,30 +1234,36 @@
 //   const [modalBadge, setModalBadge] = useState('');
 //   const [modalStatus, setModalStatus] = useState('Pending');
 
-//   // Fetch visitors by branch
 //   const {
-//     data: visitorData = [],
+//     data: response,
 //     isLoading,
 //     refetch,
-//   } = useGetVisitorsByBranchQuery(selectedBranch);
+//   } = useGetVisitorsByBranchQuery('All'); // or use selectedBranch
 
+//   const visitorData = response?.data || [];
+//   console.log('visitorData', visitorData);
+//   // ✅ Filtering logic
 //   const filteredVisitors = visitorData.filter(visitor => {
+//     const createdAtDate = new Date(visitor.createdAt).toDateString();
+//     const selectedDate = new Date(searchDate).toDateString();
+
 //     return (
 //       (statusFilter === 'All' || visitor.status === statusFilter) &&
-//       visitor.phone.includes(phone) &&
-//       visitor.badge.includes(badge)
+//       (visitor.phoneNumber?.toLowerCase().includes(phone.toLowerCase()) ??
+//         true) &&
+//       (visitor.badge?.toLowerCase().includes(badge.toLowerCase()) ?? true) &&
+//       createdAtDate === selectedDate
 //     );
 //   });
 
 //   const handleView = visitor => {
 //     setSelectedVisitor(visitor);
-//     setModalBadge(visitor.badge);
-//     setModalStatus(visitor.status);
+//     setModalBadge(visitor.badge || '');
+//     setModalStatus(visitor.status || 'Pending');
 //     setModalVisible(true);
 //   };
 
 //   const handleUpdate = () => {
-//     // You should also update this on server via a mutation
 //     showErrorMessage({
 //       message: 'Update feature should call backend!',
 //       duration: 3000,
@@ -1278,21 +1289,33 @@
 //           setStatusFilter={setStatusFilter}
 //         />
 
+//         {/* Optional visitor count */}
+//         {!isLoading && (
+//           <Text style={{ fontSize: 14, color: '#666', marginBottom: 8 }}>
+//             Total Visitors: {filteredVisitors.length}
+//           </Text>
+//         )}
+
 //         {isLoading ? (
 //           <ActivityIndicator
 //             size="large"
 //             color="#003366"
 //             style={{ marginTop: 50 }}
 //           />
+//         ) : filteredVisitors.length === 0 ? (
+//           <Text style={{ textAlign: 'center', marginTop: 30, color: '#888' }}>
+//             No visitors found for selected criteria.
+//           </Text>
 //         ) : (
 //           <FlatList
 //             data={filteredVisitors}
+//             keyExtractor={item => item._id || item.id}
 //             renderItem={({ item }) => (
 //               <VisitorCard item={item} onView={handleView} />
 //             )}
-//             keyExtractor={item => item.id}
-//             onRefresh={refetch}
 //             refreshing={isLoading}
+//             onRefresh={refetch}
+//             contentContainerStyle={{ paddingBottom: 20 }}
 //           />
 //         )}
 
@@ -1312,23 +1335,641 @@
 
 // export default VisitorsScreen;
 
-import React, { useState } from 'react';
-import { View, FlatList, SafeAreaView, ActivityIndicator } from 'react-native';
+// import React, { useEffect, useState } from 'react';
+// import {
+//   View,
+//   FlatList,
+//   SafeAreaView,
+//   ActivityIndicator,
+//   Text,
+// } from 'react-native';
+
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// import Header from '../../components/Header';
+// import { showErrorMessage } from '../../utils/Globals';
+// import VisitorFilterBar from '../../components/VisitorFilterBar';
+// import UpdateVisitorModal from '../../components/UpdateVisitorModal';
+// import VisitorCard from '../../components/VisitorCard';
+
+// import { useGetVisitorsByBranchQuery } from '../../api';
+
+// const VisitorsScreen = () => {
+//   const [selectedBranch, setSelectedBranch] = useState('All');
+//   const [isBranchLoading, setIsBranchLoading] = useState(true);
+
+//   // Filters
+//   const [searchDate, setSearchDate] = useState(new Date());
+//   const [showDatePicker, setShowDatePicker] = useState(false);
+//   const [phone, setPhone] = useState('');
+//   const [badge, setBadge] = useState('');
+//   const [statusFilter, setStatusFilter] = useState('All');
+
+//   const [modalVisible, setModalVisible] = useState(false);
+//   const [selectedVisitor, setSelectedVisitor] = useState(null);
+//   const [modalBadge, setModalBadge] = useState('');
+//   const [modalStatus, setModalStatus] = useState('Pending');
+
+//   // 🚀 Fetch selected branch from AsyncStorage on mount
+//   useEffect(() => {
+//     const fetchBranch = async () => {
+//       try {
+//         const storedBranch = await AsyncStorage.getItem('selectedBranch');
+//         if (storedBranch) {
+//           setSelectedBranch(storedBranch);
+//           setStatusFilter('All'); // Optional: reset status filter
+//         }
+//       } catch (err) {
+//         console.error('Failed to load branch from AsyncStorage:', err);
+//       } finally {
+//         setIsBranchLoading(false);
+//       }
+//     };
+
+//     fetchBranch();
+//   }, []);
+
+//   // Fetch visitor data for selected branch
+//   const {
+//     data: response,
+//     isLoading,
+//     refetch,
+//   } = useGetVisitorsByBranchQuery(selectedBranch);
+
+//   const visitorData = response?.data || [];
+
+//   // Filter logic
+//   const filteredVisitors = visitorData.filter(visitor => {
+//     const createdAtDate = new Date(visitor.createdAt).toDateString();
+//     const selectedDate = new Date(searchDate).toDateString();
+
+//     return (
+//       (statusFilter === 'All' || visitor.status === statusFilter) &&
+//       (visitor.phoneNumber?.toLowerCase().includes(phone.toLowerCase()) ?? true) &&
+//       (visitor.badge?.toLowerCase().includes(badge.toLowerCase()) ?? true) &&
+//       createdAtDate === selectedDate
+//     );
+//   });
+
+//   const handleView = visitor => {
+//     setSelectedVisitor(visitor);
+//     setModalBadge(visitor.badge || '');
+//     setModalStatus(visitor.status || 'Pending');
+//     setModalVisible(true);
+//   };
+
+//   const handleUpdate = () => {
+//     showErrorMessage({
+//       message: 'Update feature should call backend!',
+//       duration: 3000,
+//     });
+//     setModalVisible(false);
+//   };
+
+//   if (isBranchLoading) {
+//     return (
+//       <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//         <ActivityIndicator size="large" color="#003366" />
+//         <Text>Loading branch...</Text>
+//       </SafeAreaView>
+//     );
+//   }
+
+//   return (
+//     <SafeAreaView style={{ flex: 1, backgroundColor: '#f9fbfd' }}>
+//       <View style={{ flex: 1, padding: 16 }}>
+//         <Header title={`Visitor - ${selectedBranch}`} showBackButton />
+
+//         <VisitorFilterBar
+//           searchDate={searchDate}
+//           setSearchDate={setSearchDate}
+//           showDatePicker={showDatePicker}
+//           setShowDatePicker={setShowDatePicker}
+//           phone={phone}
+//           setPhone={setPhone}
+//           badge={badge}
+//           setBadge={setBadge}
+//           statusFilter={statusFilter}
+//           setStatusFilter={setStatusFilter}
+//         />
+
+//         {!isLoading && (
+//           <Text style={{ fontSize: 14, color: '#666', marginBottom: 8 }}>
+//             Total Visitors: {filteredVisitors.length}
+//           </Text>
+//         )}
+
+//         {isLoading ? (
+//           <ActivityIndicator
+//             size="large"
+//             color="#003366"
+//             style={{ marginTop: 50 }}
+//           />
+//         ) : filteredVisitors.length === 0 ? (
+//           <Text style={{ textAlign: 'center', marginTop: 30, color: '#888' }}>
+//             No visitors found for selected criteria.
+//           </Text>
+//         ) : (
+//           <FlatList
+//             data={filteredVisitors}
+//             keyExtractor={item => item._id}
+//             renderItem={({ item }) => (
+//               <VisitorCard item={item} onView={handleView} />
+//             )}
+//             refreshing={isLoading}
+//             onRefresh={refetch}
+//             contentContainerStyle={{ paddingBottom: 20 }}
+//           />
+//         )}
+
+//         <UpdateVisitorModal
+//           visible={modalVisible}
+//           onClose={() => setModalVisible(false)}
+//           onSave={handleUpdate}
+//           modalBadge={modalBadge}
+//           setModalBadge={setModalBadge}
+//           modalStatus={modalStatus}
+//           setModalStatus={setModalStatus}
+//         />
+//       </View>
+//     </SafeAreaView>
+//   );
+// };
+
+// export default VisitorsScreen;
+
+// import React, { useEffect, useState } from 'react';
+// import {
+//   View,
+//   FlatList,
+//   SafeAreaView,
+//   ActivityIndicator,
+//   Text,
+// } from 'react-native';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// import Header from '../../components/Header';
+// import { showErrorMessage } from '../../utils/Globals';
+// import VisitorFilterBar from '../../components/VisitorFilterBar';
+// import UpdateVisitorModal from '../../components/UpdateVisitorModal';
+// import VisitorCard from '../../components/VisitorCard';
+// import { useFocusEffect } from '@react-navigation/native';
+// import { useCallback } from 'react';
+// import { useGetVisitorsByBranchQuery } from '../../api';
+// import { useAuth } from '../../contexts/AuthContext';
+
+// const VisitorsScreen = () => {
+//   // const [selectedBranch, setSelectedBranch] = useState('All');
+//   const { userBranch: selectedBranch } = useAuth();
+
+//   const [isBranchLoading, setIsBranchLoading] = useState(true);
+
+//   const [searchDate, setSearchDate] = useState(new Date());
+//   const [showDatePicker, setShowDatePicker] = useState(false);
+//   const [phone, setPhone] = useState('');
+//   const [badge, setBadge] = useState('');
+//   const [statusFilter, setStatusFilter] = useState('All');
+
+//   const [modalVisible, setModalVisible] = useState(false);
+//   const [selectedVisitor, setSelectedVisitor] = useState(null);
+//   const [modalBadge, setModalBadge] = useState('');
+//   const [modalStatus, setModalStatus] = useState('pending');
+
+//   useFocusEffect(
+//     useCallback(() => {
+//       const fetchBranch = async () => {
+//         try {
+//           const storedBranch = await AsyncStorage.getItem('selectedBranch');
+//           if (storedBranch) {
+//             setSelectedBranch(storedBranch);
+//             setStatusFilter('All');
+//           }
+//         } catch (err) {
+//           console.error('❌ Error fetching branch from AsyncStorage:', err);
+//         } finally {
+//           setIsBranchLoading(false);
+//         }
+//       };
+
+//       fetchBranch();
+//     }, []),
+//   );
+
+//   // 📆 Format date for API (YYYY-MM-DD)
+//   const formattedDate = searchDate.toISOString().split('T')[0];
+
+//   // 🟢 Fetch visitors by branch & date
+//   const {
+//     data: response,
+//     isLoading,
+//     refetch,
+//   } = useGetVisitorsByBranchQuery({
+//     branch: selectedBranch,
+//     date: formattedDate,
+//   });
+
+//   const visitorData = response?.data || [];
+//   console.log('🔥 Visitor Data:', visitorData);
+
+//   // 🔍 Local filtering logic
+//   const filteredVisitors = visitorData.filter(visitor => {
+//     const createdAtDate = new Date(visitor.createdAt).toDateString();
+//     const selectedDateStr = new Date(searchDate).toDateString();
+
+//     return (
+//       (statusFilter === 'All' || visitor.status === statusFilter) &&
+//       (visitor.phoneNumber?.toLowerCase().includes(phone.toLowerCase()) ??
+//         true) &&
+//       (visitor.badge?.toLowerCase().includes(badge.toLowerCase()) ?? true) &&
+//       createdAtDate === selectedDateStr
+//     );
+//   });
+
+//   const handleView = visitor => {
+//     setSelectedVisitor(visitor);
+//     setModalBadge(visitor.badge || '');
+//     setModalStatus(visitor.status || 'pending');
+//     setModalVisible(true);
+//   };
+
+//   const handleUpdate = () => {
+//     showErrorMessage({
+//       message: 'Update feature should call backend!',
+//       duration: 3000,
+//     });
+//     setModalVisible(false);
+//   };
+
+//   if (isBranchLoading) {
+//     return (
+//       <SafeAreaView
+//         style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+//       >
+//         <ActivityIndicator size="large" color="#003366" />
+//         <Text>Loading branch...</Text>
+//       </SafeAreaView>
+//     );
+//   }
+
+//   return (
+//     <SafeAreaView style={{ flex: 1, backgroundColor: '#f9fbfd' }}>
+//       <View style={{ flex: 1, padding: 16 }}>
+//         <Header title={`Visitor - ${selectedBranch}`} showBackButton />
+
+//         <VisitorFilterBar
+//           searchDate={searchDate}
+//           setSearchDate={setSearchDate}
+//           showDatePicker={showDatePicker}
+//           setShowDatePicker={setShowDatePicker}
+//           phone={phone}
+//           setPhone={setPhone}
+//           badge={badge}
+//           setBadge={setBadge}
+//           statusFilter={statusFilter}
+//           setStatusFilter={setStatusFilter}
+//         />
+
+//         {!isLoading && (
+//           <Text style={{ fontSize: 14, color: '#666', marginBottom: 8 }}>
+//             Total Visitors: {filteredVisitors.length}
+//           </Text>
+//         )}
+
+//         {isLoading ? (
+//           <ActivityIndicator
+//             size="large"
+//             color="#003366"
+//             style={{ marginTop: 50 }}
+//           />
+//         ) : filteredVisitors.length === 0 ? (
+//           <Text style={{ textAlign: 'center', marginTop: 30, color: '#888' }}>
+//             No visitors found for selected criteria.
+//           </Text>
+//         ) : (
+//           <FlatList
+//             data={filteredVisitors}
+//             keyExtractor={item => item._id}
+//             renderItem={({ item }) => (
+//               <VisitorCard item={item} onView={handleView} />
+//             )}
+//             refreshing={isLoading}
+//             onRefresh={refetch}
+//             contentContainerStyle={{ paddingBottom: 20 }}
+//           />
+//         )}
+
+//         <UpdateVisitorModal
+//           visible={modalVisible}
+//           onClose={() => setModalVisible(false)}
+//           onSave={handleUpdate}
+//           modalBadge={modalBadge}
+//           setModalBadge={setModalBadge}
+//           modalStatus={modalStatus}
+//           setModalStatus={setModalStatus}
+//         />
+//       </View>
+//     </SafeAreaView>
+//   );
+// };
+
+// export default VisitorsScreen;
+
+// import React, { useEffect, useState, useCallback } from 'react';
+// import {
+//   View,
+//   FlatList,
+//   SafeAreaView,
+//   ActivityIndicator,
+//   Text,
+// } from 'react-native';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// import Header from '../../components/Header';
+// import { showErrorMessage } from '../../utils/Globals';
+// import VisitorFilterBar from '../../components/VisitorFilterBar';
+// import UpdateVisitorModal from '../../components/UpdateVisitorModal';
+// import VisitorCard from '../../components/VisitorCard';
+// import { useFocusEffect } from '@react-navigation/native';
+// import { useGetVisitorsByBranchQuery } from '../../api';
+// import { useAuth } from '../../contexts/AuthContext';
+// import { useMemo } from 'react';
+// const VisitorsScreen = () => {
+//   const { userBranch } = useAuth(); // e.g., "Suliballi"
+//   const [selectedBranch, setSelectedBranch] = useState(userBranch); // <-- FIXED
+
+//   const [isBranchLoading, setIsBranchLoading] = useState(true);
+//   const [searchDate, setSearchDate] = useState(new Date());
+//   const [showDatePicker, setShowDatePicker] = useState(false);
+//   const [phone, setPhone] = useState('');
+//   const [badge, setBadge] = useState('');
+//   const [statusFilter, setStatusFilter] = useState('All');
+
+//   const [modalVisible, setModalVisible] = useState(false);
+//   const [selectedVisitor, setSelectedVisitor] = useState(null);
+//   const [modalBadge, setModalBadge] = useState('');
+//   const [modalStatus, setModalStatus] = useState('pending');
+
+//   const queryParams = useMemo(
+//     () => ({
+//       officeLocation: selectedBranch,
+//       date: formattedDate,
+//     }),
+//     [selectedBranch, formattedDate],
+//   );
+//   // ✅ Load selectedBranch from AsyncStorage if exists
+//   useFocusEffect(
+//     useCallback(() => {
+//       const fetchBranch = async () => {
+//         try {
+//           const storedBranch = await AsyncStorage.getItem('selectedBranch');
+//           if (storedBranch) {
+//             setSelectedBranch(storedBranch);
+//             setStatusFilter('All');
+//           }
+//         } catch (err) {
+//           console.error('❌ Error fetching branch from AsyncStorage:', err);
+//         } finally {
+//           setIsBranchLoading(false);
+//         }
+//       };
+
+//       fetchBranch();
+//     }, []),
+//   );
+
+//   const formattedDate = searchDate.toISOString().split('T')[0];
+//   console.log('🔥 Selected Branch:', selectedBranch);
+//   const {
+//     data: response,
+//     isLoading,
+//     refetch,
+//   } = useGetVisitorsByBranchQuery(queryParams);
+
+//   const visitorData = response?.data || [];
+//   console.log('🔥 Visitor Data in screen:', visitorData);
+//   const filteredVisitors = visitorData.filter(visitor => {
+//     const createdAtDate = new Date(visitor.createdAt).toDateString();
+//     const selectedDateStr = new Date(searchDate).toDateString();
+
+//     return (
+//       (statusFilter === 'All' || visitor.status === statusFilter) &&
+//       (visitor.phoneNumber?.toLowerCase().includes(phone.toLowerCase()) ??
+//         true) &&
+//       (visitor.badge?.toLowerCase().includes(badge.toLowerCase()) ?? true) &&
+//       createdAtDate === selectedDateStr
+//     );
+//   });
+
+//   const handleView = visitor => {
+//     setSelectedVisitor(visitor);
+//     setModalBadge(visitor.badge || '');
+//     setModalStatus(visitor.status || 'pending');
+//     setModalVisible(true);
+//   };
+
+//   const handleUpdate = () => {
+//     showErrorMessage({
+//       message: 'Update feature should call backend!',
+//       duration: 3000,
+//     });
+//     setModalVisible(false);
+//   };
+
+//   if (isBranchLoading) {
+//     return (
+//       <SafeAreaView
+//         style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+//       >
+//         <ActivityIndicator size="large" color="#003366" />
+//         <Text>Loading branch...</Text>
+//       </SafeAreaView>
+//     );
+//   }
+
+//   return (
+//     <SafeAreaView style={{ flex: 1, backgroundColor: '#f9fbfd' }}>
+//       <View style={{ flex: 1, padding: 16 }}>
+//         <Header title={`Visitor - ${selectedBranch}`} showBackButton />
+
+//         <VisitorFilterBar
+//           searchDate={searchDate}
+//           setSearchDate={setSearchDate}
+//           showDatePicker={showDatePicker}
+//           setShowDatePicker={setShowDatePicker}
+//           phone={phone}
+//           setPhone={setPhone}
+//           badge={badge}
+//           setBadge={setBadge}
+//           statusFilter={statusFilter}
+//           setStatusFilter={setStatusFilter}
+//         />
+
+//         {!isLoading && (
+//           <Text style={{ fontSize: 14, color: '#666', marginBottom: 8 }}>
+//             Total Visitors: {filteredVisitors.length}
+//           </Text>
+//         )}
+
+//         {isLoading ? (
+//           <ActivityIndicator
+//             size="large"
+//             color="#003366"
+//             style={{ marginTop: 50 }}
+//           />
+//         ) : filteredVisitors.length === 0 ? (
+//           <Text style={{ textAlign: 'center', marginTop: 30, color: '#888' }}>
+//             No visitors found for selected criteria.
+//           </Text>
+//         ) : (
+//           <FlatList
+//             data={filteredVisitors}
+//             keyExtractor={item => item._id}
+//             renderItem={({ item }) => (
+//               <VisitorCard item={item} onView={handleView} />
+//             )}
+//             refreshing={isLoading}
+//             onRefresh={refetch}
+//             contentContainerStyle={{ paddingBottom: 20 }}
+//           />
+//         )}
+
+//         <UpdateVisitorModal
+//           visible={modalVisible}
+//           onClose={() => setModalVisible(false)}
+//           onSave={handleUpdate}
+//           modalBadge={modalBadge}
+//           setModalBadge={setModalBadge}
+//           modalStatus={modalStatus}
+//           setModalStatus={setModalStatus}
+//         />
+//       </View>
+//     </SafeAreaView>
+//   );
+// };
+
+// export default VisitorsScreen;
+
+// import React from 'react';
+// import {
+//   View,
+//   Text,
+//   FlatList,
+//   SafeAreaView,
+//   ActivityIndicator,
+//   StyleSheet,
+// } from 'react-native';
+// import { useGetVisitorsByBranchQuery } from '../../api';
+
+// const SulabelliVisitorsScreen = () => {
+//   const branch = 'Sulaballi';
+//   const date = new Date().toISOString().split('T')[0]; // format: YYYY-MM-DD
+
+//   const {
+//     data: response,
+//     isLoading,
+//     isError,
+//     refetch,
+//   } = useGetVisitorsByBranchQuery({ officeLocation: branch, date });
+
+//   const visitorData = response?.data || [];
+//   console.log('🔥 Visitor Data:', visitorData);
+
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       <Text style={styles.header}>Visitors – {branch}</Text>
+
+//       {isLoading ? (
+//         <ActivityIndicator size="large" color="#003366" />
+//       ) : isError ? (
+//         <Text style={styles.error}>Failed to fetch data.</Text>
+//       ) : visitorData.length === 0 ? (
+//         <Text style={styles.noData}>No visitors found for today.</Text>
+//       ) : (
+//         <FlatList
+//           data={visitorData}
+//           keyExtractor={item => item._id}
+//           onRefresh={refetch}
+//           refreshing={isLoading}
+//           contentContainerStyle={{ paddingBottom: 20 }}
+//           renderItem={({ item }) => (
+//             <View style={styles.card}>
+//               <Text style={styles.name}>{item.name}</Text>
+//               <Text>Status: {item.status}</Text>
+//               <Text>Badge: {item.badge}</Text>
+//               <Text>Phone: {item.phoneNumber}</Text>
+//               <Text>In Time: {item.inTime}</Text>
+//               <Text>Out Time: {item.outTime || 'N/A'}</Text>
+//             </View>
+//           )}
+//         />
+//       )}
+//     </SafeAreaView>
+//   );
+// };
+
+// export default SulabelliVisitorsScreen;
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     padding: 16,
+//     backgroundColor: '#f9fbfd',
+//   },
+//   header: {
+//     fontSize: 22,
+//     fontWeight: 'bold',
+//     marginBottom: 16,
+//     textAlign: 'center',
+//     color: '#003366',
+//   },
+//   error: {
+//     color: 'red',
+//     textAlign: 'center',
+//   },
+//   noData: {
+//     textAlign: 'center',
+//     color: '#666',
+//   },
+//   card: {
+//     backgroundColor: '#fff',
+//     padding: 12,
+//     marginBottom: 12,
+//     borderRadius: 8,
+//     elevation: 2,
+//   },
+//   name: {
+//     fontSize: 16,
+//     fontWeight: '600',
+//     marginBottom: 4,
+//   },
+// });
+
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import {
+  View,
+  FlatList,
+  SafeAreaView,
+  ActivityIndicator,
+  Text,
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+
 import Header from '../../components/Header';
-import { showErrorMessage } from '../../utils/Globals';
 import VisitorFilterBar from '../../components/VisitorFilterBar';
 import UpdateVisitorModal from '../../components/UpdateVisitorModal';
 import VisitorCard from '../../components/VisitorCard';
-import { useGetVisitorsByBranchQuery } from '../../api';
 import { useAuth } from '../../contexts/AuthContext';
+import {
+  useGetVisitorsByBranchQuery,
+  useUpdateVisitorMutation,
+} from '../../api';
+import { showErrorMessage, showSuccessMessage } from '../../utils/Globals';
 
 const VisitorsScreen = () => {
   const { userBranch } = useAuth();
-
-  // Default to 'All' if no branch is set
-  const selectedBranch = userBranch || 'All';
-  console.log(`visitorkvr`, userBranch);
-
+  const [selectedBranch, setSelectedBranch] = useState(userBranch);
+  const [isBranchLoading, setIsBranchLoading] = useState(true);
   const [searchDate, setSearchDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [phone, setPhone] = useState('');
@@ -1338,44 +1979,108 @@ const VisitorsScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedVisitor, setSelectedVisitor] = useState(null);
   const [modalBadge, setModalBadge] = useState('');
-  const [modalStatus, setModalStatus] = useState('Pending');
+  const [modalStatus, setModalStatus] = useState('pending');
 
-  // ✅ Fetch visitors using the selected branch
+  const formattedDate = searchDate.toISOString().split('T')[0];
+
+  const queryParams = useMemo(
+    () => ({
+      officeLocation: selectedBranch,
+      date: formattedDate,
+    }),
+    [selectedBranch, formattedDate],
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchBranch = async () => {
+        try {
+          const storedBranch = await AsyncStorage.getItem('selectedBranch');
+          if (storedBranch) {
+            setSelectedBranch(storedBranch);
+            setStatusFilter('All');
+          }
+        } catch (err) {
+          console.error('❌ Error fetching branch from AsyncStorage:', err);
+        } finally {
+          setIsBranchLoading(false);
+        }
+      };
+      fetchBranch();
+    }, []),
+  );
+
   const {
-    data: visitorData = [],
+    data: response,
     isLoading,
     refetch,
-  } = useGetVisitorsByBranchQuery(selectedBranch);
+  } = useGetVisitorsByBranchQuery(queryParams);
 
-  // ✅ Filter logic
+  const [updateVisitor, { isLoading: isUpdating }] = useUpdateVisitorMutation();
+
+  const visitorData = response?.data || [];
+
   const filteredVisitors = visitorData.filter(visitor => {
+    const createdAtDate = new Date(visitor.createdAt).toDateString();
+    const selectedDateStr = new Date(searchDate).toDateString();
+
     return (
       (statusFilter === 'All' || visitor.status === statusFilter) &&
-      visitor.phone.includes(phone) &&
-      visitor.badge.includes(badge)
+      (visitor.phoneNumber?.toLowerCase().includes(phone.toLowerCase()) ?? true) &&
+      (visitor.badgeNumber?.toLowerCase().includes(badge.toLowerCase()) ?? true) &&
+      createdAtDate === selectedDateStr
     );
   });
 
   const handleView = visitor => {
     setSelectedVisitor(visitor);
-    setModalBadge(visitor.badge);
-    setModalStatus(visitor.status);
+    setModalBadge(visitor.badgeNumber || '');
+    setModalStatus(visitor.status || 'pending');
     setModalVisible(true);
   };
 
-  const handleUpdate = () => {
-    // 🚨 Placeholder for backend mutation logic
-    showErrorMessage({
-      message: 'Update feature should call backend!',
+  const handleUpdate = async () => {
+  if (!selectedVisitor) return;
+
+  try {
+    console.log('🔧 Updating visitor:', selectedVisitor._id);
+
+    await updateVisitor({
+      id: selectedVisitor._id,
+      badgeNumber: modalBadge,
+      status: modalStatus,
+    }).unwrap();
+
+    showSuccessMessage({
+      message: 'Visitor updated successfully!',
       duration: 3000,
     });
+
+    refetch();
     setModalVisible(false);
-  };
+  } catch (error) {
+    console.error('❌ Error updating visitor:', error);
+    showErrorMessage({
+      message: 'Failed to update visitor.',
+      duration: 3000,
+    });
+  }
+};
+
+
+  if (isBranchLoading) {
+    return (
+      <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#003366" />
+        <Text>Loading branch...</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f9fbfd' }}>
       <View style={{ flex: 1, padding: 16 }}>
-        <Header title="Visitor" showBackButton />
+        <Header title={`Visitor - ${selectedBranch}`} showBackButton />
 
         <VisitorFilterBar
           searchDate={searchDate}
@@ -1390,21 +2095,26 @@ const VisitorsScreen = () => {
           setStatusFilter={setStatusFilter}
         />
 
+        {!isLoading && (
+          <Text style={{ fontSize: 14, color: '#666', marginBottom: 8 }}>
+            Total Visitors: {filteredVisitors.length}
+          </Text>
+        )}
+
         {isLoading ? (
-          <ActivityIndicator
-            size="large"
-            color="#003366"
-            style={{ marginTop: 50 }}
-          />
+          <ActivityIndicator size="large" color="#003366" style={{ marginTop: 50 }} />
+        ) : filteredVisitors.length === 0 ? (
+          <Text style={{ textAlign: 'center', marginTop: 30, color: '#888' }}>
+            No visitors found for selected criteria.
+          </Text>
         ) : (
           <FlatList
             data={filteredVisitors}
-            renderItem={({ item }) => (
-              <VisitorCard item={item} onView={handleView} />
-            )}
-            keyExtractor={item => item.id}
-            onRefresh={refetch}
+            keyExtractor={item => item._id}
+            renderItem={({ item }) => <VisitorCard item={item} onView={handleView} />}
             refreshing={isLoading}
+            onRefresh={refetch}
+            contentContainerStyle={{ paddingBottom: 20 }}
           />
         )}
 
@@ -1416,6 +2126,7 @@ const VisitorsScreen = () => {
           setModalBadge={setModalBadge}
           modalStatus={modalStatus}
           setModalStatus={setModalStatus}
+          isLoading={isUpdating}
         />
       </View>
     </SafeAreaView>
