@@ -659,6 +659,205 @@
 //   },
 // });
 
+// import React, { useState } from 'react';
+// import {
+//   View,
+//   FlatList,
+//   TouchableOpacity,
+//   Image,
+//   StyleSheet,
+//   Alert,
+//   SafeAreaView,
+//   Text,
+//   ActivityIndicator,
+// } from 'react-native';
+
+// import Header from '../../components/Header';
+// import UserCard from '../../components/UserCard';
+// import AddUserModal from '../../components/AddUserModal';
+
+// import {
+//   useGetAllSecurityQuery,
+//   useCreateSecurityMutation,
+//   useDeleteSecurityMutation,
+// } from '../../api';
+
+// const branches = ['Head Office', 'Dabaspet'];
+
+// const SecurityUsersScreen = () => {
+//   const {
+//     data: securityUsers = [],
+//     isLoading,
+//     refetch,
+//   } = useGetAllSecurityQuery();
+//   console.log(securityUsers);
+//   const [createSecurity] = useCreateSecurityMutation();
+//   const [deleteSecurity] = useDeleteSecurityMutation();
+
+//   const [modalVisible, setModalVisible] = useState(false);
+//   const [newName, setNewName] = useState('');
+//   const [newEmail, setNewEmail] = useState('');
+//   const [newPassword, setNewPassword] = useState('');
+//   const [newBranch, setNewBranch] = useState(branches[0]);
+//   const [newPhone, setNewPhone] = useState('');
+//   const [employeeId, setEmployeeId] = useState('');
+
+//   const handleDelete = (employeeId: string) => {
+//     Alert.alert('Confirm Delete', 'Are you sure?', [
+//       { text: 'Cancel', style: 'cancel' },
+//       {
+//         text: 'Delete',
+//         style: 'destructive',
+//         onPress: async () => {
+//           try {
+//             await deleteSecurity(employeeId).unwrap(); // ⚠️ If your API expects id in body, update accordingly
+//             // refetch(); // Optional if tags invalidate correctly
+//           } catch (err) {
+//             console.error('Security delete error:', err);
+//             Alert.alert('Error', 'Failed to delete user');
+//           }
+//         },
+//       },
+//     ]);
+//   };
+
+//   const handleAdd = async () => {
+//     if (!newName || !newPassword || !newBranch || !newPhone || !employeeId) {
+//       Alert.alert('Please fill all required fields');
+//       return;
+//     }
+
+//     const payload = {
+//       userName: newName,
+//       phoneNumber: newPhone,
+//       password: newPassword,
+//       officeLocation: newBranch,
+//       employeeId,
+//     };
+
+//     console.log('🔧 Creating security user with payload:', payload);
+
+//     try {
+//       const response = await createSecurity(payload);
+//       console.log('✅ Security user created:', response);
+
+//       // Clear modal & form state
+//       setModalVisible(false);
+//       setNewName('');
+//       setNewEmail('');
+//       setNewPassword('');
+//       setNewBranch(branches[0]);
+//       setNewPhone('');
+//       setEmployeeId('');
+
+//       // Refresh list
+//       refetch();
+//     } catch (err) {
+//       console.error('❌ Security create error:', err);
+//       Alert.alert('Error', 'Failed to add security user');
+//     }
+//   };
+
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       <Header title="Security Users" showBackButton />
+
+//       <View style={styles.headerRow}>
+//         <Image
+//           source={{
+//             uri: 'https://emmvee.com/wp-content/uploads/2019/08/emvlogo.png',
+//           }}
+//           style={styles.logo}
+//         />
+//         <TouchableOpacity
+//           style={styles.addButton}
+//           onPress={() => setModalVisible(true)}
+//         >
+//           <Text style={styles.addButtonText}>+ Add Security</Text>
+//         </TouchableOpacity>
+//       </View>
+
+//       {isLoading ? (
+//         <ActivityIndicator
+//           size="large"
+//           color="#28a745"
+//           style={{ marginTop: 20 }}
+//         />
+//       ) : (
+//         <FlatList
+//           data={securityUsers?.response || []}
+//           keyExtractor={item => item._id}
+//           renderItem={({ item }) => (
+//             <UserCard
+//               _id={item._id}
+//               userName={item.userName}
+//               email={item.email || '-'}
+//               phoneNumber={item.phoneNumber}
+//               password={item.password}
+//               employeeId={item.employeeId}
+//               officeLocation={[item.officeLocation]} // 🔁 make it an array
+//               role={item.role}
+//               onDelete={handleDelete}
+//             />
+//           )}
+//           contentContainerStyle={{ paddingBottom: 20 }}
+//         />
+//       )}
+
+//       <AddUserModal
+//         visible={modalVisible}
+//         title="Add Security User"
+//         name={newName}
+//         email={newEmail}
+//         password={newPassword}
+//         phoneNumber={newPhone}
+//         employeeId={employeeId}
+//         branch={newBranch}
+//         branches={branches}
+//         setName={setNewName}
+//         setEmail={setNewEmail}
+//         setPassword={setNewPassword}
+//         setPhoneNumber={setNewPhone}
+//         setEmployeeId={setEmployeeId}
+//         setBranch={setNewBranch}
+//         onClose={() => setModalVisible(false)}
+//         onAdd={handleAdd}
+//       />
+//     </SafeAreaView>
+//   );
+// };
+
+// export default SecurityUsersScreen;
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#f0f6ff',
+//     paddingHorizontal: 16,
+//     paddingTop: 20,
+//   },
+//   headerRow: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+//     marginBottom: 20,
+//   },
+//   logo: {
+//     width: 100,
+//     height: 40,
+//     resizeMode: 'contain',
+//   },
+//   addButton: {
+//     backgroundColor: '#28a745',
+//     paddingHorizontal: 16,
+//     paddingVertical: 8,
+//     borderRadius: 6,
+//   },
+//   addButtonText: {
+//     color: '#fff',
+//     fontWeight: 'bold',
+//   },
+// });
 import React, { useState } from 'react';
 import {
   View,
@@ -682,15 +881,20 @@ import {
   useDeleteSecurityMutation,
 } from '../../api';
 
-const branches = ['Head Office', 'Dabaspet'];
+import { useAuth } from '../../contexts/AuthContext';
+
+const branches = ['All', 'Head Office', 'Dabaspet'];
 
 const SecurityUsersScreen = () => {
+  const { selectedBranch } = useAuth(); // 👈 Get selected branch from context
+  const officeLocation = selectedBranch === 'All' ? '' : selectedBranch;
+
   const {
     data: securityUsers = [],
     isLoading,
     refetch,
-  } = useGetAllSecurityQuery();
-  console.log(securityUsers);
+  } = useGetAllSecurityQuery({ officeLocation });
+
   const [createSecurity] = useCreateSecurityMutation();
   const [deleteSecurity] = useDeleteSecurityMutation();
 
@@ -710,8 +914,7 @@ const SecurityUsersScreen = () => {
         style: 'destructive',
         onPress: async () => {
           try {
-            await deleteSecurity(employeeId).unwrap(); // ⚠️ If your API expects id in body, update accordingly
-            // refetch(); // Optional if tags invalidate correctly
+            await deleteSecurity(employeeId).unwrap();
           } catch (err) {
             console.error('Security delete error:', err);
             Alert.alert('Error', 'Failed to delete user');
@@ -735,32 +938,30 @@ const SecurityUsersScreen = () => {
       employeeId,
     };
 
-    console.log('🔧 Creating security user with payload:', payload);
-
     try {
-      const response = await createSecurity(payload);
-      console.log('✅ Security user created:', response);
-
-      // Clear modal & form state
-      setModalVisible(false);
-      setNewName('');
-      setNewEmail('');
-      setNewPassword('');
-      setNewBranch(branches[0]);
-      setNewPhone('');
-      setEmployeeId('');
-
-      // Refresh list
-      refetch();
+      await createSecurity(payload);
+      clearForm();
+      refetch(); // 🔄 Refresh data
     } catch (err) {
-      console.error('❌ Security create error:', err);
+      console.error('Security create error:', err);
       Alert.alert('Error', 'Failed to add security user');
     }
+  };
+
+  const clearForm = () => {
+    setModalVisible(false);
+    setNewName('');
+    setNewEmail('');
+    setNewPassword('');
+    setNewBranch(branches[0]);
+    setNewPhone('');
+    setEmployeeId('');
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <Header title="Security Users" showBackButton />
+      <Text>{selectedBranch}</Text>
 
       <View style={styles.headerRow}>
         <Image
@@ -785,7 +986,7 @@ const SecurityUsersScreen = () => {
         />
       ) : (
         <FlatList
-          data={securityUsers?.response || []}
+          data={securityUsers}
           keyExtractor={item => item._id}
           renderItem={({ item }) => (
             <UserCard
@@ -795,7 +996,7 @@ const SecurityUsersScreen = () => {
               phoneNumber={item.phoneNumber}
               password={item.password}
               employeeId={item.employeeId}
-              officeLocation={[item.officeLocation]} // 🔁 make it an array
+              officeLocation={[item.officeLocation]}
               role={item.role}
               onDelete={handleDelete}
             />

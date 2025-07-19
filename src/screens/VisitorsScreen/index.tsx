@@ -1944,7 +1944,7 @@
 //   },
 // });
 
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   FlatList,
@@ -1952,8 +1952,6 @@ import {
   ActivityIndicator,
   Text,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect } from '@react-navigation/native';
 
 import Header from '../../components/Header';
 import VisitorFilterBar from '../../components/VisitorFilterBar';
@@ -1967,9 +1965,8 @@ import {
 import { showErrorMessage, showSuccessMessage } from '../../utils/Globals';
 
 const VisitorsScreen = () => {
-  const { userBranch } = useAuth();
-  const [selectedBranch, setSelectedBranch] = useState(userBranch);
-  const [isBranchLoading, setIsBranchLoading] = useState(true);
+  const { userBranch, userRole, selectedBranch } = useAuth();
+
   const [searchDate, setSearchDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [phone, setPhone] = useState('');
@@ -1982,43 +1979,33 @@ const VisitorsScreen = () => {
   const [modalStatus, setModalStatus] = useState('pending');
 
   const formattedDate = searchDate.toISOString().split('T')[0];
+  // const branch = selectedBranch || userBranch || 'All';
+  const branch = selectedBranch || userBranch[0];
+
+  // const branch = selectedBranch;
+
+  // console.log('🔥 Branchkvr:', branch);
 
   const queryParams = useMemo(
     () => ({
-      officeLocation: selectedBranch,
+      officeLocation: branch,
       date: formattedDate,
     }),
-    [selectedBranch, formattedDate],
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      const fetchBranch = async () => {
-        try {
-          const storedBranch = await AsyncStorage.getItem('selectedBranch');
-          if (storedBranch) {
-            setSelectedBranch(storedBranch);
-            setStatusFilter('All');
-          }
-        } catch (err) {
-          console.error('❌ Error fetching branch from AsyncStorage:', err);
-        } finally {
-          setIsBranchLoading(false);
-        }
-      };
-      fetchBranch();
-    }, []),
+    [branch, formattedDate],
   );
 
   const {
     data: response,
     isLoading,
     refetch,
-  } = useGetVisitorsByBranchQuery(queryParams);
+  } = useGetVisitorsByBranchQuery(queryParams, {
+    skip: !branch,
+  });
 
   const [updateVisitor, { isLoading: isUpdating }] = useUpdateVisitorMutation();
 
   const visitorData = response?.data || [];
+  // console.log('🔥 Response:', visitorData);
 
   const filteredVisitors = visitorData.filter(visitor => {
     const createdAtDate = new Date(visitor.createdAt).toDateString();
@@ -2026,8 +2013,10 @@ const VisitorsScreen = () => {
 
     return (
       (statusFilter === 'All' || visitor.status === statusFilter) &&
-      (visitor.phoneNumber?.toLowerCase().includes(phone.toLowerCase()) ?? true) &&
-      (visitor.badgeNumber?.toLowerCase().includes(badge.toLowerCase()) ?? true) &&
+      (visitor.phoneNumber?.toLowerCase().includes(phone.toLowerCase()) ??
+        true) &&
+      (visitor.badgeNumber?.toLowerCase().includes(badge.toLowerCase()) ??
+        true) &&
       createdAtDate === selectedDateStr
     );
   });
@@ -2040,37 +2029,36 @@ const VisitorsScreen = () => {
   };
 
   const handleUpdate = async () => {
-  if (!selectedVisitor) return;
+    if (!selectedVisitor) return;
 
-  try {
-    console.log('🔧 Updating visitor:', selectedVisitor._id);
+    try {
+      await updateVisitor({
+        id: selectedVisitor._id,
+        badgeNumber: modalBadge,
+        status: modalStatus,
+      }).unwrap();
 
-    await updateVisitor({
-      id: selectedVisitor._id,
-      badgeNumber: modalBadge,
-      status: modalStatus,
-    }).unwrap();
+      showSuccessMessage({
+        message: 'Visitor updated successfully!',
+        duration: 3000,
+      });
 
-    showSuccessMessage({
-      message: 'Visitor updated successfully!',
-      duration: 3000,
-    });
+      refetch();
+      setModalVisible(false);
+    } catch (error) {
+      console.error('❌ Error updating visitor:', error);
+      showErrorMessage({
+        message: 'Failed to update visitor.',
+        duration: 3000,
+      });
+    }
+  };
 
-    refetch();
-    setModalVisible(false);
-  } catch (error) {
-    console.error('❌ Error updating visitor:', error);
-    showErrorMessage({
-      message: 'Failed to update visitor.',
-      duration: 3000,
-    });
-  }
-};
-
-
-  if (isBranchLoading) {
+  if (!branch) {
     return (
-      <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <SafeAreaView
+        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+      >
         <ActivityIndicator size="large" color="#003366" />
         <Text>Loading branch...</Text>
       </SafeAreaView>
@@ -2080,7 +2068,7 @@ const VisitorsScreen = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f9fbfd' }}>
       <View style={{ flex: 1, padding: 16 }}>
-        <Header title={`Visitor - ${selectedBranch}`} showBackButton />
+        <Header title={`Visitor - ${branch}`} showBackButton />
 
         <VisitorFilterBar
           searchDate={searchDate}
@@ -2102,7 +2090,11 @@ const VisitorsScreen = () => {
         )}
 
         {isLoading ? (
-          <ActivityIndicator size="large" color="#003366" style={{ marginTop: 50 }} />
+          <ActivityIndicator
+            size="large"
+            color="#003366"
+            style={{ marginTop: 50 }}
+          />
         ) : filteredVisitors.length === 0 ? (
           <Text style={{ textAlign: 'center', marginTop: 30, color: '#888' }}>
             No visitors found for selected criteria.
@@ -2111,7 +2103,9 @@ const VisitorsScreen = () => {
           <FlatList
             data={filteredVisitors}
             keyExtractor={item => item._id}
-            renderItem={({ item }) => <VisitorCard item={item} onView={handleView} />}
+            renderItem={({ item }) => (
+              <VisitorCard item={item} onView={handleView} />
+            )}
             refreshing={isLoading}
             onRefresh={refetch}
             contentContainerStyle={{ paddingBottom: 20 }}
@@ -2134,3 +2128,235 @@ const VisitorsScreen = () => {
 };
 
 export default VisitorsScreen;
+
+// import React, { useEffect, useState, useCallback, useMemo } from 'react';
+// import {
+//   View,
+//   FlatList,
+//   SafeAreaView,
+//   ActivityIndicator,
+//   Text,
+// } from 'react-native';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+// import { useFocusEffect } from '@react-navigation/native';
+
+// import Header from '../../components/Header';
+// import VisitorFilterBar from '../../components/VisitorFilterBar';
+// import UpdateVisitorModal from '../../components/UpdateVisitorModal';
+// import VisitorCard from '../../components/VisitorCard';
+// import BranchPicker from '../../components/BranchPicker';
+// import { useAuth } from '../../contexts/AuthContext';
+// import {
+//   useGetVisitorsByBranchQuery,
+//   useUpdateVisitorMutation,
+// } from '../../api';
+// import { showErrorMessage, showSuccessMessage } from '../../utils/Globals';
+
+// const VisitorsScreen = () => {
+//   const { userBranch, userRole } = useAuth();
+
+//   const isSuperadmin = userRole === 'superadmin';
+
+//   const [selectedBranch, setSelectedBranch] = useState(userBranch);
+//   const [branchModalVisible, setBranchModalVisible] = useState(false);
+//   const [isBranchLoading, setIsBranchLoading] = useState(isSuperadmin);
+//   const [searchDate, setSearchDate] = useState(new Date());
+//   const [showDatePicker, setShowDatePicker] = useState(false);
+//   const [phone, setPhone] = useState('');
+//   const [badge, setBadge] = useState('');
+//   const [statusFilter, setStatusFilter] = useState('All');
+
+//   const [modalVisible, setModalVisible] = useState(false);
+//   const [selectedVisitor, setSelectedVisitor] = useState(null);
+//   const [modalBadge, setModalBadge] = useState('');
+//   const [modalStatus, setModalStatus] = useState('pending');
+
+//   const formattedDate = searchDate.toISOString().split('T')[0];
+
+//   const queryParams = useMemo(
+//     () => ({
+//       officeLocation: selectedBranch,
+//       date: formattedDate,
+//     }),
+//     [selectedBranch, formattedDate],
+//   );
+
+//   useFocusEffect(
+//     useCallback(() => {
+//       const fetchStoredBranch = async () => {
+//         if (!isSuperadmin) {
+//           setIsBranchLoading(false);
+//           return;
+//         }
+
+//         try {
+//           const storedBranch = await AsyncStorage.getItem('selectedBranch');
+//           if (storedBranch) {
+//             setSelectedBranch(storedBranch);
+//           } else {
+//             setSelectedBranch(userBranch[0] || 'All');
+//           }
+//         } catch (err) {
+//           console.error('❌ Error fetching branch from AsyncStorage:', err);
+//           setSelectedBranch(userBranch[0] || 'All');
+//         } finally {
+//           setIsBranchLoading(false);
+//         }
+//       };
+
+//       fetchStoredBranch();
+//     }, [isSuperadmin, userBranch]),
+//   );
+
+//   const {
+//     data: response,
+//     isLoading,
+//     refetch,
+//   } = useGetVisitorsByBranchQuery(queryParams, {
+//     skip: !selectedBranch,
+//   });
+
+//   const [updateVisitor, { isLoading: isUpdating }] = useUpdateVisitorMutation();
+
+//   const visitorData = response?.data || [];
+
+//   const filteredVisitors = visitorData.filter(visitor => {
+//     const createdAtDate = new Date(visitor.createdAt).toDateString();
+//     const selectedDateStr = new Date(searchDate).toDateString();
+
+//     return (
+//       (statusFilter === 'All' || visitor.status === statusFilter) &&
+//       (visitor.phoneNumber?.toLowerCase().includes(phone.toLowerCase()) ??
+//         true) &&
+//       (visitor.badgeNumber?.toLowerCase().includes(badge.toLowerCase()) ??
+//         true) &&
+//       createdAtDate === selectedDateStr
+//     );
+//   });
+
+//   const handleView = visitor => {
+//     setSelectedVisitor(visitor);
+//     setModalBadge(visitor.badgeNumber || '');
+//     setModalStatus(visitor.status || 'pending');
+//     setModalVisible(true);
+//   };
+
+//   const handleUpdate = async () => {
+//     if (!selectedVisitor) return;
+
+//     try {
+//       await updateVisitor({
+//         id: selectedVisitor._id,
+//         badgeNumber: modalBadge,
+//         status: modalStatus,
+//       }).unwrap();
+
+//       showSuccessMessage({
+//         message: 'Visitor updated successfully!',
+//         duration: 3000,
+//       });
+
+//       refetch();
+//       setModalVisible(false);
+//     } catch (error) {
+//       console.error('❌ Error updating visitor:', error);
+//       showErrorMessage({
+//         message: 'Failed to update visitor.',
+//         duration: 3000,
+//       });
+//     }
+//   };
+
+//   if (isBranchLoading || !selectedBranch) {
+//     return (
+//       <SafeAreaView
+//         style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+//       >
+//         <ActivityIndicator size="large" color="#003366" />
+//         <Text>Loading branch...</Text>
+//       </SafeAreaView>
+//     );
+//   }
+
+//   return (
+//     <SafeAreaView style={{ flex: 1, backgroundColor: '#f9fbfd' }}>
+//       <View style={{ flex: 1, padding: 16 }}>
+//         <Header
+//           title={`Visitor - ${selectedBranch}`}
+//           showBackButton
+//           onBranchPress={
+//             isSuperadmin ? () => setBranchModalVisible(true) : undefined
+//           }
+//         />
+
+//         {isSuperadmin && (
+//           <BranchPicker
+//             visible={branchModalVisible}
+//             onClose={() => setBranchModalVisible(false)}
+//             branches={userBranch}
+//             onSelect={branch => {
+//               setSelectedBranch(branch);
+//               AsyncStorage.setItem('selectedBranch', branch);
+//             }}
+//             selectedBranch={selectedBranch}
+//           />
+//         )}
+
+//         <VisitorFilterBar
+//           searchDate={searchDate}
+//           setSearchDate={setSearchDate}
+//           showDatePicker={showDatePicker}
+//           setShowDatePicker={setShowDatePicker}
+//           phone={phone}
+//           setPhone={setPhone}
+//           badge={badge}
+//           setBadge={setBadge}
+//           statusFilter={statusFilter}
+//           setStatusFilter={setStatusFilter}
+//         />
+
+//         {!isLoading && (
+//           <Text style={{ fontSize: 14, color: '#666', marginBottom: 8 }}>
+//             Total Visitors: {filteredVisitors.length}
+//           </Text>
+//         )}
+
+//         {isLoading ? (
+//           <ActivityIndicator
+//             size="large"
+//             color="#003366"
+//             style={{ marginTop: 50 }}
+//           />
+//         ) : filteredVisitors.length === 0 ? (
+//           <Text style={{ textAlign: 'center', marginTop: 30, color: '#888' }}>
+//             No visitors found for selected criteria.
+//           </Text>
+//         ) : (
+//           <FlatList
+//             data={filteredVisitors}
+//             keyExtractor={item => item._id}
+//             renderItem={({ item }) => (
+//               <VisitorCard item={item} onView={handleView} />
+//             )}
+//             refreshing={isLoading}
+//             onRefresh={refetch}
+//             contentContainerStyle={{ paddingBottom: 20 }}
+//           />
+//         )}
+
+//         <UpdateVisitorModal
+//           visible={modalVisible}
+//           onClose={() => setModalVisible(false)}
+//           onSave={handleUpdate}
+//           modalBadge={modalBadge}
+//           setModalBadge={setModalBadge}
+//           modalStatus={modalStatus}
+//           setModalStatus={setModalStatus}
+//           isLoading={isUpdating}
+//         />
+//       </View>
+//     </SafeAreaView>
+//   );
+// };
+
+// export default VisitorsScreen;

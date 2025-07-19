@@ -26,6 +26,7 @@ import {
 } from 'react-native-responsive-screen';
 import { useNavigation } from '@react-navigation/native';
 import { useCreateVisitorMutation } from '../../api';
+import Header from '../../components/Header';
 
 const VisitorFormScreen = () => {
   const [firstName, setFirstName] = useState('');
@@ -77,7 +78,7 @@ const VisitorFormScreen = () => {
     otherReason,
     photo,
     govtIdFile,
-    personToMeet
+    personToMeet,
   ]);
 
   const handleSelectImage = () => {
@@ -171,60 +172,62 @@ const VisitorFormScreen = () => {
   //   setGovtIdFile(null);
   // };
   const handleSubmit = async () => {
-  if (!isFormValid) {
-    Alert.alert(
-      'Error',
-      'Please fill all mandatory fields and upload required files.',
+    if (!isFormValid) {
+      Alert.alert(
+        'Error',
+        'Please fill all mandatory fields and upload required files.',
+      );
+      return;
+    }
+
+    const formData = new FormData();
+
+    formData.append('firstName', firstName);
+    formData.append('lastName', lastName);
+    formData.append('phoneNumber', mobile);
+    formData.append('email', email);
+    formData.append('officeLocation', officeLocation);
+    formData.append(
+      'purposeOfVisit',
+      purpose === 'Other' ? otherReason : purpose,
     );
-    return;
-  }
+    formData.append('personToMeet', personToMeet);
 
-  const formData = new FormData();
+    if (photo?.uri) {
+      formData.append('userImage', {
+        uri: photo.uri,
+        name: photo.fileName || 'photo.jpg',
+        type: photo.type || 'image/jpeg',
+      });
+    }
 
-  formData.append('firstName', firstName);
-  formData.append('lastName', lastName);
-  formData.append('phoneNumber', mobile);
-  formData.append('email', email);
-  formData.append('officeLocation', officeLocation);
-  formData.append('purposeOfVisit', purpose === 'Other' ? otherReason : purpose);
-  formData.append('personToMeet', personToMeet);
+    if (govtIdFile?.uri) {
+      formData.append('documentImage', {
+        uri: govtIdFile.uri,
+        name: govtIdFile.name || 'govtid.jpg',
+        type: govtIdFile.type || 'image/jpeg',
+      });
+    }
 
-  if (photo?.uri) {
-    formData.append('userImage', {
-      uri: photo.uri,
-      name: photo.fileName || 'photo.jpg',
-      type: photo.type || 'image/jpeg',
-    });
-  }
-
-  if (govtIdFile?.uri) {
-    formData.append('documentImage', {
-      uri: govtIdFile.uri,
-      name: govtIdFile.name || 'govtid.jpg',
-      type: govtIdFile.type || 'image/jpeg',
-    });
-  }
-
-  try {
-    const res = await createVisitor(formData).unwrap();
-    Alert.alert('Success', 'Visitor registered successfully.');
-    // Reset form
-    setFirstName('');
-    setLastName('');
-    setMobile('');
-    setEmail('');
-    setOfficeLocation('');
-    setPurpose('');
-    setOtherReason('');
-    setPersonToMeet('');
-    setPhoto(null);
-    setGovtIdFile(null);
-  } catch (err: any) {
-    console.error('Upload Error:', err);
-    Alert.alert('Error', err?.data?.message || 'Something went wrong.');
-  }
-};
-
+    try {
+      const res = await createVisitor(formData).unwrap();
+      Alert.alert('Success', 'Visitor registered successfully.');
+      // Reset form
+      setFirstName('');
+      setLastName('');
+      setMobile('');
+      setEmail('');
+      setOfficeLocation('');
+      setPurpose('');
+      setOtherReason('');
+      setPersonToMeet('');
+      setPhoto(null);
+      setGovtIdFile(null);
+    } catch (err: any) {
+      console.error('Upload Error:', err);
+      Alert.alert('Error', err?.data?.message || 'Something went wrong.');
+    }
+  };
 
   const renderDropdown = (
     label,
@@ -273,6 +276,8 @@ const VisitorFormScreen = () => {
 
   return (
     <SafeAreaView style={styles.safe}>
+      <Header title="Home" showMenuButton />
+
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={{ flex: 1 }}

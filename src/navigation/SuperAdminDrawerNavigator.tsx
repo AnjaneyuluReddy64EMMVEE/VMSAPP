@@ -11,6 +11,7 @@ import ReportsScreen from '../screens/ReportsScreen';
 import NotificationScreen from '../screens/NotificationScreen';
 import AdminUserScreen from '../screens/AdminUsersScreen';
 import LogoutScreen from '../screens/LogoutScreen';
+import AdminHome from '../screens/AdminHome';
 
 const Drawer = createDrawerNavigator();
 
@@ -48,7 +49,8 @@ const SuperAdminDrawerNavigator = () => {
     <Drawer.Navigator
       screenOptions={{ headerShown: false, drawerStyle: { width: 250 } }}
     >
-      <Drawer.Screen name="Home" component={Home} />
+      <Drawer.Screen name="Home" component={AdminHome} />
+
       <Drawer.Screen name="Visitors" component={VisitorsScreen} />
       <Drawer.Screen name="Admin Users" component={AdminUserScreen} />
       <Drawer.Screen name="Security Users" component={SecurityUsersScreen} />

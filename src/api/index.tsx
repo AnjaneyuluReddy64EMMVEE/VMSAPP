@@ -10,12 +10,12 @@ export const vmsApi = createApi({
       const token = await AsyncStorage.getItem('token');
       if (token) {
         headers.set('Authorization', `Bearer ${token}`);
-        console.log('🔐 Attaching token:', token);
+        // console.log('🔐 Attaching token:', token);
       }
       return headers;
     },
   }),
-  tagTypes: ['Visitor', 'Security', 'Admin', 'Notify'],
+  tagTypes: ['Visitor', 'Security', 'Admin', 'Notify', 'SuperAdmin'],
   endpoints: builder => ({
     // 🔐 Login user (admin/security/superadmin)
     loginUser: builder.mutation({
@@ -40,8 +40,25 @@ export const vmsApi = createApi({
     }),
 
     // 📥 Get all security users
+    // getAllSecurity: builder.query({
+    //   query: () => 'allsecurity',
+    //   providesTags: ['Security'],
+    // }),
     getAllSecurity: builder.query({
-      query: () => 'allsecurity',
+      query: ({ officeLocation }) => {
+        const params = new URLSearchParams();
+
+        if (officeLocation && officeLocation !== 'All') {
+          params.append('officeLocation', officeLocation);
+        }
+
+        const url = params.toString()
+          ? `allsecurity?${params.toString()}`
+          : 'allsecurity';
+
+        return url;
+      },
+      transformResponse: (response: any) => response.response,
       providesTags: ['Security'],
     }),
 
@@ -102,48 +119,130 @@ export const vmsApi = createApi({
       providesTags: ['Visitor'],
     }),
 
-    // 📊 Get dashboard stats for a branch
-    getVisitorStats: builder.query({
-      query: ({ branch, range }) => {
-        const params = new URLSearchParams();
-        if (branch && branch !== 'All') params.append('branch', branch);
-        if (range && range !== 'present') params.append('range', range);
-        return `visitor/stats?${params.toString()}`;
-      },
-    }),
     // getVisitorStats: builder.query({
-    //   query: branch => {
-    //     const param =
-    //       branch && branch !== 'All'
-    //         ? `?branch=${encodeURIComponent(branch)}`
-    //         : '';
+    //   query: ({ officeLocation, startDate, endDate }) => {
+    //     const params = new URLSearchParams();
+    //     if (officeLocation) {
+    //       params.append('officeLocation', officeLocation);
+    //     }
 
-    //     const queryStr = `visitor/stats${param}`;
+    //     const body = {
+    //       startDate,
+    //       endDate,
+    //     };
 
-    //     // ✅ Debug log
-    //     console.log('📊 [getVisitorStats] Query:', { branch, queryStr });
+    //     console.log('📊 getVisitorStats → Params:', params.toString());
+    //     console.log('📊 getVisitorStats → Body:', body);
 
-    //     return queryStr;
+    //     return {
+    //       url: `visitor/stats?${params.toString()}`,
+    //       method: 'POST',
+    //       body,
+    //     };
     //   },
     // }),
 
-    // 📈 Get day-wise graph data for visitors
-    getDayGraph: builder.query({
-      query: ({ branch, range }) => {
+    // // 📈 Get day-wise graph data for visitors
+    // getDayGraph: builder.query({
+    //   query: ({ officeLocation, startDate, endDate }) => {
+    //     const body = {
+    //       officeLocation,
+    //       startDate,
+    //       endDate,
+    //     };
+
+    //     // console.log('📈 getDayGraph → Body:', body);
+
+    //     return {
+    //       url: 'visitor/daygraph',
+    //       method: 'POST',
+    //       body,
+    //     };
+    //   },
+    // }),
+
+    // // 📌 Get purpose-wise graph data for visitors
+    // getPurposeGraph: builder.query({
+    //   query: ({ officeLocation, startDate, endDate }) => {
+    //     const body = {
+    //       officeLocation,
+    //       startDate,
+    //       endDate,
+    //     };
+
+    //     console.log('📊 getPurposeGraph → Body:', body);
+
+    //     return {
+    //       url: 'visitor/purposegraph',
+    //       method: 'POST',
+    //       body,
+    //     };
+    //   },
+    // }),
+
+    // 🚀 Visitor Stats API Queries
+    getVisitorStats: builder.query({
+      // 🔍 Fetch total visitor stats based on location and date range
+      query: ({ officeLocation, startDate, endDate }) => {
         const params = new URLSearchParams();
-        if (branch && branch !== 'All') params.append('branch', branch);
-        if (range && range !== 'present') params.append('range', range);
-        return `visitor/daygraph?${params.toString()}`;
+
+        // ✅ Add officeLocation to query params if available
+        if (officeLocation) {
+          params.append('officeLocation', officeLocation);
+        }
+
+        const body = {
+          startDate, // 🗓️ Start of range
+          endDate, // 🗓️ End of range
+        };
+
+        // 🧾 Debug logs
+        // console.log('📊 getVisitorStats → Params:', params.toString());
+        // console.log('📊 getVisitorStats → Body:', body);
+
+        return {
+          url: `visitor/stats?${params.toString()}`, // 📎 POST with query param
+          method: 'POST',
+          body,
+        };
       },
     }),
 
-    // 📌 Get purpose-wise graph data for visitors
+    getDayGraph: builder.query({
+      // 📈 Fetch day-wise visitor data for line chart
+      query: ({ officeLocation, startDate, endDate }) => {
+        const body = {
+          officeLocation,
+          startDate,
+          endDate,
+        };
+
+        // 📌 You can add console.log here for debugging if needed
+        return {
+          url: 'visitor/daygraph',
+          method: 'POST',
+          body,
+        };
+      },
+    }),
+
     getPurposeGraph: builder.query({
-      query: ({ branch, range }) => {
-        const params = new URLSearchParams();
-        if (branch && branch !== 'All') params.append('branch', branch);
-        if (range && range !== 'present') params.append('range', range);
-        return `visitor/purposegraph?${params.toString()}`;
+      // 🎯 Fetch purpose-wise visitor breakdown
+      query: ({ officeLocation, startDate, endDate }) => {
+        const body = {
+          officeLocation,
+          startDate,
+          endDate,
+        };
+
+        // 🧾 Debug log to verify data
+        // console.log('📊 getPurposeGraph → Body:', body);
+
+        return {
+          url: 'visitor/purposegraph',
+          method: 'POST',
+          body,
+        };
       },
     }),
 
@@ -166,9 +265,45 @@ export const vmsApi = createApi({
       invalidatesTags: ['Admin'],
     }),
 
+    // getAllAdmins: builder.query({
+    //   query: () => 'allAdmin',
+    //   transformResponse: (response: any) => response.response, // ✅ extract inner array
+    //   providesTags: ['Admin'],
+    // }),
+    // getAllAdmins: builder.query({
+    //   query: ({ officeLocation }) => {
+    //     const params = new URLSearchParams();
+    //     if (officeLocation) params.append('officeLocation', "Head Office");
+
+    //     const url = `allAdmin?${params.toString()}`;
+    //     console.log('📋 getAllAdmins → URL:', url); // ✅ Now it logs
+    //     return url;
+    //   },
+    //   transformResponse: (response: any) => {
+    //     // console.log('📋 getAllAdmins → API Response:', response); // Optional debug
+    //     return response.response; // ✅ extract data
+    //   },
+    //   providesTags: ['Admin'],
+    // }),
     getAllAdmins: builder.query({
-      query: () => 'allAdmin',
-      transformResponse: (response: any) => response.response, // ✅ extract inner array
+      query: ({ officeLocation }) => {
+        const params = new URLSearchParams();
+
+        // Only add officeLocation if it's not "All"
+        if (officeLocation && officeLocation !== 'All') {
+          params.append('officeLocation', officeLocation);
+        }
+
+        const url = params.toString()
+          ? `allAdmin?${params.toString()}`
+          : 'allAdmin';
+
+        console.log('📋 getAllAdmins → Final URL:', url);
+        return url;
+      },
+      transformResponse: (response: any) => {
+        return response.response; // ✅ backend format
+      },
       providesTags: ['Admin'],
     }),
 
@@ -181,7 +316,7 @@ export const vmsApi = createApi({
     // ⚠️ Reset the entire app (reset backend state)
     resetApp: builder.mutation({
       query: credentials => {
-        console.log('🔐 Reset Password Payload:', credentials);
+        // console.log('🔐 Reset Password Payload:', credentials);
         return {
           url: 'reset',
           method: 'POST',
@@ -220,6 +355,22 @@ export const vmsApi = createApi({
         },
       }),
     }),
+    getVisitorsByLocationAndDate: builder.query({
+      query: ({ officeLocation, fromDate, toDate, page = 0, limit = 10 }) => {
+        const params = new URLSearchParams();
+        if (true) {
+          params.append('officeLocation', officeLocation);
+        }
+        if (fromDate) params.append('fromDate', fromDate);
+        if (toDate) params.append('toDate', toDate);
+        params.append('page', page.toString());
+        params.append('limit', limit.toString());
+
+        const queryStr = `visitors?${params.toString()}`;
+        // console.log('🔍 getVisitorsByLocationAndDate →', fromDate);
+        return queryStr;
+      },
+    }),
   }),
 });
 
@@ -243,4 +394,5 @@ export const {
   useDeleteSecurityMutation,
   useDeleteAdminMutation,
   useNotifyForgotPasswordMutation,
+  useGetVisitorsByLocationAndDateQuery,
 } = vmsApi;

@@ -747,7 +747,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import Icon from 'react-native-vector-icons/Feather';
 
 const NotificationScreen = () => {
-  const { user } = useAuth();
+  const { user,selectedBranch } = useAuth();
   const userLocation = user?.officeLocation;
   const {
     data: notifications,

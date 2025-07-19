@@ -7,6 +7,7 @@ import { useNavigation, CommonActions } from '@react-navigation/native';
 import VisitorsScreen from '../screens/VisitorsScreen';
 import Home from '../screens/Home';
 import VisitorFormScreen from '../screens/VisitorFormScreen';
+import AdminHome from '../screens/AdminHome';
 
 const Drawer = createDrawerNavigator();
 
@@ -51,8 +52,10 @@ const SecurityDrawerNavigator = () => {
         },
       }}
     >
+      <Drawer.Screen name="Home" component={AdminHome} />
+
       <Drawer.Screen name="Form" component={VisitorFormScreen} />
-      <Drawer.Screen name="Home" component={Home} />
+      {/* <Drawer.Screen name="Home" component={Home} /> */}
       <Drawer.Screen name="Visitors" component={VisitorsScreen} />
       <Drawer.Screen name="Logout" component={LogoutScreen} />
     </Drawer.Navigator>

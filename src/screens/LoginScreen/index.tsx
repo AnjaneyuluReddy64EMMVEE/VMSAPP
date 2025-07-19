@@ -789,7 +789,9 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import { Picker } from '@react-native-picker/picker';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+// import { Picker } from '@react-native-picker/picker';
 
 import { useAuth } from '../../contexts/AuthContext';
 import {
@@ -804,8 +806,10 @@ const LoginScreen: React.FC = () => {
   const navigation = useNavigation();
   const { setUserRole, setUserName, setUserEmail, setUserBranch } = useAuth();
 
-  const [usernameInput, setUsernameInput] = useState('Admin201');
-  const [password, setPassword] = useState('Admin@8861');
+  const [usernameInput, setUsernameInput] = useState('EMMVEE009');
+  const [password, setPassword] = useState('123');
+  const [showPassword, setShowPassword] = useState(false);
+
   const passwordRef = useRef<TextInput>(null);
 
   const [loginUser, { isLoading }] = useLoginUserMutation();
@@ -820,16 +824,16 @@ const LoginScreen: React.FC = () => {
   const handleLogin = async () => {
     try {
       const response = await loginUser({
-        userName: usernameInput.trim(),
+        employeeId: usernameInput.trim(),
         password,
       }).unwrap();
 
       const { token, user } = response.data;
-
+      console.log(user);
       setUserRole(user.role || null);
       setUserName(user.userName || null);
       setUserEmail(user.email || null);
-      setUserBranch(user.officeLocation?.[0] || 'All');
+      setUserBranch(user.officeLocation || '');
 
       await AsyncStorage.setItem('token', token);
       await AsyncStorage.setItem('user', JSON.stringify(user));
@@ -838,7 +842,7 @@ const LoginScreen: React.FC = () => {
         case 'admin':
           navigation.navigate('AdminDashboard', {
             role: user.role,
-            branch: user.officeLocation?.[0] || 'All',
+            branch: user.officeLocation || 'All',
           });
           break;
         case 'superadmin':
@@ -913,7 +917,7 @@ const LoginScreen: React.FC = () => {
           onSubmitEditing={() => passwordRef.current?.focus()}
         />
 
-        <TextInput
+        {/* <TextInput
           ref={passwordRef}
           style={styles.input}
           placeholder="Password"
@@ -922,7 +926,26 @@ const LoginScreen: React.FC = () => {
           secureTextEntry
           returnKeyType="done"
           onSubmitEditing={handleLogin}
-        />
+        /> */}
+        <View style={styles.passwordContainer}>
+          <TextInput
+            ref={passwordRef}
+            style={styles.passwordInput}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+            returnKeyType="done"
+            onSubmitEditing={handleLogin}
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Icon
+              name={showPassword ? 'eye-off' : 'eye'}
+              size={24}
+              color="#888"
+            />
+          </TouchableOpacity>
+        </View>
 
         <TouchableOpacity onPress={() => setModalVisible(true)}>
           <Text style={styles.forgotPassword}>Forgot Password?</Text>
@@ -1038,6 +1061,21 @@ const styles = StyleSheet.create({
     fontSize: hp(2),
     marginBottom: hp(1.5),
   },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    borderRadius: wp(2),
+    paddingHorizontal: wp(4),
+    paddingVertical: Platform.OS === 'ios' ? hp(1.5) : 0,
+    marginBottom: hp(1.5),
+  },
+  passwordInput: {
+    flex: 1,
+    fontSize: hp(2),
+    paddingVertical: hp(1.5),
+  },
+
   forgotPassword: {
     color: '#00AEEF',
     textAlign: 'right',

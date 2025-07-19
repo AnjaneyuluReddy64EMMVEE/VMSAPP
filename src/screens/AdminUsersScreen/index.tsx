@@ -684,6 +684,8 @@ import {
 import Header from '../../components/Header';
 import AddUserModal from '../../components/AddUserModal';
 import UserCard from '../../components/UserCard';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 import {
   useGetAllAdminsQuery,
@@ -692,12 +694,18 @@ import {
 } from '../../api';
 import { useAuth } from '../../contexts/AuthContext';
 
-const branches = ['Head Office', 'Dabaspet'];
+const branches = ['All', 'Head Office', 'Dabaspet', 'AirPort'];
 
 const AdminUsersScreen = () => {
-  const { userName, userRole } = useAuth();
+  const { userName, userRole, selectedBranch, userBranch } = useAuth();
+  // console.log(`kvrbranch`, selectedBranch);
+  const location = selectedBranch === 'All' ? '' : selectedBranch;
 
-  const { data: adminUsers = [], isLoading, refetch } = useGetAllAdminsQuery();
+  const {
+    data: adminUsers = [],
+    isLoading,
+    refetch,
+  } = useGetAllAdminsQuery({ officeLocation: location });
 
   const [createAdmin] = useCreateAdminMutation();
   const [deleteAdmin] = useDeleteAdminMutation();
@@ -768,11 +776,16 @@ const AdminUsersScreen = () => {
       Alert.alert('Error', 'Failed to add admin. Please try again.');
     }
   };
+  useFocusEffect(
+    useCallback(() => {
+      refetch(); // 🔄 force re-fetch when screen gains focus
+    }, [selectedBranch]),
+  );
 
   return (
     <SafeAreaView style={styles.container}>
       <Header title="Admin Users" showBackButton />
-
+      <Text>{selectedBranch}</Text>
       <View style={styles.headerRow}>
         <Image
           source={{
