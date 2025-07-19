@@ -1,61 +1,22 @@
-import React, { useEffect } from 'react';
-import { View, ActivityIndicator, Alert } from 'react-native';
+import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { useNavigation, CommonActions } from '@react-navigation/native';
 
 // Import your screens
 import VisitorsScreen from '../screens/VisitorsScreen';
-import Home from '../screens/Home';
 import VisitorFormScreen from '../screens/VisitorFormScreen';
 import AdminHome from '../screens/AdminHome';
+import LogoutScreen from '../screens/LogoutScreen';
 
 const Drawer = createDrawerNavigator();
-
-const LogoutScreen = () => {
-  const navigation = useNavigation();
-
-  useEffect(() => {
-    Alert.alert('Logout', 'Are you sure you want to logout?', [
-      { text: 'Cancel', style: 'cancel', onPress: () => navigation.goBack() },
-      {
-        text: 'Logout',
-        style: 'destructive',
-        onPress: () => {
-          // Simply navigate to login screen
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: 'Login' }],
-            }),
-          );
-        },
-      },
-    ]);
-  }, []);
-
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <ActivityIndicator size="large" color="#003366" />
-    </View>
-  );
-};
 
 const SecurityDrawerNavigator = () => {
   return (
     <Drawer.Navigator
-      screenOptions={{
-        headerShown: false,
-        drawerStyle: { width: 250 },
-        headerTitleStyle: {
-          fontWeight: 'bold',
-          fontSize: 20,
-        },
-      }}
+      screenOptions={{ headerShown: false, drawerStyle: { width: 250 } }}
     >
       <Drawer.Screen name="Home" component={AdminHome} />
 
       <Drawer.Screen name="Form" component={VisitorFormScreen} />
-      {/* <Drawer.Screen name="Home" component={Home} /> */}
       <Drawer.Screen name="Visitors" component={VisitorsScreen} />
       <Drawer.Screen name="Logout" component={LogoutScreen} />
     </Drawer.Navigator>

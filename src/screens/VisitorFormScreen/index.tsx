@@ -12,6 +12,7 @@ import {
   Platform,
   Modal,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import {
@@ -140,37 +141,7 @@ const VisitorFormScreen = () => {
     ]);
   };
 
-  // const handleSubmit = () => {
-  //   if (!isFormValid) {
-  //     Alert.alert(
-  //       'Error',
-  //       'Please fill all mandatory fields and upload required files.',
-  //     );
-  //     return;
-  //   }
-
-  //   Alert.alert('Success', 'Visitor registered successfully.');
-  //   console.log({
-  //     firstName,
-  //     lastName,
-  //     mobile,
-  //     email,
-  //     officeLocation,
-  //     purpose: purpose === 'Other' ? otherReason : purpose,
-  //     photoUri: photo?.uri,
-  //     govtIdUri: govtIdFile?.uri,
-  //   });
-
-  //   setFirstName('');
-  //   setLastName('');
-  //   setMobile('');
-  //   setEmail('');
-  //   setOfficeLocation('');
-  //   setPurpose('');
-  //   setOtherReason('');
-  //   setPhoto(null);
-  //   setGovtIdFile(null);
-  // };
+  
   const handleSubmit = async () => {
     if (!isFormValid) {
       Alert.alert(
@@ -371,7 +342,7 @@ const VisitorFormScreen = () => {
             />
           )}
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[
               styles.submitButton,
               { backgroundColor: isFormValid ? '#007BFF' : '#ccc' },
@@ -380,6 +351,25 @@ const VisitorFormScreen = () => {
             disabled={!isFormValid}
           >
             <Text style={styles.submitText}>Submit</Text>
+          </TouchableOpacity> */}
+          <TouchableOpacity
+            style={[
+              styles.submitButton,
+              {
+                backgroundColor: isFormValid && !isLoading ? '#007BFF' : '#ccc',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              },
+            ]}
+            onPress={handleSubmit}
+            disabled={!isFormValid || isLoading}
+          >
+            {isLoading ? (
+              <ActivityIndicator color="#fff" size="small" />
+            ) : (
+              <Text style={styles.submitText}>Submit</Text>
+            )}
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

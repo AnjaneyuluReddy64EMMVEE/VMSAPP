@@ -119,129 +119,50 @@ export const vmsApi = createApi({
       providesTags: ['Visitor'],
     }),
 
-    // getVisitorStats: builder.query({
-    //   query: ({ officeLocation, startDate, endDate }) => {
-    //     const params = new URLSearchParams();
-    //     if (officeLocation) {
-    //       params.append('officeLocation', officeLocation);
-    //     }
-
-    //     const body = {
-    //       startDate,
-    //       endDate,
-    //     };
-
-    //     console.log('📊 getVisitorStats → Params:', params.toString());
-    //     console.log('📊 getVisitorStats → Body:', body);
-
-    //     return {
-    //       url: `visitor/stats?${params.toString()}`,
-    //       method: 'POST',
-    //       body,
-    //     };
-    //   },
-    // }),
-
-    // // 📈 Get day-wise graph data for visitors
-    // getDayGraph: builder.query({
-    //   query: ({ officeLocation, startDate, endDate }) => {
-    //     const body = {
-    //       officeLocation,
-    //       startDate,
-    //       endDate,
-    //     };
-
-    //     // console.log('📈 getDayGraph → Body:', body);
-
-    //     return {
-    //       url: 'visitor/daygraph',
-    //       method: 'POST',
-    //       body,
-    //     };
-    //   },
-    // }),
-
-    // // 📌 Get purpose-wise graph data for visitors
-    // getPurposeGraph: builder.query({
-    //   query: ({ officeLocation, startDate, endDate }) => {
-    //     const body = {
-    //       officeLocation,
-    //       startDate,
-    //       endDate,
-    //     };
-
-    //     console.log('📊 getPurposeGraph → Body:', body);
-
-    //     return {
-    //       url: 'visitor/purposegraph',
-    //       method: 'POST',
-    //       body,
-    //     };
-    //   },
-    // }),
-
-    // 🚀 Visitor Stats API Queries
+    // 🔍 Fetch total visitor stats based on location and date range
     getVisitorStats: builder.query({
-      // 🔍 Fetch total visitor stats based on location and date range
       query: ({ officeLocation, startDate, endDate }) => {
         const params = new URLSearchParams();
 
-        // ✅ Add officeLocation to query params if available
-        if (officeLocation) {
-          params.append('officeLocation', officeLocation);
-        }
+        // ✅ Always append officeLocation, even if empty
+        params.append('officeLocation', officeLocation || '');
 
-        const body = {
-          startDate, // 🗓️ Start of range
-          endDate, // 🗓️ End of range
-        };
+        const body = { startDate, endDate };
 
         // 🧾 Debug logs
-        // console.log('📊 getVisitorStats → Params:', params.toString());
-        // console.log('📊 getVisitorStats → Body:', body);
+        // console.log('📊 getVisitorStats → Paramsvijay:', params.toString());
+        // console.log('📊 getVisitorStats → Bodyvjiay:', body);
 
         return {
-          url: `visitor/stats?${params.toString()}`, // 📎 POST with query param
+          url: `visitor/stats?${params.toString()}`,
           method: 'POST',
           body,
         };
       },
     }),
-
+    // 📈 Fetch day-wise visitor data for line chart
     getDayGraph: builder.query({
-      // 📈 Fetch day-wise visitor data for line chart
       query: ({ officeLocation, startDate, endDate }) => {
-        const body = {
-          officeLocation,
-          startDate,
-          endDate,
-        };
+        const params = new URLSearchParams();
+        params.append('officeLocation', officeLocation || '');
 
-        // 📌 You can add console.log here for debugging if needed
         return {
-          url: 'visitor/daygraph',
+          url: `visitor/daygraph?${params.toString()}`,
           method: 'POST',
-          body,
+          body: { startDate, endDate },
         };
       },
     }),
-
+    // 🎯 Fetch purpose-wise visitor breakdown
     getPurposeGraph: builder.query({
-      // 🎯 Fetch purpose-wise visitor breakdown
       query: ({ officeLocation, startDate, endDate }) => {
-        const body = {
-          officeLocation,
-          startDate,
-          endDate,
-        };
-
-        // 🧾 Debug log to verify data
-        // console.log('📊 getPurposeGraph → Body:', body);
+        const params = new URLSearchParams();
+        params.append('officeLocation', officeLocation || '');
 
         return {
-          url: 'visitor/purposegraph',
+          url: `visitor/purposegraph?${params.toString()}`,
           method: 'POST',
-          body,
+          body: { startDate, endDate },
         };
       },
     }),
@@ -265,26 +186,7 @@ export const vmsApi = createApi({
       invalidatesTags: ['Admin'],
     }),
 
-    // getAllAdmins: builder.query({
-    //   query: () => 'allAdmin',
-    //   transformResponse: (response: any) => response.response, // ✅ extract inner array
-    //   providesTags: ['Admin'],
-    // }),
-    // getAllAdmins: builder.query({
-    //   query: ({ officeLocation }) => {
-    //     const params = new URLSearchParams();
-    //     if (officeLocation) params.append('officeLocation', "Head Office");
-
-    //     const url = `allAdmin?${params.toString()}`;
-    //     console.log('📋 getAllAdmins → URL:', url); // ✅ Now it logs
-    //     return url;
-    //   },
-    //   transformResponse: (response: any) => {
-    //     // console.log('📋 getAllAdmins → API Response:', response); // Optional debug
-    //     return response.response; // ✅ extract data
-    //   },
-    //   providesTags: ['Admin'],
-    // }),
+  
     getAllAdmins: builder.query({
       query: ({ officeLocation }) => {
         const params = new URLSearchParams();

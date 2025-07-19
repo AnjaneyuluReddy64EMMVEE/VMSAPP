@@ -1,49 +1,12 @@
-// import React from 'react';
-// import { createNativeStackNavigator } from '@react-navigation/native-stack';
-// import SplashScreen from '../screens/SplashScreen';
-// import LoginScreen from '../screens/LoginScreen';
-// import SuperAdminDrawerNavigator from './SuperAdminDrawerNavigator';
-// import SecurityDrawerNavigator from './SecurityDrawerNavigator';
-// import AdminDrawerNavigator from './AdminDrawerNavigator';
-
-// const Stack = createNativeStackNavigator();
-
-// const RootNavigator = () => {
-//   return (
-//     <Stack.Navigator
-//       initialRouteName="Splash"
-//       screenOptions={{ headerShown: false }}
-//     >
-//       <Stack.Screen name="Splash" component={SplashScreen} />
-//       <Stack.Screen name="Login" component={LoginScreen} />
-
-//       <Stack.Screen
-//         name="SecurityDashboard"
-//         component={SecurityDrawerNavigator}
-//       />
-//       <Stack.Screen name="AdminDashboard" component={AdminDrawerNavigator} />
-//       <Stack.Screen
-//         name="SuperAdminDashboard"
-//         component={SuperAdminDrawerNavigator}
-//       />
-//     </Stack.Navigator>
-//   );
-// };
-
-// export default RootNavigator;
-// src/navigation/RootNavigator.tsx
-
 import React, { useEffect, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import SplashScreen from '../screens/SplashScreen';
 import LoginScreen from '../screens/LoginScreen';
 import AdminDrawerNavigator from './AdminDrawerNavigator';
 import SuperAdminDrawerNavigator from './SuperAdminDrawerNavigator';
 import SecurityDrawerNavigator from './SecurityDrawerNavigator';
-import SplashScreen from '../screens/SplashScreen';
-import Home from '../screens/Home';
 
 const Stack = createNativeStackNavigator();
 
@@ -58,10 +21,16 @@ const RootNavigator = () => {
         const token = await AsyncStorage.getItem('token');
         const userData = await AsyncStorage.getItem('user');
 
+        // console.log('🔐 Token:', token);
+        // console.log('👤 UserData:', userData);
+
         if (token && userData) {
           const user = JSON.parse(userData);
           const userRole = user.role;
-          const userBranch = user.officeLocation?.[0] || 'Default Branch';
+          const userBranch = user.officeLocation?.[0] || '';
+
+          console.log('✅ Role:', userRole);
+          console.log('🏢 Branch:', userBranch);
 
           setRole(userRole);
           setBranch(userBranch);
@@ -79,16 +48,15 @@ const RootNavigator = () => {
           setInitialRoute('Login');
         }
       } catch (error) {
-        console.log('Error in RootNavigator login check:', error);
+        console.log('❌ Error in RootNavigator login check:', error);
         setInitialRoute('Login');
       }
     };
 
-    setTimeout(checkUserLogin, 1500); // simulate splash delay
+    setTimeout(checkUserLogin, 1500); // Simulate splash delay
   }, []);
 
   if (!initialRoute) {
-    // Splash UI while checking login
     return <SplashScreen />;
   }
 
@@ -108,29 +76,13 @@ const RootNavigator = () => {
         component={AdminDrawerNavigator}
         initialParams={{ role, branch }}
       />
-
       <Stack.Screen
         name="SecurityDashboard"
         component={SecurityDrawerNavigator}
-        
+        initialParams={{ role, branch }}
       />
     </Stack.Navigator>
   );
 };
 
 export default RootNavigator;
-
-const styles = StyleSheet.create({
-  splash: {
-    flex: 1,
-    backgroundColor: '#003366',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    marginBottom: 20,
-  },
-});
