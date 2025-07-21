@@ -7,12 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const SplashScreen = () => {
   const navigation = useNavigation<any>();
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     navigation.replace('Login');
-  //   }, 2000);
-  //   return () => clearTimeout(timer);
-  // }, []);
+ 
 
   return (
     <SafeAreaView style={styles.container}>

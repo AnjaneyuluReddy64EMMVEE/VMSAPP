@@ -271,6 +271,8 @@
 // });
 
 // export default VisitorPieChart;
+
+
 import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
