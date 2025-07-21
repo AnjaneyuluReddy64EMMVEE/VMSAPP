@@ -209,6 +209,7 @@ import {
   Modal,
   Pressable,
 } from 'react-native';
+import { globalStatuses } from '../../utils/CommonUtils';
 
 const VisitorCard = ({ item, onView }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -226,6 +227,8 @@ const VisitorCard = ({ item, onView }) => {
     setModalVisible(true);
   };
 
+  const isCheckoutedOut = item?.status === 'checkedOut';
+
   return (
     <>
       {/* Card */}
@@ -235,7 +238,9 @@ const VisitorCard = ({ item, onView }) => {
         </TouchableOpacity>
 
         <View style={styles.details}>
-          <Text style={styles.name}>{item.firstName} {item.lastName}</Text>
+          <Text style={styles.name}>
+            {item.firstName} {item.lastName}
+          </Text>
           <Text style={styles.text}>{item.phoneNumber}</Text>
           <Text style={styles.text}>{item.email}</Text>
           <Text style={styles.text}>Badge: {item.badgeNumber || 'N/A'}</Text>
@@ -247,7 +252,8 @@ const VisitorCard = ({ item, onView }) => {
           <Text style={styles.text}>Purpose: {item.purposeOfVisit}</Text>
           <Text style={styles.text}>To Meet: {item.personToMeet}</Text>
           <Text style={styles.text}>
-            {formatTime(item.checkin)} - {item.checkout ? formatTime(item.checkout) : 'N/A'}
+            {formatTime(item.checkin)} -{' '}
+            {item.checkout ? formatTime(item.checkout) : 'N/A'}
           </Text>
 
           {/* Tap on ID image */}
@@ -261,9 +267,16 @@ const VisitorCard = ({ item, onView }) => {
             </TouchableOpacity>
           ) : null}
 
-          <TouchableOpacity style={styles.viewButton} onPress={() => onView(item)}>
-            <Text style={styles.viewText}>View</Text>
-          </TouchableOpacity>
+          <>
+            {!isCheckoutedOut && (
+              <TouchableOpacity
+                style={styles.viewButton}
+                onPress={() => onView(item)}
+              >
+                <Text style={styles.viewText}>View</Text>
+              </TouchableOpacity>
+            )}
+          </>
         </View>
       </View>
 
@@ -274,8 +287,15 @@ const VisitorCard = ({ item, onView }) => {
             style={styles.modalContainer}
             onPress={() => setModalVisible(false)}
           >
-            <Image source={{ uri: imageToView }} style={styles.fullImage} resizeMode="contain" />
-            <Pressable style={styles.closeButton} onPress={() => setModalVisible(false)}>
+            <Image
+              source={{ uri: imageToView }}
+              style={styles.fullImage}
+              resizeMode="contain"
+            />
+            <Pressable
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}
+            >
               <Text style={styles.closeText}>✕</Text>
             </Pressable>
           </TouchableOpacity>

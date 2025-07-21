@@ -186,7 +186,6 @@ export const vmsApi = createApi({
       invalidatesTags: ['Admin'],
     }),
 
-  
     getAllAdmins: builder.query({
       query: ({ officeLocation }) => {
         const params = new URLSearchParams();
