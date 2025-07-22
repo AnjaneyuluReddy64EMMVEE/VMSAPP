@@ -84,11 +84,26 @@ export const vmsApi = createApi({
     }),
 
     updateVisitor: builder.mutation({
-      query: ({ id, badgeNumber, status }) => {
-        const body = { badgeNumber, status };
+      query: ({
+        id,
+        badgeNumber,
+        status,
+        personToMeet,
+        purposeOfVisit,
+        timeIn,
+        timeOut,
+      }) => {
+        const body = {
+          badgeNumber,
+          status,
+          personToMeet,
+          purposeOfVisit,
+          timeIn,
+          timeOut,
+        };
 
         // console.log('🛠️ updateVisitor → ID:', id);
-        // console.log('📦 Payload:', body);
+        console.log('📦 Payload. samara:', body);
         // console.log('📡 PATCH → visitors/' + id);
 
         return {

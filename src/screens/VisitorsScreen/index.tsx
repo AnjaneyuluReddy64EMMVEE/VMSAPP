@@ -673,9 +673,6 @@ import {
   SafeAreaView,
   ActivityIndicator,
   Text,
-  Modal,
-  TextInput,
-  TouchableOpacity,
   StyleSheet,
 } from 'react-native';
 
@@ -688,27 +685,13 @@ import {
   useUpdateVisitorMutation,
 } from '../../api';
 import { showErrorMessage, showSuccessMessage } from '../../utils/Globals';
-import { globalRoles, globalStatuses } from '../../utils/CommonUtils';
-import VisitorModal from '../../components/VisitorModal';
 
 const VisitorsScreen = () => {
-  const { userBranch, userRole, selectedBranch } = useAuth();
+  const { userRole, selectedBranch } = useAuth();
 
   const [phone, setPhone] = useState('');
   const [badge, setBadge] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedVisitor, setSelectedVisitor] = useState(null);
-  const [inputBadgeNumber, setInputBadgeNumber] = useState('');
-  const [inputPurposeOfVisit, setInputPurposeOfVisit] = useState('');
-  const [inputPersonToMeet, setInputPersonToMeet] = useState('');
-  const [modalStatus, setModalStatus] = useState('pending');
-
-  const resolvedBranch = Array.isArray(userBranch) ? userBranch : [userBranch];
-
-  const branch = resolvedBranch === 'All' ? '' : resolvedBranch;
-  console.log(selectedBranch);
 
   const queryParams = useMemo(
     () => ({ officeLocation: selectedBranch }),
@@ -733,17 +716,9 @@ const VisitorsScreen = () => {
     );
   });
 
-  const handleView = visitor => {
-    setSelectedVisitor(visitor);
-    setInputBadgeNumber(visitor.badgeNumber || '');
-    setInputPersonToMeet(visitor.personToMeet || '');
-    setInputPurposeOfVisit(visitor.purposeOfVisit || '');
-    setModalStatus(visitor.status || 'pending');
-    setModalVisible(true);
-  };
-
   const handleUpdate = async payload => {
     try {
+      console.log('payload', payload);
       const response = await updateVisitor(payload).unwrap();
 
       showSuccessMessage({
@@ -767,14 +742,6 @@ const VisitorsScreen = () => {
     setStatusFilter('All');
     refetch();
   };
-
-  const isSecurity = userRole === globalRoles.SECURITY;
-  const isAdminOrSuperAdmin =
-    userRole === globalRoles.ADMIN || userRole === globalRoles.SUPERADMIN;
-
-  const isPending = selectedVisitor?.status === globalStatuses.PENDING;
-  const isCheckedIn = selectedVisitor?.status === globalStatuses.CHECKED_IN;
-  const isCheckedOut = selectedVisitor?.status === globalStatuses.CHECKED_OUT;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f9fbfd' }}>
@@ -823,15 +790,6 @@ const VisitorsScreen = () => {
             contentContainerStyle={{ paddingBottom: 20 }}
           />
         )}
-
-        {/* Modal */}
-        <VisitorModal
-          visible={modalVisible}
-          onClose={() => setModalVisible(false)}
-          selectedVisitor={selectedVisitor}
-          userRole={userRole}
-          onSubmit={handleUpdate}
-        />
       </View>
     </SafeAreaView>
   );

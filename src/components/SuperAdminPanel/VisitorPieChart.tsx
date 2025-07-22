@@ -135,7 +135,7 @@ const VisitorPieChart = ({
 }: {
   data: { count: number; purpose: string }[];
 }) => {
-  console.log('📊 Raw purpose data:', data);
+  // console.log('📊 Raw purpose data:', data);
   // Transform backend data to chart data
   const chartData = data.map((item, index) => ({
     value: item.count,

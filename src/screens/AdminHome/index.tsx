@@ -55,7 +55,7 @@ const AdminHome = () => {
 
   const formatDate = (date: Date) => format(date, 'yyyy-MM-dd');
   const officeLocation = selectedBranch;
-  console.log(`nani`, formatDate);
+  // console.log(`nani`, formatDate);
 
   const handleResetDates = () => {
     const today = new Date();

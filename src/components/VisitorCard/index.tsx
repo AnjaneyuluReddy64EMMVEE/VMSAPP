@@ -15,7 +15,7 @@ const VisitorCard = ({ item, userRole, onUpdateVisitor }) => {
   const [imageToView, setImageToView] = useState('');
   const [visitorModalVisible, setVisitorModalVisible] = useState(false);
   const [selectedVisitor, setSelectedVisitor] = useState(null);
-
+  // console.log(item);
   const statusStyle =
     item.status === 'pending'
       ? styles.statusPending
@@ -39,6 +39,20 @@ const VisitorCard = ({ item, userRole, onUpdateVisitor }) => {
     onUpdateVisitor(updatedData); // 🔁 Parent should handle mutation
     setVisitorModalVisible(false);
   };
+  const formatDate = iso => {
+    if (!iso) return 'N/A';
+    const date = new Date(iso);
+    return date.toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
+  };
+  const formatTime = iso => {
+    if (!iso) return '';
+    const date = new Date(iso);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
 
   return (
     <>
@@ -56,6 +70,9 @@ const VisitorCard = ({ item, userRole, onUpdateVisitor }) => {
           <Text style={styles.text}>{item.email}</Text>
           <Text style={styles.text}>Badge: {item.badgeNumber || 'N/A'}</Text>
           <Text style={styles.text}>Location: {item.officeLocation}</Text>
+          <Text style={styles.text}>
+            Visit Date: {formatDate(item.visitDate)}
+          </Text>
         </View>
 
         <View style={styles.rightSection}>
@@ -122,12 +139,6 @@ const VisitorCard = ({ item, userRole, onUpdateVisitor }) => {
       />
     </>
   );
-};
-
-const formatTime = iso => {
-  if (!iso) return '';
-  const date = new Date(iso);
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
 export default VisitorCard;
