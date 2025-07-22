@@ -81,6 +81,6 @@ export const globalRoles = {
 
 export const globalStatuses = {
   PENDING: 'pending',
-  CHECKED_IN: 'checked_in',
+  CHECKED_IN: 'checkedIn',
   CHECKED_OUT: 'checked_out',
 } as const;

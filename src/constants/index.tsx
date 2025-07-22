@@ -1,7 +1,14 @@
 export const BRANCHES = [
   'All',
-  'AirPort',
+  'Airport',
   'Dabaspet',
   'Head Office',
-  'Sulabelli',
+  'Sulibele',
+];
+
+export const BRANCHESOFFORM = [
+  'Airport',
+  'Dabaspet',
+  'Head Office',
+  'Sulibele',
 ];

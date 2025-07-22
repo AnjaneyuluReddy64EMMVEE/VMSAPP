@@ -65,15 +65,21 @@ export const vmsApi = createApi({
     // ➕ Create a new visitor entry
 
     createVisitor: builder.mutation({
-      query: formData => ({
-        url: 'visitor/create',
-        method: 'POST',
-        body: formData,
-        formData: true, // Optional for clarity (some tools support it)
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }),
+      query: formData => {
+        if (true) {
+          console.log('📝 createVisitor formData =>', formData);
+        }
+
+        return {
+          url: 'visitor/create',
+          method: 'POST',
+          body: formData,
+          formData: true,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        };
+      },
       invalidatesTags: ['Visitor'],
     }),
 
@@ -103,17 +109,18 @@ export const vmsApi = createApi({
 
     // 🔍 Get visitors by selected branch and date
     getVisitorsByBranch: builder.query({
-      query: ({ officeLocation, date }) => {
+      query: ({ officeLocation }) => {
         const params = new URLSearchParams();
-        if (officeLocation && officeLocation !== 'All') {
-          params.append('officeLocation', officeLocation);
-        }
-        if (date) {
-          params.append('date', date);
-        }
+
+        // Always append officeLocation — if "All", send as empty string
+        params.append(
+          'officeLocation',
+          officeLocation === 'All' ? '' : officeLocation,
+        );
 
         const queryStr = `visitors?${params.toString()}`;
-        console.log('🔍 API Query:', queryStr);
+        console.log('🔍 getVisitorsByBranchtoday →', queryStr);
+
         return queryStr;
       },
       providesTags: ['Visitor'],
@@ -124,14 +131,15 @@ export const vmsApi = createApi({
       query: ({ officeLocation, startDate, endDate }) => {
         const params = new URLSearchParams();
 
-        // ✅ Always append officeLocation, even if empty
-        params.append('officeLocation', officeLocation || '');
+        // 👇 Convert 'All' to empty string or backend-friendly value
+        const locationParam = officeLocation === 'All' ? '' : officeLocation;
+        params.append('officeLocation', locationParam);
 
         const body = { startDate, endDate };
 
         // 🧾 Debug logs
-        // console.log('📊 getVisitorStats → Paramsvijay:', params.toString());
-        // console.log('📊 getVisitorStats → Bodyvjiay:', body);
+        console.log('📊 getVisitorStats → Params:', params.toString());
+        console.log('📊 getVisitorStats → Body:', body);
 
         return {
           url: `visitor/stats?${params.toString()}`,
@@ -140,11 +148,13 @@ export const vmsApi = createApi({
         };
       },
     }),
+
     // 📈 Fetch day-wise visitor data for line chart
     getDayGraph: builder.query({
       query: ({ officeLocation, startDate, endDate }) => {
         const params = new URLSearchParams();
-        params.append('officeLocation', officeLocation || '');
+        const locationParam = officeLocation === 'All' ? '' : officeLocation;
+        params.append('officeLocation', locationParam);
 
         return {
           url: `visitor/daygraph?${params.toString()}`,
@@ -157,7 +167,9 @@ export const vmsApi = createApi({
     getPurposeGraph: builder.query({
       query: ({ officeLocation, startDate, endDate }) => {
         const params = new URLSearchParams();
-        params.append('officeLocation', officeLocation || '');
+        const locationParam = officeLocation === 'All' ? '' : officeLocation;
+
+        params.append('officeLocation', locationParam);
 
         return {
           url: `visitor/purposegraph?${params.toString()}`,
@@ -259,7 +271,7 @@ export const vmsApi = createApi({
     getVisitorsByLocationAndDate: builder.query({
       query: ({ officeLocation, fromDate, toDate, page = 0, limit = 10 }) => {
         const params = new URLSearchParams();
-        if (true) {
+        if (officeLocation) {
           params.append('officeLocation', officeLocation);
         }
         if (fromDate) params.append('fromDate', fromDate);

@@ -6,13 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
 
 const VisitorFilterBar = ({
-  searchDate,
-  setSearchDate,
-  showDatePicker,
-  setShowDatePicker,
   phone,
   setPhone,
   badge,
@@ -20,27 +15,14 @@ const VisitorFilterBar = ({
   statusFilter,
   setStatusFilter,
 }) => {
+  const handleReset = () => {
+    setPhone('');
+    setBadge('');
+    setStatusFilter('All');
+  };
+
   return (
     <View style={styles.filters}>
-      <TouchableOpacity
-        onPress={() => setShowDatePicker(true)}
-        style={styles.filterInput}
-      >
-        <Text>{searchDate.toLocaleDateString()}</Text>
-      </TouchableOpacity>
-
-      {showDatePicker && (
-        <DateTimePicker
-          value={searchDate}
-          mode="date"
-          display="default"
-          onChange={(e, selectedDate) => {
-            setShowDatePicker(false);
-            if (selectedDate) setSearchDate(selectedDate);
-          }}
-        />
-      )}
-
       <TextInput
         style={styles.filterInput}
         placeholder="Phone Number"
@@ -70,6 +52,10 @@ const VisitorFilterBar = ({
       >
         <Text>{statusFilter}</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
+        <Text style={styles.resetText}>Reset</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -93,5 +79,16 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     minWidth: '45%',
     elevation: 2,
+  },
+  resetButton: {
+    backgroundColor: '#e74c3c',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8,
+    elevation: 2,
+  },
+  resetText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });

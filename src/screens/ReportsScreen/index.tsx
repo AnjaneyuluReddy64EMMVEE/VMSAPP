@@ -459,7 +459,7 @@ const ReportsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title={`Report - ${selectedBranch}`} showBackButton />
+      <Header title={`Report - ${selectedBranch}`} showMenuButton />
 
       {/* Date Filters */}
       <View style={styles.dateRow}>

@@ -908,7 +908,7 @@ const LoginScreen: React.FC = () => {
 
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder="Employee ID"
           value={usernameInput}
           onChangeText={setUsernameInput}
           autoCapitalize="none"
