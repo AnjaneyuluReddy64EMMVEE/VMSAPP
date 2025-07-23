@@ -8,7 +8,7 @@ import ReportsScreen from '../screens/ReportsScreen';
 import NotificationScreen from '../screens/NotificationScreen';
 import AdminUserScreen from '../screens/AdminUsersScreen';
 import LogoutScreen from '../screens/LogoutScreen';
-import AdminHome from '../screens/AdminHome';
+import AdminHome from '../screens/Home';
 
 const Drawer = createDrawerNavigator();
 

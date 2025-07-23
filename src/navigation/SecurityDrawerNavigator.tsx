@@ -4,7 +4,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 // Import your screens
 import VisitorsScreen from '../screens/VisitorsScreen';
 import VisitorFormScreen from '../screens/VisitorFormScreen';
-import AdminHome from '../screens/AdminHome';
+import AdminHome from '../screens/Home';
 import LogoutScreen from '../screens/LogoutScreen';
 
 const Drawer = createDrawerNavigator();

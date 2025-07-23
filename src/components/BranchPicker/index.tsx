@@ -1,6 +1,13 @@
 // components/BranchPicker.tsx
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  FlatList,
+} from 'react-native';
 
 interface BranchPickerProps {
   visible: boolean;
@@ -24,7 +31,7 @@ const BranchPicker: React.FC<BranchPickerProps> = ({
           <Text style={styles.title}>Select Branch</Text>
           <FlatList
             data={branches}
-            keyExtractor={(item) => item}
+            keyExtractor={item => item}
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={[

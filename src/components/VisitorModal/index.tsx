@@ -11,6 +11,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import InputField from '../InputField';
 import Button from '../Button';
 import { globalRoles, globalStatuses } from '../../utils/CommonUtils';
+import { heightPercentageToDP } from 'react-native-responsive-screen';
 
 const VisitorModal = ({
   visible,
@@ -203,6 +204,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#00000066',
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: heightPercentageToDP('5%'),
   },
   modalContainer: {
     backgroundColor: '#fff',

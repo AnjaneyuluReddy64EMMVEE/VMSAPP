@@ -29,7 +29,7 @@ export const vmsApi = createApi({
     // ➕ Create a new security user
     createSecurity: builder.mutation({
       query: data => {
-        console.log('🔐 Creating security user with data:', data);
+        // console.log('🔐 Creating security user with data:', data);
         return {
           url: 'createSecurity',
           method: 'POST',
@@ -67,7 +67,7 @@ export const vmsApi = createApi({
     createVisitor: builder.mutation({
       query: formData => {
         if (true) {
-          console.log('📝 createVisitor formData =>', formData);
+          // console.log('📝 createVisitor formData =>', formData);
         }
 
         return {
@@ -103,7 +103,7 @@ export const vmsApi = createApi({
         };
 
         // console.log('🛠️ updateVisitor → ID:', id);
-        console.log('📦 Payload. samara:', body);
+        // console.log('📦 Payload. samara:', body);
         // console.log('📡 PATCH → visitors/' + id);
 
         return {
@@ -134,7 +134,7 @@ export const vmsApi = createApi({
         );
 
         const queryStr = `visitors?${params.toString()}`;
-        console.log('🔍 getVisitorsByBranchtoday →', queryStr);
+        // console.log('🔍 getVisitorsByBranchtoday →', queryStr);
 
         return queryStr;
       },
@@ -153,8 +153,8 @@ export const vmsApi = createApi({
         const body = { startDate, endDate };
 
         // 🧾 Debug logs
-        console.log('📊 getVisitorStats → Params:', params.toString());
-        console.log('📊 getVisitorStats → Body:', body);
+        // console.log('📊 getVisitorStats → Params:', params.toString());
+        // console.log('📊 getVisitorStats → Body:', body);
 
         return {
           url: `visitor/stats?${params.toString()}`,
@@ -226,7 +226,7 @@ export const vmsApi = createApi({
           ? `allAdmin?${params.toString()}`
           : 'allAdmin';
 
-        console.log('📋 getAllAdmins → Final URL:', url);
+        // console.log('📋 getAllAdmins → Final URL:', url);
         return url;
       },
       transformResponse: (response: any) => {

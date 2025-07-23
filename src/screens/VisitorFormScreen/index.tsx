@@ -139,6 +139,7 @@ const VisitorFormScreen = () => {
     formData.append('email', email);
     formData.append('officeLocation', officeLocation);
     formData.append('status', 'checkedIn');
+    formData.append('checkin', new Date().toISOString());
     formData.append(
       'purposeOfVisit',
       purpose === 'Other' ? otherReason : purpose,
@@ -201,6 +202,7 @@ const VisitorFormScreen = () => {
           {value || `Select ${label}`}
         </Text>
       </TouchableOpacity>
+
       <Modal visible={modalVisible} transparent animationType="fade">
         <TouchableOpacity
           style={styles.modalOverlay}
