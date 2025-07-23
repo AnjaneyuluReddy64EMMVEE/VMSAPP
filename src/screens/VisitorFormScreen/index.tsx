@@ -31,6 +31,8 @@ const VisitorFormScreen = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [mobile, setMobile] = useState('');
+  const [badgeNumber, setBadgeNumber] = useState('');
+
   const [email, setEmail] = useState('');
   const [officeLocation, setOfficeLocation] = useState('');
   const [personToMeet, setPersonToMeet] = useState('');
@@ -136,6 +138,7 @@ const VisitorFormScreen = () => {
     formData.append('firstName', firstName);
     formData.append('lastName', lastName);
     formData.append('phoneNumber', mobile);
+    formData.append('badgeNumber', badgeNumber);
     formData.append('email', email);
     formData.append('officeLocation', officeLocation);
     formData.append('status', 'checkedIn');
@@ -259,6 +262,13 @@ const VisitorFormScreen = () => {
             keyboardType="phone-pad"
             maxLength={10}
           />
+          <TextInput
+            style={styles.input}
+            placeholder="Badge Number"
+            value={badgeNumber}
+            onChangeText={setBadgeNumber}
+          />
+
           <TextInput
             style={styles.input}
             placeholder="Email ID (optional)"
