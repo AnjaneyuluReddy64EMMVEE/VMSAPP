@@ -405,6 +405,7 @@
 //     color: '#007AFF',
 //   },
 // });
+
 import React, { useState } from 'react';
 import {
   View,
@@ -417,6 +418,7 @@ import {
   ScrollView,
 } from 'react-native';
 import BranchPicker from '../BranchPicker';
+import { heightPercentageToDP } from 'react-native-responsive-screen';
 
 interface AddAdminModalProps {
   visible: boolean;
@@ -426,7 +428,10 @@ interface AddAdminModalProps {
   password: string;
   employeeId: string;
   phoneNumber: string;
-  branch: string[];
+  // branch: string;
+  branch: string; // ✅ single branch
+  setBranch: (branch: string) => void;
+
   branches: string[];
   onClose: () => void;
   onAdd: () => void;
@@ -435,7 +440,7 @@ interface AddAdminModalProps {
   setPassword: (text: string) => void;
   setEmployeeId: (text: string) => void;
   setPhoneNumber: (text: string) => void;
-  setBranch: (branch: string[]) => void;
+  // setBranch: (branch: string[]) => void;
 }
 
 const AddUserModal: React.FC<AddAdminModalProps> = ({
@@ -459,7 +464,7 @@ const AddUserModal: React.FC<AddAdminModalProps> = ({
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showBranchPicker, setShowBranchPicker] = useState(false);
-
+  console.log('branch', branch);
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.overlay}>
@@ -512,15 +517,13 @@ const AddUserModal: React.FC<AddAdminModalProps> = ({
             onChangeText={setPhoneNumber}
           />
 
-          <Text style={styles.label}>Select Office Branch(es)</Text>
+          <Text style={styles.label}>Select Office Branch</Text>
           <TouchableOpacity
             style={styles.officeSelectButton}
             onPress={() => setShowBranchPicker(true)}
           >
             <Text style={styles.officeSelectText}>
-              {Array.isArray(branch) && branch.length > 0
-                ? branch.join(', ')
-                : 'Choose Branch(es)'}
+              {branch.length > 0 ? branch : 'Choose Branch'}
             </Text>
           </TouchableOpacity>
 
@@ -542,8 +545,8 @@ const AddUserModal: React.FC<AddAdminModalProps> = ({
         <BranchPicker
           visible={showBranchPicker}
           branches={branches}
-          selectedBranches={branch}
-          onSelect={(selected: string[]) => {
+          selectedBranch={branch}
+          onSelect={(selected: string) => {
             setBranch(selected);
             setShowBranchPicker(false);
           }}
@@ -561,9 +564,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#00000088',
     justifyContent: 'center',
+    marginTop: heightPercentageToDP('5%'),
   },
   container: {
     backgroundColor: '#fff',
+    marginTop: heightPercentageToDP('10%'),
+
     margin: 20,
     borderRadius: 12,
     padding: 16,

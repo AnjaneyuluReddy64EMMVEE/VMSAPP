@@ -897,7 +897,7 @@ import {
 } from '../../api';
 import { useAuth } from '../../contexts/AuthContext';
 import AdminFilterBar from '../../components/AdminFilterBar';
-import { BRANCHES, BRANCHESOFFORM } from '../../constants';
+import { BRANCHESOFFORM } from '../../constants';
 
 const AdminUsersScreen = () => {
   const { selectedBranch, userBranch } = useAuth();

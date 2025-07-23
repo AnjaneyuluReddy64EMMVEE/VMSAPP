@@ -806,8 +806,8 @@ const LoginScreen: React.FC = () => {
   const navigation = useNavigation();
   const { setUserRole, setUserName, setUserEmail, setUserBranch } = useAuth();
 
-  const [usernameInput, setUsernameInput] = useState('EMMVEE009');
-  const [password, setPassword] = useState('123');
+  const [usernameInput, setUsernameInput] = useState('SUPP001');
+  const [password, setPassword] = useState('Superadmin6@8861');
   const [showPassword, setShowPassword] = useState(false);
 
   const passwordRef = useRef<TextInput>(null);

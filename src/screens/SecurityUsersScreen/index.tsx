@@ -1210,21 +1210,6 @@ const SecurityUsersScreen = () => {
     <SafeAreaView style={styles.container}>
       <Header title="Security Users" showMenuButton />
 
-      {/* 🧪 Filter Bar */}
-      <AdminFilterBar
-        name={name}
-        setName={setName}
-        empId={empId}
-        setEmpId={setEmpId}
-        phone={phone}
-        setPhone={setPhone}
-        onReset={() => {
-          setName('');
-          setEmpId('');
-          setPhone('');
-        }}
-      />
-
       {/* ➕ Add Header */}
       <View style={styles.headerRow}>
         <Image
@@ -1240,7 +1225,20 @@ const SecurityUsersScreen = () => {
           <Text style={styles.addButtonText}>+ Add Security</Text>
         </TouchableOpacity>
       </View>
-
+      {/* 🧪 Filter Bar */}
+      <AdminFilterBar
+        name={name}
+        setName={setName}
+        empId={empId}
+        setEmpId={setEmpId}
+        phone={phone}
+        setPhone={setPhone}
+        onReset={() => {
+          setName('');
+          setEmpId('');
+          setPhone('');
+        }}
+      />
       {/* 👮 Security List */}
       {isLoading ? (
         <ActivityIndicator
