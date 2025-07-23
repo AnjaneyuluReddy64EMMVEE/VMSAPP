@@ -47,8 +47,15 @@ const AdminHome = () => {
   const [showFromPicker, setShowFromPicker] = useState(false);
   const [showToPicker, setShowToPicker] = useState(false);
 
+  // const normalizedBranches = Array.isArray(userBranch)
+  //   ? userBranch
+  //   : userBranch
+  //   ? [userBranch]
+  //   : [];
   const normalizedBranches = Array.isArray(userBranch)
-    ? userBranch
+    ? userBranch.length > 1
+      ? ['All', ...userBranch]
+      : userBranch
     : userBranch
     ? [userBranch]
     : [];
