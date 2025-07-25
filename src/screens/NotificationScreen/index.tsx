@@ -81,7 +81,7 @@ const NotificationScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Notifications" showBackButton />
+      <Header title="Notifications" showMenuButton />
 
       <View style={[styles.row, styles.headerRow]}>
         <Text style={[styles.cell, styles.headerText]}>Employee Id</Text>

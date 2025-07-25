@@ -1,14 +1,27 @@
+// export const BRANCHES = [
+//   'All',
+//   'Airport',
+//   'Dabaspet',
+//   'Head Office',
+//   'Sulibele',
+// ];
+
 export const BRANCHES = [
   'All',
-  'Airport',
+  'Ganganagar',
   'Dabaspet',
-  'Head Office',
   'Sulibele',
+  'Corporate Office',
 ];
-
+// export const BRANCHESOFFORM = [
+//   'Airport',
+//   'Dabaspet',
+//   'Head Office',
+//   'Sulibele',
+// ];
 export const BRANCHESOFFORM = [
-  'Airport',
+  'Ganganagar',
   'Dabaspet',
-  'Head Office',
   'Sulibele',
+  'Corporate Office',
 ];

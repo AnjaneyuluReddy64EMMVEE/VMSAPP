@@ -9,6 +9,7 @@ import {
   Pressable,
 } from 'react-native';
 import VisitorModal from '../VisitorModal';
+import { heightPercentageToDP } from 'react-native-responsive-screen';
 
 const VisitorCard = ({ item, userRole, onUpdateVisitor }) => {
   const [imageModalVisible, setImageModalVisible] = useState(false);
@@ -191,6 +192,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.85)',
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: heightPercentageToDP('5%'),
   },
   modalContainer: {
     width: '100%',

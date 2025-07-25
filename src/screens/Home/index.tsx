@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -27,9 +27,11 @@ import {
 import { useAuth } from '../../contexts/AuthContext';
 import BranchPicker from '../../components/BranchPicker';
 import { BRANCHES } from '../../constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AdminHome = () => {
-  const { userName, userBranch, selectedBranch, setSelectedBranch } = useAuth();
+  const { userBranch, selectedBranch, setSelectedBranch } = useAuth();
+  const [userName, setUserName] = useState<string | null>(null);
   const [branch, setBranch] = useState(userBranch[0] || 'All');
   const [branchModalVisible, setBranchModalVisible] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
@@ -47,11 +49,6 @@ const AdminHome = () => {
   const [showFromPicker, setShowFromPicker] = useState(false);
   const [showToPicker, setShowToPicker] = useState(false);
 
-  // const normalizedBranches = Array.isArray(userBranch)
-  //   ? userBranch
-  //   : userBranch
-  //   ? [userBranch]
-  //   : [];
   const normalizedBranches = Array.isArray(userBranch)
     ? userBranch.length > 1
       ? ['All', ...userBranch]
@@ -62,7 +59,6 @@ const AdminHome = () => {
 
   const formatDate = (date: Date) => format(date, 'yyyy-MM-dd');
   const officeLocation = selectedBranch;
-  // console.log(`nani`, formatDate);
 
   const handleResetDates = () => {
     const today = new Date();
@@ -118,16 +114,6 @@ const AdminHome = () => {
     endDate: formatDate(endDate),
   });
 
-  // const {
-  //   data: dayData,
-  //   isLoading: loadingLine,
-  //   error: lineError,
-  // } = useGetDayGraphQuery({
-  //   officeLocation,
-  //   startDate: formatDate(startDate),
-  //   endDate: formatDate(endDate),
-  // });
-
   const {
     data: purposeData,
     isLoading: loadingPie,
@@ -142,6 +128,20 @@ const AdminHome = () => {
     setBranch(newBranch);
     setSelectedBranch(newBranch);
   };
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const name = await AsyncStorage.getItem('userName');
+        console.log('Loaded userName:', name);
+        if (name) setUserName(name);
+      } catch (error) {
+        console.error('Failed to load userName:', error);
+      }
+    };
+
+    loadUserData();
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f8f9fa' }}>

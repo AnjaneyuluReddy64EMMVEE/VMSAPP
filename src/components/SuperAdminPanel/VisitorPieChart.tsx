@@ -2,20 +2,31 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { PieChart } from 'react-native-gifted-charts';
 
-// Assign colors to each purpose (you can expand this list if needed)
-const COLORS = ['#FF6384', '#36A2EB', '#FFCE56', '#8BC34A', '#FF9800'];
+const COLORS = [
+  '#FF6384',
+  '#36A2EB',
+  '#FFCE56',
+  '#8BC34A',
+  '#FF9800',
+  '#9C27B0',
+  '#00BCD4',
+  '#E91E63',
+  '#CDDC39',
+  '#795548',
+];
 
 const VisitorPieChart = ({
   data,
 }: {
   data: { count: number; purpose: string }[];
 }) => {
-  // console.log('📊 Raw purpose data:', data);
-  // Transform backend data to chart data
+  const total = data.reduce((sum, item) => sum + item.count, 0);
+
   const chartData = data.map((item, index) => ({
     value: item.count,
     color: COLORS[index % COLORS.length],
-    text: item.purpose,
+    text: `${Math.round((item.count / total) * 100)}%`, // show percentage inside chart
+    name: item.purpose,
   }));
 
   return (
@@ -25,7 +36,7 @@ const VisitorPieChart = ({
         {chartData.map((item, index) => (
           <View key={index} style={styles.legendItem}>
             <View style={[styles.colorBox, { backgroundColor: item.color }]} />
-            <Text style={styles.legendText}>{item.text}</Text>
+            <Text style={styles.legendText}>{item.name}</Text>
           </View>
         ))}
       </View>
@@ -37,6 +48,7 @@ const VisitorPieChart = ({
           donut
           showText
           textColor="white"
+          textSize={14}
           radius={100}
           innerRadius={60}
           focusOnPress

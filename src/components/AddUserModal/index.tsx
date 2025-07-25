@@ -107,6 +107,7 @@ const AddUserModal: React.FC<AddAdminModalProps> = ({
             keyboardType="phone-pad"
             value={phoneNumber}
             onChangeText={setPhoneNumber}
+            maxLength={10}
           />
 
           <View style={styles.branchContainer}>

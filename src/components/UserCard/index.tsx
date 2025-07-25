@@ -6,25 +6,30 @@ interface AdminUserCardProps {
   userName: string;
   employeeId: string;
   email: string;
+  password: string;
   phoneNumber: string;
   officeLocation: string[];
   role: string;
   onDelete: (employeeId: string) => void;
+  sourceScreen: string;
 }
 
 const UserCard: React.FC<AdminUserCardProps> = ({
   userName,
   employeeId,
   email,
+  password,
   phoneNumber,
   officeLocation,
   role,
   onDelete,
+  sourceScreen,
 }) => (
   <View style={styles.card}>
     <Text style={styles.name}>{userName}</Text>
     <Text style={styles.role}>Role: {role}</Text>
-    <Text style={styles.text}>Email: {email}</Text>
+    {<Text style={styles.text}>Email: {email}</Text>}
+    <Text style={styles.text}>Password: {password}</Text>
     <Text style={styles.text}>Phone: {phoneNumber}</Text>
     <Text style={styles.text}>Emp ID: {employeeId}</Text>
     <Text style={styles.branch}>

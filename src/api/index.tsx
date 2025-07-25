@@ -283,20 +283,49 @@ export const vmsApi = createApi({
         },
       }),
     }),
+    // getVisitorsByLocationAndDate: builder.query({
+    //   query: ({ officeLocation, fromDate, toDate, page = 0, limit = 10 }) => {
+    //     const params = new URLSearchParams();
+    //     if (officeLocation) {
+    //       params.append('officeLocation', officeLocation);
+    //     }
+    //     if (fromDate) params.append('fromDate', fromDate);
+    //     if (toDate) params.append('toDate', toDate);
+    //     params.append('page', page.toString());
+    //     params.append('limit', limit.toString());
+
+    //     const queryStr = `visitors?${params.toString()}`;
+    //     // console.log('🔍 getVisitorsByLocationAndDate →', fromDate);
+    //     return queryStr;
+    //   },
+    // }),
     getVisitorsByLocationAndDate: builder.query({
-      query: ({ officeLocation, fromDate, toDate, page = 0, limit = 10 }) => {
+      query: ({ officeLocation, startDate, endDate, range }) => {
         const params = new URLSearchParams();
+
         if (officeLocation) {
           params.append('officeLocation', officeLocation);
         }
-        if (fromDate) params.append('fromDate', fromDate);
-        if (toDate) params.append('toDate', toDate);
-        params.append('page', page.toString());
-        params.append('limit', limit.toString());
 
-        const queryStr = `visitors?${params.toString()}`;
-        // console.log('🔍 getVisitorsByLocationAndDate →', fromDate);
-        return queryStr;
+        const body = {
+          ...(startDate && { startDate }),
+          ...(endDate && { endDate }),
+          ...(range && { range }),
+        };
+
+        const url = `visitor/filterdate?${params.toString()}`;
+
+        console.log('🔍 getVisitorsByLocationAndDate →', {
+          officeLocation,
+          body,
+          url,
+        });
+
+        return {
+          url,
+          method: 'POST',
+          body,
+        };
       },
     }),
   }),

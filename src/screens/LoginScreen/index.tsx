@@ -22,8 +22,6 @@ import {
 } from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-// import { Picker } from '@react-native-picker/picker';
-
 import { useAuth } from '../../contexts/AuthContext';
 import {
   useLoginUserMutation,
@@ -37,8 +35,8 @@ const LoginScreen: React.FC = () => {
   const navigation = useNavigation();
   const { setUserRole, setUserName, setUserEmail, setUserBranch } = useAuth();
 
-  const [usernameInput, setUsernameInput] = useState('SUPP001');
-  const [password, setPassword] = useState('Superadmin6@8861');
+  const [usernameInput, setUsernameInput] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   const passwordRef = useRef<TextInput>(null);
@@ -68,6 +66,7 @@ const LoginScreen: React.FC = () => {
 
       await AsyncStorage.setItem('token', token);
       await AsyncStorage.setItem('user', JSON.stringify(user));
+      await AsyncStorage.setItem('userName', user.userName || '');
 
       switch (user.role) {
         case 'admin':
@@ -148,16 +147,6 @@ const LoginScreen: React.FC = () => {
           onSubmitEditing={() => passwordRef.current?.focus()}
         />
 
-        {/* <TextInput
-          ref={passwordRef}
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          returnKeyType="done"
-          onSubmitEditing={handleLogin}
-        /> */}
         <View style={styles.passwordContainer}>
           <TextInput
             ref={passwordRef}
@@ -200,12 +189,6 @@ const LoginScreen: React.FC = () => {
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>Forgot Password</Text>
 
-            {/* <TextInput
-              placeholder="Enter Employee ID"
-              style={styles.input}
-              value={employeeId}
-              onChangeText={setEmployeeId}
-            /> */}
             <InputField
               placeholder="Enter Employee ID"
               style={styles.input}
@@ -298,7 +281,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderRadius: wp(2),
     paddingHorizontal: wp(4),
-    paddingVertical: Platform.OS === 'ios' ? hp(1.5) : 0,
+    paddingVertical: Platform.OS === 'ios' ? hp(0.3) : 0,
     marginBottom: hp(1.5),
   },
   passwordInput: {
