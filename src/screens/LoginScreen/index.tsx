@@ -202,7 +202,7 @@ const LoginScreen: React.FC = () => {
               onPress={() => setBranchPickerVisible(true)}
             >
               <Text style={styles.dropdownText}>
-                {officeLocation || 'Choose a branch'}
+                {'Choose a branch' || officeLocation}
               </Text>
             </TouchableOpacity>
 

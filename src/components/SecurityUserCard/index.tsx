@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-interface AdminUserCardProps {
+interface SecurityUserCardProps {
   _id: string;
   userName: string;
   employeeId: string;
@@ -11,24 +11,20 @@ interface AdminUserCardProps {
   officeLocation: string[];
   role: string;
   onDelete: (employeeId: string) => void;
-  sourceScreen: string;
 }
 
-const UserCard: React.FC<AdminUserCardProps> = ({
+const SecurityUserCard: React.FC<SecurityUserCardProps> = ({
   userName,
   employeeId,
-  email,
   password,
   phoneNumber,
   officeLocation,
   role,
   onDelete,
-  sourceScreen,
 }) => (
   <View style={styles.card}>
     <Text style={styles.name}>{userName}</Text>
     <Text style={styles.role}>Role: {role}</Text>
-    {<Text style={styles.text}>Email: {email}</Text>}
     <Text style={styles.text}>Password: {password}</Text>
     <Text style={styles.text}>Phone: {phoneNumber}</Text>
     <Text style={styles.text}>Emp ID: {employeeId}</Text>
@@ -45,7 +41,7 @@ const UserCard: React.FC<AdminUserCardProps> = ({
   </View>
 );
 
-export default UserCard;
+export default SecurityUserCard;
 
 const styles = StyleSheet.create({
   card: {

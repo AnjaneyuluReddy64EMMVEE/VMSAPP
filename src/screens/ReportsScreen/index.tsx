@@ -461,6 +461,7 @@
 // };
 
 // export default ReportsScreen;
+
 import React, { useState, useMemo } from 'react';
 import {
   SafeAreaView,
@@ -490,18 +491,30 @@ const ReportsScreen = () => {
   const [range, setRange] = useState<'lastWeek' | 'lastMonth' | null>(null);
 
   // ✅ Memoize queryParams to avoid unnecessary rerenders
+  // const queryParams = useMemo(() => {
+  //   return {
+  //     officeLocation: selectedBranch,
+  //     startDate: startDate ? format(startDate, 'yyyy-MM-dd') : undefined,
+  //     endDate: endDate ? format(endDate, 'yyyy-MM-dd') : undefined,
+  //     range: range || undefined,
+  //   };
+  // }, [selectedBranch, startDate, endDate, range]);
   const queryParams = useMemo(() => {
     return {
       officeLocation: selectedBranch,
-      startDate: startDate ? format(startDate, 'yyyy-MM-dd') : undefined,
-      endDate: endDate ? format(endDate, 'yyyy-MM-dd') : undefined,
+      startDate: startDate
+        ? new Date(startDate.setHours(0, 0, 0, 0)).toISOString()
+        : undefined,
+      endDate: endDate
+        ? new Date(endDate.setHours(23, 59, 59, 999)).toISOString()
+        : undefined,
       range: range || undefined,
     };
   }, [selectedBranch, startDate, endDate, range]);
 
   // ✅ No need for manual refetch – RTK Query handles it when queryParams change
   const { data, isLoading } = useGetVisitorsByLocationAndDateQuery(queryParams);
-  // console.log(`love`, queryParams);
+  console.log(`love`, data);
   return (
     <SafeAreaView style={styles.container}>
       <Header title="Report" showMenuButton />

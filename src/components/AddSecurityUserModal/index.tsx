@@ -12,11 +12,10 @@ import {
 import { heightPercentageToDP } from 'react-native-responsive-screen';
 import BranchSelector from '../BranchSelector';
 
-interface AddAdminModalProps {
+interface AddSecurityModalProps {
   visible: boolean;
   title: string;
   name: string;
-  email: string;
   password: string;
   employeeId: string;
   phoneNumber: string;
@@ -26,18 +25,15 @@ interface AddAdminModalProps {
   onClose: () => void;
   onAdd: () => void;
   setName: (text: string) => void;
-  setEmail: (text: string) => void;
   setPassword: (text: string) => void;
   setEmployeeId: (text: string) => void;
   setPhoneNumber: (text: string) => void;
-  // sourceScreen: 'admin' | 'security';
 }
 
-const AddUserModal: React.FC<AddAdminModalProps> = ({
+const AddSecurityUserModal: React.FC<AddSecurityModalProps> = ({
   title,
   visible,
   name,
-  email,
   password,
   employeeId,
   phoneNumber,
@@ -46,12 +42,10 @@ const AddUserModal: React.FC<AddAdminModalProps> = ({
   onClose,
   onAdd,
   setName,
-  setEmail,
   setPassword,
   setEmployeeId,
   setPhoneNumber,
   setBranch,
-  sourceScreen,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showBranchPicker, setShowBranchPicker] = useState(false);
@@ -70,15 +64,7 @@ const AddUserModal: React.FC<AddAdminModalProps> = ({
             value={name}
             onChangeText={setName}
           />
-          {sourceScreen !== 'security' && (
-            <TextInput
-              placeholder="Email"
-              style={styles.input}
-              keyboardType="email-address"
-              value={email}
-              onChangeText={setEmail}
-            />
-          )}
+
           <TextInput
             placeholder="Password"
             style={styles.input}
@@ -167,7 +153,7 @@ const AddUserModal: React.FC<AddAdminModalProps> = ({
   );
 };
 
-export default AddUserModal;
+export default AddSecurityUserModal;
 
 const styles = StyleSheet.create({
   overlay: {

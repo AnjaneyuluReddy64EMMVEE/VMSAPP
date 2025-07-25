@@ -12,8 +12,6 @@ import {
 } from 'react-native';
 
 import Header from '../../components/Header';
-import UserCard from '../../components/UserCard';
-import AddUserModal from '../../components/AddUserModal';
 import AdminFilterBar from '../../components/AdminFilterBar'; // ✅ reused
 
 import {
@@ -23,11 +21,21 @@ import {
 } from '../../api';
 
 import { useAuth } from '../../contexts/AuthContext';
-import { BRANCHES, BRANCHESOFFORM } from '../../constants';
+import AddSecurityUserModal from '../../components/AddSecurityUserModal';
+import SecurityUserCard from '../../components/SecurityUserCard';
+import { showErrorMessage, showSuccessMessage } from '../../utils/Globals';
 
 const SecurityUsersScreen = () => {
-  const { selectedBranch } = useAuth();
+  const { selectedBranch, userBranch } = useAuth();
   const officeLocation = selectedBranch === 'All' ? '' : selectedBranch;
+  const branchList = Array.isArray(userBranch)
+    ? userBranch
+    : typeof userBranch === 'string'
+    ? userBranch
+        .split(',')
+        .map(b => b.trim())
+        .filter(Boolean)
+    : [];
 
   const {
     data: securityUsers = [],
@@ -40,7 +48,6 @@ const SecurityUsersScreen = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [newName, setNewName] = useState('');
-  const [newEmail, setNewEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newBranch, setNewBranch] = useState<string[]>([]);
   const [newPhone, setNewPhone] = useState('');
@@ -51,6 +58,23 @@ const SecurityUsersScreen = () => {
   const [empId, setEmpId] = useState('');
   const [phone, setPhone] = useState('');
 
+  // const handleDelete = (employeeId: string) => {
+  //   Alert.alert('Confirm Delete', 'Are you sure?', [
+  //     { text: 'Cancel', style: 'cancel' },
+  //     {
+  //       text: 'Delete',
+  //       style: 'destructive',
+  //       onPress: async () => {
+  //         try {
+  //           await deleteSecurity(employeeId).unwrap();
+  //         } catch (err) {
+  //           console.error('Security delete error:', err);
+  //           Alert.alert('Error', 'Failed to delete user');
+  //         }
+  //       },
+  //     },
+  //   ]);
+  // };
   const handleDelete = (employeeId: string) => {
     Alert.alert('Confirm Delete', 'Are you sure?', [
       { text: 'Cancel', style: 'cancel' },
@@ -60,6 +84,8 @@ const SecurityUsersScreen = () => {
         onPress: async () => {
           try {
             await deleteSecurity(employeeId).unwrap();
+            showSuccessMessage({ message: 'User deleted successfully!' }); // ✅ Snackbar
+            refetch(); // optional: refresh the list
           } catch (err) {
             console.error('Security delete error:', err);
             Alert.alert('Error', 'Failed to delete user');
@@ -68,15 +94,12 @@ const SecurityUsersScreen = () => {
       },
     ]);
   };
-
   const handleAdd = async () => {
     const nameRegex = /^[A-Za-z\s]+$/;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (
       !newName ||
       !employeeId ||
-      !newEmail ||
       !newPhone ||
       !newPassword ||
       newBranch.length === 0
@@ -90,13 +113,16 @@ const SecurityUsersScreen = () => {
       return;
     }
 
-    if (!emailRegex.test(newEmail)) {
-      Alert.alert('Invalid Email', 'Enter a valid email address.');
+    if (newPhone.length !== 10 || !/^\d+$/.test(newPhone)) {
+      Alert.alert('Invalid Phone', 'Enter a valid 10-digit phone number.');
       return;
     }
 
-    if (newPhone.length !== 10 || !/^\d+$/.test(newPhone)) {
-      Alert.alert('Invalid Phone', 'Enter a valid 10-digit phone number.');
+    if (newBranch.length > 1) {
+      Alert.alert(
+        'Only One Branch Allowed',
+        'Please select only one location.',
+      );
       return;
     }
 
@@ -104,26 +130,24 @@ const SecurityUsersScreen = () => {
       userName: newName,
       phoneNumber: newPhone,
       password: newPassword,
-      officeLocation: newBranch,
+      officeLocation: newBranch[0],
       employeeId,
-      // email: newEmail,
       role: 'security',
     };
-
     try {
       await createSecurity(payload).unwrap();
+      showSuccessMessage({ message: 'Security user added successfully!' });
       clearForm();
       refetch();
     } catch (err) {
       console.error('Security create error:', err);
-      Alert.alert('Error', 'Failed to add security user');
+      showErrorMessage({ message: 'Failed to add security user' });
     }
   };
 
   const clearForm = () => {
     setModalVisible(false);
     setNewName('');
-    setNewEmail('');
     setNewPassword('');
     setNewBranch([]);
     setNewPhone('');
@@ -189,10 +213,9 @@ const SecurityUsersScreen = () => {
           data={filteredUsers}
           keyExtractor={item => item._id}
           renderItem={({ item }) => (
-            <UserCard
+            <SecurityUserCard
               _id={item._id}
               userName={item.userName}
-              email={item.email || '-'}
               phoneNumber={item.phoneNumber}
               password={item.password}
               employeeId={item.employeeId}
@@ -206,25 +229,22 @@ const SecurityUsersScreen = () => {
       )}
 
       {/* ➕ Add Modal */}
-      <AddUserModal
+      <AddSecurityUserModal
         visible={modalVisible}
         title="Add Security User"
         name={newName}
-        email={newEmail}
         password={newPassword}
         phoneNumber={newPhone}
         employeeId={employeeId}
         branch={newBranch}
-        branches={BRANCHESOFFORM}
+        branches={branchList}
         setName={setNewName}
-        setEmail={setNewEmail}
         setPassword={setNewPassword}
         setPhoneNumber={setNewPhone}
         setEmployeeId={setEmployeeId}
         setBranch={setNewBranch}
         onClose={() => setModalVisible(false)}
         onAdd={handleAdd}
-        sourceScreen="security"
       />
     </SafeAreaView>
   );

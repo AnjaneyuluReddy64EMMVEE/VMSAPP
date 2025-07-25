@@ -72,7 +72,7 @@ const BranchSelector: React.FC<BranchPickerProps> = ({
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.actionButton, { backgroundColor: '#ccc' }]}
+              style={[styles.actionButton, { backgroundColor: '#b03a3a' }]}
               onPress={onClose}
             >
               <Text style={styles.actionText}>Cancel</Text>

@@ -231,7 +231,7 @@ const VisitorFilterBar: React.FC<VisitorFilterBarProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([
-    { label: 'All', value: '' },
+    { label: 'All', value: 'All' },
     { label: 'Pending', value: 'pending' },
     { label: 'Checked In', value: 'checkedIn' },
     { label: 'Checked Out', value: 'checkedOut' },
@@ -240,7 +240,7 @@ const VisitorFilterBar: React.FC<VisitorFilterBarProps> = ({
   const handleReset = () => {
     setPhone('');
     setBadge('');
-    setStatusFilter('');
+    setStatusFilter('All');
     setOpen(false);
   };
 

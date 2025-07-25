@@ -304,7 +304,10 @@ export const vmsApi = createApi({
         const params = new URLSearchParams();
 
         if (officeLocation) {
-          params.append('officeLocation', officeLocation);
+          params.append(
+            'officeLocation',
+            officeLocation == 'All' ? '' : officeLocation,
+          );
         }
 
         const body = {

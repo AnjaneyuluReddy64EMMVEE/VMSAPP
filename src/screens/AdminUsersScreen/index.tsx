@@ -11,8 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Header from '../../components/Header';
-import AddUserModal from '../../components/AddUserModal';
-import UserCard from '../../components/UserCard';
+import AdminUserCard from '../../components/AdminUserCard';
 import { useFocusEffect } from '@react-navigation/native';
 
 import {
@@ -23,6 +22,8 @@ import {
 import { useAuth } from '../../contexts/AuthContext';
 import AdminFilterBar from '../../components/AdminFilterBar';
 import { BRANCHESOFFORM } from '../../constants';
+import AddAdmminUserModal from '../../components/AddAdminUserModal';
+import { showErrorMessage, showSuccessMessage } from '../../utils/Globals';
 
 const AdminUsersScreen = () => {
   const { selectedBranch, userBranch } = useAuth();
@@ -60,9 +61,13 @@ const AdminUsersScreen = () => {
         onPress: async () => {
           try {
             await deleteAdmin(employeeId).unwrap();
+            showSuccessMessage({ message: 'Admin deleted successfully.' });
+            refetch();
           } catch (err) {
             console.error('Delete error:', err);
-            Alert.alert('Error', 'Failed to delete admin');
+            const message =
+              err?.data?.message || 'Failed to delete admin. Please try again.';
+            showErrorMessage({ message });
           }
         },
       },
@@ -113,6 +118,7 @@ const AdminUsersScreen = () => {
         officeLocation: newBranch,
         role: 'admin',
       }).unwrap();
+      showSuccessMessage({ message: 'Admin added successfully!' });
 
       setModalVisible(false);
       setNewName('');
@@ -127,7 +133,7 @@ const AdminUsersScreen = () => {
       console.error('Add admin error:', err);
       const message =
         err?.data?.message || 'Failed to add admin. Please try again.';
-      Alert.alert('Error', message);
+      showErrorMessage({ message });
     }
   };
 
@@ -194,14 +200,14 @@ const AdminUsersScreen = () => {
           data={filteredUsers}
           keyExtractor={item => item._id}
           renderItem={({ item }) => (
-            <UserCard {...item} onDelete={handleDelete} />
+            <AdminUserCard {...item} onDelete={handleDelete} />
           )}
           contentContainerStyle={{ paddingBottom: 20 }}
         />
       )}
 
       {/* Add Modal */}
-      <AddUserModal
+      <AddAdmminUserModal
         title="Add Admin User"
         visible={modalVisible}
         name={newName}
@@ -219,7 +225,6 @@ const AdminUsersScreen = () => {
         setBranch={setNewBranch}
         onClose={() => setModalVisible(false)}
         onAdd={handleAdd}
-        sourceScreen="admin"
       />
     </SafeAreaView>
   );
