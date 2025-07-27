@@ -28,6 +28,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import BranchPicker from '../../components/BranchPicker';
 import { BRANCHES } from '../../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { images } from '../../utils/Images';
 
 const AdminHome = () => {
   const { userBranch, selectedBranch, setSelectedBranch } = useAuth();
@@ -151,9 +152,7 @@ const AdminHome = () => {
         {/* Header Section */}
         <View style={styles.header}>
           <Image
-            source={{
-              uri: 'https://emmvee.com/wp-content/uploads/2019/08/emvlogo.png',
-            }}
+            source={images.Logo}
             style={styles.logo}
             resizeMode="contain"
           />

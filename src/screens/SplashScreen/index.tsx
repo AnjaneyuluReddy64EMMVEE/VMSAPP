@@ -3,22 +3,15 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { heightPercentageToDP } from 'react-native-responsive-screen';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { images } from '../../utils/Images';
 
 const SplashScreen = () => {
   const navigation = useNavigation<any>();
 
- 
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.logoContainer}>
-        <Image
-          source={{
-            uri: 'https://emmvee.com/wp-content/uploads/2019/08/emvlogo.png',
-          }}
-          style={styles.logo}
-          resizeMode="contain"
-        />
+        <Image source={images.Logo} style={styles.logo} resizeMode="contain" />
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.text}>GATEVUE</Text>
