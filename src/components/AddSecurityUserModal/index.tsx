@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import { heightPercentageToDP } from 'react-native-responsive-screen';
 import BranchSelector from '../BranchSelector';
+import { useAuth } from '../../contexts/AuthContext';
+import { BRANCHESOFFORM } from '../../constants';
 
 interface AddSecurityModalProps {
   visible: boolean;
@@ -47,8 +49,12 @@ const AddSecurityUserModal: React.FC<AddSecurityModalProps> = ({
   setPhoneNumber,
   setBranch,
 }) => {
+  const { userRole } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showBranchPicker, setShowBranchPicker] = useState(false);
+  const availableBranches = useMemo(() => {
+    return userRole === 'superadmin' ? BRANCHESOFFORM : branches;
+  }, [userRole, branches]);
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.overlay}>
@@ -140,7 +146,7 @@ const AddSecurityUserModal: React.FC<AddSecurityModalProps> = ({
 
         <BranchSelector
           visible={showBranchPicker}
-          branches={branches}
+          branches={availableBranches}
           selectedBranches={branch}
           onSelect={(selected: string[]) => {
             setBranch(selected);
