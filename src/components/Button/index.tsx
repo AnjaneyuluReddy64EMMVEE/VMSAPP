@@ -12,6 +12,7 @@ interface ButtonProps {
   onPress: () => void;
   style?: ViewStyle;
   textStyle?: TextStyle;
+  disabled?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -19,10 +20,20 @@ const Button: React.FC<ButtonProps> = ({
   onPress,
   style,
   textStyle,
+  disabled = false,
 }) => {
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
-      <Text style={[styles.text, textStyle]}>{title}</Text>
+    <TouchableOpacity
+      onPress={disabled ? undefined : onPress}
+      style={[styles.button, disabled ? styles.disabledButton : null, style]}
+      activeOpacity={disabled ? 1 : 0.7}
+      disabled={disabled}
+    >
+      <Text
+        style={[styles.text, disabled ? styles.disabledText : null, textStyle]}
+      >
+        {title}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -34,9 +45,15 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     alignItems: 'center',
   },
+  disabledButton: {
+    backgroundColor: '#A9A9A9',
+  },
   text: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  disabledText: {
+    color: '#eee',
   },
 });
 

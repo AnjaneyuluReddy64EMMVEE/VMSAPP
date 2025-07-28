@@ -144,33 +144,42 @@ const VisitorModal = ({
         placeholder="Enter Badge Number"
         editable={selectedVisitor?.status === 'pending'}
       />
-      <>
-        {!isSecurityCheckOut && (
-          <Button
-            title={
-              selectedVisitor?.status === 'pending'
-                ? 'Check In'
-                : selectedVisitor?.status === 'checkedIn'
-                ? 'Check Out'
-                : 'Checked Out'
-            }
-            onPress={() => {
-              const payload = {
-                id: selectedVisitor?._id,
-                badgeNumber,
-                status:
-                  selectedVisitor?.status === 'pending'
-                    ? 'checkedIn'
-                    : selectedVisitor?.status === 'checkedIn'
-                    ? 'checkedOut'
-                    : 'checkedOut',
-              };
-              onSubmit(payload);
-              onClose();
-            }}
-          />
-        )}
-      </>
+      {!isSecurityCheckOut && (
+        <Button
+          title={
+            selectedVisitor?.status === 'pending'
+              ? 'Check In'
+              : selectedVisitor?.status === 'checkedIn'
+              ? 'Check Out'
+              : 'Checked Out'
+          }
+          onPress={() => {
+            const payload = {
+              id: selectedVisitor?._id,
+              badgeNumber,
+              status:
+                selectedVisitor?.status === 'pending'
+                  ? 'checkedIn'
+                  : selectedVisitor?.status === 'checkedIn'
+                  ? 'checkedOut'
+                  : 'checkedOut',
+            };
+            onSubmit(payload);
+            onClose();
+          }}
+          // ✅ Correct position for disabling
+          disabled={
+            selectedVisitor?.status === 'pending' &&
+            badgeNumber.trim() === '' &&
+            selectedVisitor?.status === 'pending'
+          }
+        />
+      )}
+      {selectedVisitor?.status === 'pending' && badgeNumber.trim() === '' && (
+        <Text style={{ color: 'red', marginTop: 8 }}>
+          Badge number is required to check in
+        </Text>
+      )}
     </View>
   );
 

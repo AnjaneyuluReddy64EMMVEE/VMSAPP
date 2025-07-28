@@ -24,6 +24,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import AddSecurityUserModal from '../../components/AddSecurityUserModal';
 import SecurityUserCard from '../../components/SecurityUserCard';
 import { showErrorMessage, showSuccessMessage } from '../../utils/Globals';
+import { images } from '../../utils/Images';
 
 const SecurityUsersScreen = () => {
   const { selectedBranch, userBranch } = useAuth();
@@ -58,23 +59,6 @@ const SecurityUsersScreen = () => {
   const [empId, setEmpId] = useState('');
   const [phone, setPhone] = useState('');
 
-  // const handleDelete = (employeeId: string) => {
-  //   Alert.alert('Confirm Delete', 'Are you sure?', [
-  //     { text: 'Cancel', style: 'cancel' },
-  //     {
-  //       text: 'Delete',
-  //       style: 'destructive',
-  //       onPress: async () => {
-  //         try {
-  //           await deleteSecurity(employeeId).unwrap();
-  //         } catch (err) {
-  //           console.error('Security delete error:', err);
-  //           Alert.alert('Error', 'Failed to delete user');
-  //         }
-  //       },
-  //     },
-  //   ]);
-  // };
   const handleDelete = (employeeId: string) => {
     Alert.alert('Confirm Delete', 'Are you sure?', [
       { text: 'Cancel', style: 'cancel' },
@@ -174,12 +158,7 @@ const SecurityUsersScreen = () => {
 
       {/* ➕ Add Header */}
       <View style={styles.headerRow}>
-        <Image
-          source={{
-            uri: 'https://emmvee.com/wp-content/uploads/2019/08/emvlogo.png',
-          }}
-          style={styles.logo}
-        />
+        <Image source={images.Logo} style={styles.logo} />
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => setModalVisible(true)}

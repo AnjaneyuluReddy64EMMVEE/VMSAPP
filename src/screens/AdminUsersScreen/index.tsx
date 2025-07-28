@@ -24,6 +24,7 @@ import AdminFilterBar from '../../components/AdminFilterBar';
 import { BRANCHESOFFORM } from '../../constants';
 import AddAdmminUserModal from '../../components/AddAdminUserModal';
 import { showErrorMessage, showSuccessMessage } from '../../utils/Globals';
+import { images } from '../../utils/Images';
 
 const AdminUsersScreen = () => {
   const { selectedBranch, userBranch } = useAuth();
@@ -159,12 +160,7 @@ const AdminUsersScreen = () => {
 
       {/* Add Admin Header */}
       <View style={styles.headerRow}>
-        <Image
-          source={{
-            uri: 'https://emmvee.com/wp-content/uploads/2019/08/emvlogo.png',
-          }}
-          style={styles.logo}
-        />
+        <Image source={images.Logo} style={styles.logo} />
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => setModalVisible(true)}

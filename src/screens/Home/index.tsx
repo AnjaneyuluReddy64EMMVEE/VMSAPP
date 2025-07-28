@@ -134,7 +134,7 @@ const AdminHome = () => {
     const loadUserData = async () => {
       try {
         const name = await AsyncStorage.getItem('userName');
-        console.log('Loaded userName:', name);
+        // console.log('Loaded userName:', name);
         if (name) setUserName(name);
       } catch (error) {
         console.error('Failed to load userName:', error);

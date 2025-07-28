@@ -29,8 +29,8 @@ const RootNavigator = () => {
           const userRole = user.role;
           const userBranch = user.officeLocation?.[0] || '';
 
-          console.log('✅ Role:', userRole);
-          console.log('🏢 Branch:', userBranch);
+          // console.log('✅ Role:', userRole);
+          // console.log('🏢 Branch:', userBranch);
 
           setRole(userRole);
           setBranch(userBranch);
