@@ -318,11 +318,11 @@ export const vmsApi = createApi({
 
         const url = `visitor/filterdate?${params.toString()}`;
 
-        console.log('🔍 getVisitorsByLocationAndDate →', {
-          officeLocation,
-          body,
-          url,
-        });
+        // console.log('🔍 getVisitorsByLocationAndDate →', {
+        //   officeLocation,
+        //   body,
+        //   url,
+        // });
 
         return {
           url,

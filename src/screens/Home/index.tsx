@@ -272,11 +272,6 @@ const AdminHome = () => {
         <Text style={styles.title}>
           {viewMode.toUpperCase()} - Visitor Insights
         </Text>
-        {/* <Text
-          style={{ textAlign: 'center', marginBottom: 8, color: '#64748b' }}
-        >
-          View Mode:
-        </Text> */}
 
         {(viewMode === 'hourly' && loadingHourly) ||
         (viewMode === 'daily' && loadingDaily) ||

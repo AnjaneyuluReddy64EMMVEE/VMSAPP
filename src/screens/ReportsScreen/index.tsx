@@ -12,13 +12,17 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { format } from 'date-fns';
-import { useGetVisitorsByLocationAndDateQuery } from '../../api';
+import {
+  useGetVisitorsByBranchQuery,
+  useGetVisitorsByLocationAndDateQuery,
+} from '../../api';
 import { useAuth } from '../../contexts/AuthContext';
 import Header from '../../components/Header';
 import { Picker } from '@react-native-picker/picker';
 
 const ReportsScreen = () => {
   const { selectedBranch } = useAuth();
+
   const [showIOSPicker, setShowIOSPicker] = useState(false);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -26,7 +30,10 @@ const ReportsScreen = () => {
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [range, setRange] = useState<'lastWeek' | 'lastMonth' | null>(null);
 
+  const isFiltered = (!!startDate && !!endDate) || !!range;
+
   const queryParams = useMemo(() => {
+    if (!isFiltered) return null;
     return {
       officeLocation: selectedBranch,
       startDate: startDate
@@ -37,9 +44,24 @@ const ReportsScreen = () => {
         : undefined,
       range: range || undefined,
     };
-  }, [selectedBranch, startDate, endDate, range]);
+  }, [selectedBranch, startDate, endDate, range, isFiltered]);
 
-  const { data, isLoading } = useGetVisitorsByLocationAndDateQuery(queryParams);
+  const { data: filteredData, isLoading: isLoadingFiltered } =
+    useGetVisitorsByLocationAndDateQuery(queryParams, {
+      skip: !isFiltered,
+    });
+
+  const queryParamss = useMemo(
+    () => ({ officeLocation: selectedBranch }),
+    [selectedBranch],
+  );
+
+  const { data: branchData, isLoading: isLoadingBranch } =
+    useGetVisitorsByBranchQuery(queryParamss);
+  console.log('filteredData', branchData);
+
+  const data = isFiltered ? filteredData : branchData;
+  const isLoading = isFiltered ? isLoadingFiltered : isLoadingBranch;
 
   const getLabelForValue = val => {
     switch (val) {
@@ -51,6 +73,7 @@ const ReportsScreen = () => {
         return '';
     }
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <Header title="Report" showMenuButton />
@@ -88,7 +111,6 @@ const ReportsScreen = () => {
       </View>
 
       {/* 🔽 Range Selector */}
-
       <View style={styles.dropdownContainer}>
         {Platform.OS === 'android' ? (
           <Picker
@@ -114,7 +136,6 @@ const ReportsScreen = () => {
             >
               <Text>{getLabelForValue(range) || 'Select Range'}</Text>
             </TouchableOpacity>
-
             {showIOSPicker && (
               <Modal transparent animationType="slide">
                 <View style={styles.modalContainer}>
@@ -202,7 +223,13 @@ const ReportsScreen = () => {
               <Text style={styles.detail}>Purpose: {item.purposeOfVisit}</Text>
               <Text style={styles.detail}>To Meet: {item.personToMeet}</Text>
               <Text style={styles.detail}>
-                In: {format(new Date(item.checkin), 'dd-MM-yyyy, HH:mm:ss')}
+                Visiting Date: {format(new Date(item.visitDate), 'dd-MM-yyyy')}
+              </Text>
+              <Text style={styles.detail}>
+                In:{' '}
+                {item.checkin
+                  ? format(new Date(item.checkin), 'dd-MM-yyyy, HH:mm:ss')
+                  : 'N/A'}
               </Text>
               <Text style={styles.detail}>
                 Out:{' '}
@@ -274,22 +301,6 @@ const styles = StyleSheet.create({
     color: '#999',
     marginTop: 50,
     fontSize: 16,
-  },
-  pickerContainer: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    marginBottom: 12,
-    backgroundColor: '#f9f9f9',
-    overflow: 'hidden',
-  },
-  pickerIOS: {
-    height: 100, // required on iOS
-    width: '100%',
-  },
-  pickerAndroid: {
-    height: 50,
-    width: '100%',
   },
   customIOSDropdown: {
     borderWidth: 0,
