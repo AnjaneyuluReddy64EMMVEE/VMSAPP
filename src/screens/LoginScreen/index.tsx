@@ -58,7 +58,7 @@ const LoginScreen: React.FC = () => {
       }).unwrap();
 
       const { token, user } = response.data;
-      console.log(user);
+      // console.log(user);
       setUserRole(user.role || null);
       setUserName(user.userName || null);
       setUserEmail(user.email || null);
@@ -67,6 +67,7 @@ const LoginScreen: React.FC = () => {
       await AsyncStorage.setItem('token', token);
       await AsyncStorage.setItem('user', JSON.stringify(user));
       await AsyncStorage.setItem('userName', user.userName || '');
+      await AsyncStorage.setItem('userRole', user.role || '');
 
       switch (user.role) {
         case 'admin':

@@ -50,7 +50,7 @@ const VisitorsScreen = () => {
 
   const handleUpdate = async payload => {
     try {
-      console.log('payload', payload);
+      // console.log('payload', payload);
       const response = await updateVisitor(payload).unwrap();
 
       showSuccessMessage({

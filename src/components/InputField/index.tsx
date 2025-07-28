@@ -1,20 +1,39 @@
 import React from 'react';
-import { TextInput, StyleSheet, Text, View, TextInputProps } from 'react-native';
+import {
+  TextInput,
+  StyleSheet,
+  Text,
+  View,
+  TextInputProps,
+} from 'react-native';
 
 interface InputFieldProps extends TextInputProps {
   label?: string;
   error?: string;
+  disabled?: boolean;
 }
 
-const InputField: React.FC<InputFieldProps> = ({ label, error, style, ...props }) => {
+const InputField: React.FC<InputFieldProps> = ({
+  label,
+  error,
+  style,
+  ...props
+}) => {
   return (
     <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
       <TextInput
-        style={[styles.input, style, error ? styles.inputError : null]}
+        style={[
+          styles.input,
+          style,
+          error ? styles.inputError : null,
+          props.disabled ? styles.inputDisabled : null,
+        ]}
         placeholderTextColor="#999"
+        editable={!props.disabled}
         {...props}
       />
+
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
     </View>
   );
@@ -49,5 +68,9 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 12,
     color: '#FF3B30',
+  },
+  inputDisabled: {
+    backgroundColor: '#f2f2f2',
+    color: '#999',
   },
 });

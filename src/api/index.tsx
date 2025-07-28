@@ -90,16 +90,16 @@ export const vmsApi = createApi({
         status,
         personToMeet,
         purposeOfVisit,
-        timeIn,
-        timeOut,
+        checkin,
+        checkout,
       }) => {
         const body = {
           badgeNumber,
           status,
           personToMeet,
           purposeOfVisit,
-          timeIn,
-          timeOut,
+          checkin,
+          checkout,
         };
 
         // console.log('🛠️ updateVisitor → ID:', id);

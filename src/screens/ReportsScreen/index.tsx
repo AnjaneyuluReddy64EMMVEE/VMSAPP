@@ -58,7 +58,7 @@ const ReportsScreen = () => {
 
   const { data: branchData, isLoading: isLoadingBranch } =
     useGetVisitorsByBranchQuery(queryParamss);
-  console.log('filteredData', branchData);
+  // console.log('filteredData', branchData);
 
   const data = isFiltered ? filteredData : branchData;
   const isLoading = isFiltered ? isLoadingFiltered : isLoadingBranch;

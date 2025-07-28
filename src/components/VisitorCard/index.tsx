@@ -68,7 +68,7 @@ const VisitorCard = ({ item, userRole, onUpdateVisitor }) => {
             {item.firstName} {item.lastName}
           </Text>
           <Text style={styles.text}>{item.phoneNumber}</Text>
-          <Text style={styles.text}>{item.email}</Text>
+          <Text style={styles.text}>Email:{item.email}</Text>
           <Text style={styles.text}>Badge: {item.badgeNumber || 'N/A'}</Text>
           <Text style={styles.text}>Location: {item.officeLocation}</Text>
           <Text style={styles.text}>
@@ -81,7 +81,7 @@ const VisitorCard = ({ item, userRole, onUpdateVisitor }) => {
           <Text style={styles.text}>Purpose: {item.purposeOfVisit}</Text>
           <Text style={styles.text}>To Meet: {item.personToMeet}</Text>
           <Text style={styles.text}>
-            {formatTime(item.checkin)} -{' '}
+            {item.checkin ? formatTime(item.checkin) : 'N/A'} -{' '}
             {item.checkout ? formatTime(item.checkout) : 'N/A'}
           </Text>
 
