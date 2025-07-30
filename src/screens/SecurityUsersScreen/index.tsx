@@ -116,7 +116,7 @@ const SecurityUsersScreen = () => {
       password: newPassword,
       officeLocation: newBranch[0],
       employeeId,
-      role: 'security',
+      role: 3,
     };
     try {
       await createSecurity(payload).unwrap();

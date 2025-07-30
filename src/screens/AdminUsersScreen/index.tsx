@@ -117,7 +117,7 @@ const AdminUsersScreen = () => {
         phoneNumber,
         password: newPassword,
         officeLocation: newBranch,
-        role: 'admin',
+        role: 2,
       }).unwrap();
       showSuccessMessage({ message: 'Admin added successfully!' });
 

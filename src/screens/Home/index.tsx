@@ -33,7 +33,7 @@ import { images } from '../../utils/Images';
 const AdminHome = () => {
   const { userBranch, selectedBranch, setSelectedBranch } = useAuth();
   const [userName, setUserName] = useState<string | null>(null);
-  const [branch, setBranch] = useState(userBranch[0] || 'All');
+  const [branch, setBranch] = useState(userBranch[0] || ['All']);
   const [branchModalVisible, setBranchModalVisible] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());

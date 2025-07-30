@@ -35,11 +35,11 @@ const RootNavigator = () => {
           setRole(userRole);
           setBranch(userBranch);
 
-          if (userRole === 'admin') {
+          if (userRole === 2) {
             setInitialRoute('AdminDashboard');
-          } else if (userRole === 'superadmin') {
+          } else if (userRole === 1) {
             setInitialRoute('SuperAdminDashboard');
-          } else if (userRole === 'security') {
+          } else if (userRole === 3) {
             setInitialRoute('SecurityDashboard');
           } else {
             setInitialRoute('Login');

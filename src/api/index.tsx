@@ -31,7 +31,7 @@ export const vmsApi = createApi({
       query: data => {
         // console.log('🔐 Creating security user with data:', data);
         return {
-          url: 'createSecurity',
+          url: 'signup',
           method: 'POST',
           body: data,
         };
@@ -204,12 +204,23 @@ export const vmsApi = createApi({
     }),
 
     // ➕ Create a new admin user
+    // createAdmin: builder.mutation({
+    //   query: data => ({
+    //     url: 'signup',
+    //     method: 'POST',
+    //     body: data,
+    //   }),
+    //   invalidatesTags: ['Admin'],
+    // }),
     createAdmin: builder.mutation({
-      query: data => ({
-        url: 'createAdmin',
-        method: 'POST',
-        body: data,
-      }),
+      query: data => {
+        console.log('📤 Creating admin with data:', data); // <-- log added
+        return {
+          url: 'signup',
+          method: 'POST',
+          body: data,
+        };
+      },
       invalidatesTags: ['Admin'],
     }),
 

@@ -43,6 +43,7 @@ const LoginScreen: React.FC = () => {
   const passwordRef = useRef<TextInput>(null);
 
   const [loginUser, { isLoading }] = useLoginUserMutation();
+
   const [notifyForgotPassword, { isLoading: isSending }] =
     useNotifyForgotPasswordMutation();
 
@@ -65,9 +66,9 @@ const LoginScreen: React.FC = () => {
         employeeId: usernameInput.trim(),
         password,
       }).unwrap();
-
       const { token, user } = response.data;
-
+      // console.log('✅ Login successful:', user.role);
+      Alert.alert('Login Successful', 'Welcome back!');
       setUserRole(user.role || null);
       setUserName(user.userName || null);
       setUserEmail(user.email || null);
@@ -76,19 +77,19 @@ const LoginScreen: React.FC = () => {
       await AsyncStorage.setItem('token', token);
       await AsyncStorage.setItem('user', JSON.stringify(user));
       await AsyncStorage.setItem('userName', user.userName || '');
-      await AsyncStorage.setItem('userRole', user.role || '');
-
+      await AsyncStorage.setItem('userRole', String(user.role) || '');
+      console.log(user.role);
       switch (user.role) {
-        case 'admin':
+        case 2:
           navigation.navigate('AdminDashboard', {
             role: user.role,
             branch: user.officeLocation || 'All',
           });
           break;
-        case 'superadmin':
+        case 1:
           navigation.navigate('SuperAdminDashboard', { role: user.role });
           break;
-        case 'security':
+        case 3:
           navigation.navigate('SecurityDashboard');
           break;
         default:
