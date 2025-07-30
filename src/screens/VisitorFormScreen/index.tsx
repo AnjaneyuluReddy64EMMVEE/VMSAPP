@@ -24,10 +24,10 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useCreateVisitorMutation } from '../../api';
 import Header from '../../components/Header';
-import { useAuth } from '../../contexts/AuthContext'; // <-- Add this
-
+import { useAuth } from '../../contexts/AuthContext';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 const VisitorFormScreen = () => {
-  const { userRole, userBranch } = useAuth(); // <-- Add this
+  const { userRole, userBranch } = useAuth();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [mobile, setMobile] = useState('');
@@ -40,8 +40,8 @@ const VisitorFormScreen = () => {
   const [otherReason, setOtherReason] = useState('');
   const [photo, setPhoto] = useState(null);
   const [govtIdFile, setGovtIdFile] = useState(null);
-  const [visitDate, setVisitDate] = useState(new Date()); // <-- New state
-  const [showDatePicker, setShowDatePicker] = useState(false); // <-- New state
+  const [visitDate, setVisitDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [officeModalVisible, setOfficeModalVisible] = useState(false);
   const [purposeModalVisible, setPurposeModalVisible] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
@@ -188,22 +188,29 @@ const VisitorFormScreen = () => {
   };
 
   const renderDropdown = (
-    label,
-    value,
-    options,
-    onSelect,
-    modalVisible,
-    setModalVisible,
+    icon: string,
+    label: string,
+    value: string,
+    options: string[],
+    onSelect: (value: string) => void,
+    modalVisible: boolean,
+    setModalVisible: (visible: boolean) => void,
   ) => (
     <>
       <Text style={styles.dropdownLabel}>{label}</Text>
+
       <TouchableOpacity
         style={styles.dropdownInput}
         onPress={() => setModalVisible(true)}
+        activeOpacity={0.8}
       >
-        <Text style={{ color: value ? '#000' : '#999' }}>
-          {value || `Select ${label}`}
-        </Text>
+        <View style={styles.dropdownContent}>
+          <Icon name={icon} size={22} color="#666" style={styles.icon} />
+          <Text style={{ color: value ? '#000' : '#999', fontSize: 16 }}>
+            {value || `Select ${label}`}
+          </Text>
+          <Text style={styles.dropdownIcon}>▼</Text>
+        </View>
       </TouchableOpacity>
 
       <Modal visible={modalVisible} transparent animationType="fade">
@@ -233,6 +240,39 @@ const VisitorFormScreen = () => {
     </>
   );
 
+  // Input with icon component
+  // This component can be reused for inputs with icons
+  const InputWithIcon = ({
+    icon,
+    placeholder,
+    value,
+    onChangeText,
+    keyboardType = 'default',
+    secureTextEntry = false,
+    maxLength,
+  }: {
+    icon: string;
+    placeholder: string;
+    value: string;
+    onChangeText: (text: string) => void;
+    keyboardType?: any;
+    secureTextEntry?: boolean;
+    maxLength?: number;
+  }) => (
+    <View style={styles.inputWrapper}>
+      <Icon name={icon} size={22} color="#666" style={styles.icon} />
+      <TextInput
+        style={styles.inputWithIcon}
+        placeholder={placeholder}
+        value={value}
+        onChangeText={onChangeText}
+        keyboardType={keyboardType}
+        secureTextEntry={secureTextEntry}
+        maxLength={maxLength}
+      />
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.safe}>
       <Header title="Visitor Registration" showMenuButton />
@@ -242,56 +282,103 @@ const VisitorFormScreen = () => {
         style={{ flex: 1 }}
       >
         <ScrollView contentContainerStyle={styles.container}>
-          <TextInput
-            style={styles.input}
-            placeholder="First Name"
-            value={firstName}
-            onChangeText={setFirstName}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Last Name"
-            value={lastName}
-            onChangeText={setLastName}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Mobile Number"
-            value={mobile}
-            onChangeText={setMobile}
-            keyboardType="phone-pad"
-            maxLength={10}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Badge Number"
-            value={badgeNumber}
-            onChangeText={setBadgeNumber}
-          />
+          <View style={styles.inputWrapper}>
+            <Icon name="person" size={22} color="#666" style={styles.icon} />
+            <TextInput
+              style={styles.inputWithIcon}
+              placeholder="First Name"
+              value={firstName}
+              onChangeText={setFirstName}
+              placeholderTextColor="#999"
+            />
+          </View>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Email ID (optional)"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Person to Meet"
-            value={personToMeet}
-            onChangeText={setPersonToMeet}
-          />
+          <View style={styles.inputWrapper}>
+            <Icon name="person" size={22} color="#666" style={styles.icon} />
+            <TextInput
+              style={styles.inputWithIcon}
+              placeholder="Last Name"
+              value={lastName}
+              onChangeText={setLastName}
+              placeholderTextColor="#999"
+            />
+          </View>
 
+          <View style={styles.inputWrapper}>
+            <Icon name="phone" size={22} color="#666" style={styles.icon} />
+            <TextInput
+              style={styles.inputWithIcon}
+              placeholder="Mobile Number"
+              value={mobile}
+              keyboardType="phone-pad"
+              onChangeText={setMobile}
+              maxLength={10}
+              placeholderTextColor="#999"
+            />
+          </View>
+
+          <View style={styles.inputWrapper}>
+            <Icon
+              name="confirmation-number"
+              size={22}
+              color="#666"
+              style={styles.icon}
+            />
+            <TextInput
+              style={styles.inputWithIcon}
+              placeholder="Badge Number"
+              value={badgeNumber}
+              keyboardType="phone-pad"
+              onChangeText={setBadgeNumber}
+              placeholderTextColor="#999"
+            />
+          </View>
+
+          <View style={styles.inputWrapper}>
+            <Icon name="email" size={22} color="#666" style={styles.icon} />
+            <TextInput
+              style={styles.inputWithIcon}
+              placeholder="Email ID (optional)"
+              value={email}
+              keyboardType="phone-pad"
+              onChangeText={setEmail}
+              placeholderTextColor="#999"
+            />
+          </View>
+
+          <View style={styles.inputWrapper}>
+            <Icon
+              name="person-pin"
+              size={22}
+              color="#666"
+              style={styles.icon}
+            />
+            <TextInput
+              style={styles.inputWithIcon}
+              placeholder="Person to Meet"
+              value={personToMeet}
+              keyboardType="phone-pad"
+              onChangeText={setPersonToMeet}
+              placeholderTextColor="#999"
+            />
+          </View>
           {/* Visit Date Picker */}
+
           <TouchableOpacity
             onPress={() => setShowDatePicker(true)}
-            style={[styles.input, { justifyContent: 'center' }]}
+            style={styles.inputWrapper}
           >
-            <Text style={{ color: '#000' }}>
+            <Icon
+              name="calendar-today"
+              size={22}
+              color="#666"
+              style={styles.icon}
+            />
+            <Text style={{ fontSize: 16, color: visitDate ? '#000' : '#999' }}>
               {visitDate ? visitDate.toDateString() : 'Select Visit Date'}
             </Text>
           </TouchableOpacity>
+
           {showDatePicker && (
             <DateTimePicker
               value={visitDate}
@@ -306,6 +393,7 @@ const VisitorFormScreen = () => {
           )}
 
           {renderDropdown(
+            'location-on',
             'Office Location',
             officeLocation,
             officeOptions,
@@ -314,6 +402,7 @@ const VisitorFormScreen = () => {
             setOfficeModalVisible,
           )}
           {renderDropdown(
+            'assignment',
             'Purpose of Visit',
             purpose,
             purposeOptions,
@@ -457,4 +546,32 @@ const styles = StyleSheet.create({
   },
   submitButton: { paddingVertical: 15, borderRadius: 12, alignItems: 'center' },
   submitText: { color: 'white', fontWeight: 'bold', fontSize: 16 },
+  dropdownContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  dropdownIcon: {
+    fontSize: 16,
+    color: '#666',
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    marginBottom: 15,
+    backgroundColor: 'white',
+    height: 52,
+  },
+  icon: {
+    marginRight: 8,
+  },
+  inputWithIcon: {
+    flex: 1,
+    fontSize: 16,
+    color: '#000',
+  },
 });

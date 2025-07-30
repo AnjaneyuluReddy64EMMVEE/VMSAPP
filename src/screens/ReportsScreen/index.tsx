@@ -11,7 +11,7 @@ import {
   Modal,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import {
   useGetVisitorsByBranchQuery,
   useGetVisitorsByLocationAndDateQuery,
@@ -24,11 +24,11 @@ const ReportsScreen = () => {
   const { selectedBranch } = useAuth();
 
   const [showIOSPicker, setShowIOSPicker] = useState(false);
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
-  const [range, setRange] = useState<'lastWeek' | 'lastMonth' | null>(null);
+  const [range, setRange] = useState(null);
 
   const isFiltered = (!!startDate && !!endDate) || !!range;
 
@@ -46,6 +46,7 @@ const ReportsScreen = () => {
     };
   }, [selectedBranch, startDate, endDate, range, isFiltered]);
 
+  // console.log('queryParams', queryParams);
   const { data: filteredData, isLoading: isLoadingFiltered } =
     useGetVisitorsByLocationAndDateQuery(queryParams, {
       skip: !isFiltered,
@@ -58,7 +59,6 @@ const ReportsScreen = () => {
 
   const { data: branchData, isLoading: isLoadingBranch } =
     useGetVisitorsByBranchQuery(queryParamss);
-  // console.log('filteredData', branchData);
 
   const data = isFiltered ? filteredData : branchData;
   const isLoading = isFiltered ? isLoadingFiltered : isLoadingBranch;
@@ -74,35 +74,77 @@ const ReportsScreen = () => {
     }
   };
 
+  const renderDatePicker = type => {
+    const isIOS = Platform.OS === 'ios';
+    const show = type === 'start' ? showStartPicker : showEndPicker;
+    const date = type === 'start' ? startDate : endDate;
+    const setDate = type === 'start' ? setStartDate : setEndDate;
+    const setShow = type === 'start' ? setShowStartPicker : setShowEndPicker;
+
+    if (!show) return null;
+
+    if (isIOS) {
+      return (
+        <Modal transparent animationType="slide">
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <DateTimePicker
+                value={date || new Date()}
+                mode="date"
+                display="spinner"
+                onChange={(e, d) => d && setDate(d)}
+              />
+              <TouchableOpacity onPress={() => setShow(false)}>
+                <Text style={styles.closeButton}>Done</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      );
+    }
+
+    return (
+      <DateTimePicker
+        value={date || new Date()}
+        mode="date"
+        display="default"
+        onChange={(e, d) => {
+          setShow(false);
+          if (d) setDate(d);
+        }}
+      />
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Header title="Report" showMenuButton />
 
-      {/* 📆 Date Filters */}
       <View style={styles.dateRow}>
-        <TouchableOpacity
-          onPress={() => !range && setShowStartPicker(true)}
-          style={[styles.dateButton, range && styles.disabledDateButton]}
-          disabled={!!range}
-        >
-          <Text style={styles.dateText}>
-            {startDate ? format(startDate, 'dd-MM-yyyy') : 'From Date'}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => !range && setShowEndPicker(true)}
-          style={[styles.dateButton, range && styles.disabledDateButton]}
-          disabled={!!range}
-        >
-          <Text style={styles.dateText}>
-            {endDate ? format(endDate, 'dd-MM-yyyy') : 'To Date'}
-          </Text>
-        </TouchableOpacity>
+        {['start', 'end'].map(type => (
+          <View key={type} style={{ flex: 1 }}>
+            <TouchableOpacity
+              onPress={() => {
+                setShowStartPicker(type === 'start');
+                setShowEndPicker(type === 'end');
+              }}
+              style={styles.dateButton}
+            >
+              <Text style={styles.dateText}>
+                {(type === 'start' ? startDate : endDate)?.toDateString() ||
+                  `${type === 'start' ? 'Start' : 'End'} Date`}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+
         <TouchableOpacity
           onPress={() => {
             setRange(null);
             setStartDate(null);
             setEndDate(null);
+            setShowStartPicker(false);
+            setShowEndPicker(false);
           }}
           style={styles.resetButton}
         >
@@ -110,7 +152,9 @@ const ReportsScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* 🔽 Range Selector */}
+      {renderDatePicker('start')}
+      {renderDatePicker('end')}
+
       <View style={styles.dropdownContainer}>
         {Platform.OS === 'android' ? (
           <Picker
@@ -164,31 +208,6 @@ const ReportsScreen = () => {
         )}
       </View>
 
-      {/* 📅 Date Pickers */}
-      {showStartPicker && (
-        <DateTimePicker
-          value={startDate || new Date()}
-          mode="date"
-          display="default"
-          onChange={(e, date) => {
-            setShowStartPicker(false);
-            if (date) setStartDate(date);
-          }}
-        />
-      )}
-      {showEndPicker && (
-        <DateTimePicker
-          value={endDate || new Date()}
-          mode="date"
-          display="default"
-          onChange={(e, date) => {
-            setShowEndPicker(false);
-            if (date) setEndDate(date);
-          }}
-        />
-      )}
-
-      {/* 🧾 Visitor List */}
       {isLoading ? (
         <ActivityIndicator
           size="large"
@@ -223,17 +242,20 @@ const ReportsScreen = () => {
               <Text style={styles.detail}>Purpose: {item.purposeOfVisit}</Text>
               <Text style={styles.detail}>To Meet: {item.personToMeet}</Text>
               <Text style={styles.detail}>
-                Visiting Date: {format(new Date(item.visitDate), 'dd-MM-yyyy')}
+                Visiting Date:{' '}
+                {item.visitDate && isValid(new Date(item.visitDate))
+                  ? format(new Date(item.visitDate), 'dd-MM-yyyy')
+                  : 'N/A'}
               </Text>
               <Text style={styles.detail}>
                 In:{' '}
-                {item.checkin
+                {item.checkin && isValid(new Date(item.checkin))
                   ? format(new Date(item.checkin), 'dd-MM-yyyy, HH:mm:ss')
                   : 'N/A'}
               </Text>
               <Text style={styles.detail}>
                 Out:{' '}
-                {item.checkout
+                {item.checkout && isValid(new Date(item.checkout))
                   ? format(new Date(item.checkout), 'dd-MM-yyyy, HH:mm:ss')
                   : 'N/A'}
               </Text>
@@ -273,9 +295,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
-  disabledDateButton: {
-    backgroundColor: '#eee',
-  },
   dateText: { color: '#333', fontWeight: '500' },
   resetButton: {
     backgroundColor: '#d9534f',
@@ -303,8 +322,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   customIOSDropdown: {
-    borderWidth: 0,
-    borderColor: '#ccc',
     borderRadius: 6,
     padding: 12,
     backgroundColor: '#f9f9f9',

@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   resetButton: {
     marginTop: 8,
     alignSelf: 'flex-start',
-    backgroundColor: '#e53935',
+    backgroundColor: '#b03a3a',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 6,

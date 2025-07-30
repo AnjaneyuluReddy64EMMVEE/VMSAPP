@@ -13,7 +13,10 @@ import { heightPercentageToDP } from 'react-native-responsive-screen';
 import BranchSelector from '../BranchSelector';
 import { useAuth } from '../../contexts/AuthContext';
 import { BRANCHESOFFORM } from '../../constants';
-
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 interface AddSecurityModalProps {
   visible: boolean;
   title: string;
@@ -126,7 +129,10 @@ const AddSecurityUserModal: React.FC<AddSecurityModalProps> = ({
             style={styles.officeSelectButton}
             onPress={() => setShowBranchPicker(true)}
           >
-            <Text style={styles.officeSelectText}>Select Branches</Text>
+            <View style={styles.officeSelectContent}>
+              <Text style={styles.officeSelectText}>Select Branches</Text>
+              <Text style={styles.dropdownIcon}>▼</Text>
+            </View>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={onAdd} style={styles.addButton}>
@@ -250,5 +256,17 @@ const styles = StyleSheet.create({
   removeText: {
     color: '#004085',
     fontWeight: 'bold',
+  },
+
+  officeSelectContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
+  dropdownIcon: {
+    fontSize: hp(2),
+    color: '#666',
+    marginLeft: 8,
   },
 });

@@ -30,6 +30,7 @@ import {
 import { BRANCHES } from '../../constants';
 import InputField from '../../components/InputField';
 import BranchPicker from '../../components/SuperAdminPanel/BranchPicker';
+import { images } from '../../utils/Images';
 
 const LoginScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -47,10 +48,18 @@ const LoginScreen: React.FC = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [employeeId, setEmployeeId] = useState('');
-  const [officeLocation, setOfficeLocation] = useState('Head Office');
+  const [officeLocation, setOfficeLocation] = useState('');
   const [branchPickerVisible, setBranchPickerVisible] = useState(false);
 
   const handleLogin = async () => {
+    if (!usernameInput.trim() || !password.trim()) {
+      Alert.alert(
+        'Validation Error',
+        'Please enter both Employee ID and Password.',
+      );
+      return;
+    }
+
     try {
       const response = await loginUser({
         employeeId: usernameInput.trim(),
@@ -58,7 +67,7 @@ const LoginScreen: React.FC = () => {
       }).unwrap();
 
       const { token, user } = response.data;
-      // console.log(user);
+
       setUserRole(user.role || null);
       setUserName(user.userName || null);
       setUserEmail(user.email || null);
@@ -126,9 +135,7 @@ const LoginScreen: React.FC = () => {
       >
         <View style={styles.logoContainer}>
           <Image
-            source={{
-              uri: 'https://emmvee.com/wp-content/uploads/2019/08/emvlogo.png',
-            }}
+            source={images.Logo}
             style={styles.logo}
             resizeMode="contain"
           />
@@ -203,7 +210,7 @@ const LoginScreen: React.FC = () => {
               onPress={() => setBranchPickerVisible(true)}
             >
               <Text style={styles.dropdownText}>
-                {'Choose a branch' || officeLocation}
+                {officeLocation || 'Choose a branch'}
               </Text>
             </TouchableOpacity>
 

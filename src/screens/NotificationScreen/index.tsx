@@ -17,7 +17,7 @@ import {
 import Header from '../../components/Header';
 import { useGetNotificationsQuery, useResetAppMutation } from '../../api';
 import { useAuth } from '../../contexts/AuthContext';
-import Icon from 'react-native-vector-icons/Feather';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const NotificationScreen = () => {
   const { user, selectedBranch } = useAuth();
@@ -71,7 +71,7 @@ const NotificationScreen = () => {
       <Text style={styles.cell}>{item.employeeId}</Text>
       <Text style={styles.cell}>{item.officeLocation}</Text>
       <TouchableOpacity
-        style={[styles.button, { backgroundColor: '#ff4d4d' }]}
+        style={[styles.button, { backgroundColor: '#b03a3a' }]}
         onPress={() => openResetModal(item.employeeId)}
       >
         <Text style={styles.buttonText}>Reset</Text>
@@ -163,7 +163,7 @@ const NotificationScreen = () => {
               <TouchableOpacity
                 style={[
                   styles.button,
-                  { backgroundColor: '#28a745', marginTop: 20 },
+                  { backgroundColor: '#007AFF', marginTop: 20 },
                 ]}
                 onPress={handleSubmit}
                 disabled={isResetting}
@@ -175,9 +175,12 @@ const NotificationScreen = () => {
 
               <TouchableOpacity
                 onPress={() => setResetModalVisible(false)}
-                style={{ marginTop: 10 }}
+                style={[
+                  styles.button,
+                  { backgroundColor: '#b03a3a', marginTop: 20 },
+                ]}
               >
-                <Text style={{ color: 'red' }}>Cancel</Text>
+                <Text style={{ color: 'white' }}>Cancel</Text>
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
