@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   addButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: '#007AFF',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 6,

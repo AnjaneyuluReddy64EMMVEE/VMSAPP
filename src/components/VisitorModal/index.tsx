@@ -627,50 +627,116 @@ const VisitorModal = ({
     </View>
   );
 
-  const renderSecurityView = () => (
-    <View>
-      <InputField
-        label="Badge Number"
-        value={badgeNumber}
-        onChangeText={setBadgeNumber}
-        placeholder="Enter Badge Number"
-        editable={selectedVisitor?.status === 'pending'}
-      />
-      {!isSecurityCheckOut && (
-        <Button
-          title={
-            selectedVisitor?.status === 'pending'
-              ? 'Check In'
-              : selectedVisitor?.status === 'checkedIn'
-              ? 'Check Out'
-              : 'Checked Out'
-          }
-          onPress={() => {
-            const payload = {
-              id: selectedVisitor?._id,
-              badgeNumber,
-              status:
-                selectedVisitor?.status === 'pending'
-                  ? 'checkedIn'
-                  : selectedVisitor?.status === 'checkedIn'
-                  ? 'checkedOut'
-                  : 'checkedOut',
-            };
-            onSubmit(payload);
-            onClose();
-          }}
-          disabled={
-            selectedVisitor?.status === 'pending' && badgeNumber.trim() === ''
-          }
+  // const renderSecurityView = () => {
+  //   const isPending = selectedVisitor?.status === 'pending';
+  //   const isCheckedOut = selectedVisitor?.status === 'checkedOut';
+  //   const isEditable = isPending;
+  //   console.log('isEditable', isEditable);
+  //   return (
+  //     <View>
+  //       <InputField
+  //         label="Badge Number"
+  //         value={badgeNumber}
+  //         onChangeText={setBadgeNumber}
+  //         placeholder="Enter Badge Number"
+  //         editable={isEditable}
+  //         style={{
+  //           backgroundColor: isCheckedOut ? '#f0f0f0' : 'white',
+  //           color: isCheckedOut ? 'gray' : 'black',
+  //         }}
+  //         inputStyle={{
+  //           color: !isCheckedOut ? 'gray' : 'black',
+
+  //         }}
+  //       />
+  //       {!isSecurityCheckOut && (
+  //         <Button
+  //           title={
+  //             selectedVisitor?.status === 'pending'
+  //               ? 'Check In'
+  //               : selectedVisitor?.status === 'checkedIn'
+  //               ? 'Check Out'
+  //               : 'Checked Out'
+  //           }
+  //           onPress={() => {
+  //             const payload = {
+  //               id: selectedVisitor?._id,
+  //               badgeNumber,
+  //               status:
+  //                 selectedVisitor?.status === 'pending'
+  //                   ? 'checkedIn'
+  //                   : selectedVisitor?.status === 'checkedIn'
+  //                   ? 'checkedOut'
+  //                   : 'checkedOut',
+  //             };
+  //             onSubmit(payload);
+  //             onClose();
+  //           }}
+  //           disabled={
+  //             selectedVisitor?.status === 'pending' && badgeNumber.trim() === ''
+  //           }
+  //         />
+  //       )}
+  //       {selectedVisitor?.status === 'pending' && badgeNumber.trim() === '' && (
+  //         <Text style={{ color: 'red', marginTop: 8 }}>
+  //           Badge number is required to check in
+  //         </Text>
+  //       )}
+  //     </View>
+  //   );
+  // };
+  const renderSecurityView = () => {
+    const isPending = selectedVisitor?.status === 'pending';
+    const isCheckedIn = selectedVisitor?.status === 'checkedIn';
+    const isCheckedOut = selectedVisitor?.status === 'checkedOut';
+
+    const isEditable = isPending;
+    const showButton = !isCheckedOut;
+
+    const getNextStatus = () => {
+      if (isPending) return 'checkedIn';
+      if (isCheckedIn) return 'checkedOut';
+      return 'checkedOut';
+    };
+
+    const getButtonTitle = () => {
+      if (isPending) return 'Check In';
+      if (isCheckedIn) return 'Check Out';
+      return 'Checked Out';
+    };
+
+    const showError = isPending && badgeNumber.trim() === '';
+
+    return (
+      <View>
+        <InputField
+          label="Badge Number"
+          value={badgeNumber}
+          onChangeText={setBadgeNumber}
+          placeholder="Enter Badge Number"
+          editable={isEditable}
+          disabled={!isEditable}
+          error={showError ? 'Badge number is required to check in' : ''}
         />
-      )}
-      {selectedVisitor?.status === 'pending' && badgeNumber.trim() === '' && (
-        <Text style={{ color: 'red', marginTop: 8 }}>
-          Badge number is required to check in
-        </Text>
-      )}
-    </View>
-  );
+
+        {showButton && (
+          <Button
+            title={getButtonTitle()}
+            onPress={() => {
+              const payload = {
+                id: selectedVisitor?._id,
+                badgeNumber,
+                status: getNextStatus(),
+              };
+              onSubmit(payload);
+              onClose();
+            }}
+            disabled={showError}
+          />
+        )}
+      </View>
+    );
+  };
 
   return (
     <Modal visible={visible} transparent animationType="slide">
@@ -685,7 +751,7 @@ const VisitorModal = ({
             </TouchableOpacity>
           </View>
 
-          {userRole === globalRoles.ADMIN || userRole === globalRoles.SUPERADMIN
+          {userRole === '2' || userRole === '1'
             ? renderAdminView()
             : renderSecurityView()}
         </View>

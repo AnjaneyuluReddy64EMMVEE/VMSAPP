@@ -19,7 +19,7 @@ import { useGetNotificationsQuery, useResetAppMutation } from '../../api';
 import { useAuth } from '../../contexts/AuthContext';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const NotificationScreen = () => {
+const UserPasswordReset = () => {
   const { user, selectedBranch } = useAuth();
   const userLocation = user?.officeLocation;
   const {
@@ -81,7 +81,7 @@ const NotificationScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Notifications" showMenuButton />
+      <Header title="User Password Reset" showMenuButton />
 
       <View style={[styles.row, styles.headerRow]}>
         <Text style={[styles.cell, styles.headerText]}>Employee Id</Text>
@@ -190,7 +190,7 @@ const NotificationScreen = () => {
   );
 };
 
-export default NotificationScreen;
+export default UserPasswordReset;
 
 const styles = StyleSheet.create({
   container: {

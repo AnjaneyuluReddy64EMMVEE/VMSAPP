@@ -15,6 +15,7 @@ type VisitorFilterBarProps = {
   setBadge: (val: string) => void;
   statusFilter: string;
   setStatusFilter: (val: string) => void;
+  onResetFilters: () => void;
 };
 
 const VisitorFilterBar: React.FC<VisitorFilterBarProps> = ({
@@ -24,6 +25,7 @@ const VisitorFilterBar: React.FC<VisitorFilterBarProps> = ({
   setBadge,
   statusFilter,
   setStatusFilter,
+  onResetFilters,
 }) => {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([
@@ -34,10 +36,8 @@ const VisitorFilterBar: React.FC<VisitorFilterBarProps> = ({
   ]);
 
   const handleReset = () => {
-    setPhone('');
-    setBadge('');
-    setStatusFilter('All');
     setOpen(false);
+    onResetFilters(); // ✅ call parent-provided function
   };
 
   return (

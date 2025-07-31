@@ -328,7 +328,6 @@ const VisitorFormScreen = () => {
               style={styles.inputWithIcon}
               placeholder="Badge Number"
               value={badgeNumber}
-              keyboardType="phone-pad"
               onChangeText={setBadgeNumber}
               placeholderTextColor="#999"
             />
@@ -340,7 +339,6 @@ const VisitorFormScreen = () => {
               style={styles.inputWithIcon}
               placeholder="Email ID (optional)"
               value={email}
-              keyboardType="phone-pad"
               onChangeText={setEmail}
               placeholderTextColor="#999"
             />
@@ -357,7 +355,6 @@ const VisitorFormScreen = () => {
               style={styles.inputWithIcon}
               placeholder="Person to Meet"
               value={personToMeet}
-              keyboardType="phone-pad"
               onChangeText={setPersonToMeet}
               placeholderTextColor="#999"
             />

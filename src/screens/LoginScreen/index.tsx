@@ -24,10 +24,10 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { useAuth } from '../../contexts/AuthContext';
 import {
+  useLazyGetAllLocationsQuery,
   useLoginUserMutation,
   useNotifyForgotPasswordMutation,
 } from '../../api';
-import { BRANCHES } from '../../constants';
 import InputField from '../../components/InputField';
 import BranchPicker from '../../components/SuperAdminPanel/BranchPicker';
 import { images } from '../../utils/Images';
@@ -46,6 +46,13 @@ const LoginScreen: React.FC = () => {
 
   const [notifyForgotPassword, { isLoading: isSending }] =
     useNotifyForgotPasswordMutation();
+
+  const [
+    fetchLocations,
+    { data: locationsData = [], isLoading: isFetchingLocations },
+  ] = useLazyGetAllLocationsQuery();
+
+  const locationNames = locationsData.map(location => location.name);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [employeeId, setEmployeeId] = useState('');
@@ -68,7 +75,7 @@ const LoginScreen: React.FC = () => {
       }).unwrap();
       const { token, user } = response.data;
       // console.log('✅ Login successful:', user.role);
-      Alert.alert('Login Successful', 'Welcome back!');
+      // Alert.alert('Login Successful', 'Welcome back!');
       setUserRole(user.role || null);
       setUserName(user.userName || null);
       setUserEmail(user.email || null);
@@ -78,7 +85,12 @@ const LoginScreen: React.FC = () => {
       await AsyncStorage.setItem('user', JSON.stringify(user));
       await AsyncStorage.setItem('userName', user.userName || '');
       await AsyncStorage.setItem('userRole', String(user.role) || '');
-      console.log(user.role);
+      await AsyncStorage.setItem(
+        'officeLocation',
+        JSON.stringify(user.officeLocation || []),
+      );
+
+      // console.log(user.officeLocation);
       switch (user.role) {
         case 2:
           navigation.navigate('AdminDashboard', {
@@ -122,6 +134,16 @@ const LoginScreen: React.FC = () => {
     } catch (error) {
       console.log('❌ Forgot password error:', error);
       Alert.alert('Error', 'Failed to send request. Try again later.');
+    }
+  };
+  const handleForgotPasswordClick = async () => {
+    try {
+      await fetchLocations().unwrap();
+      setModalVisible(true);
+      // console.log('Locations:', locationNames);
+    } catch (error) {
+      console.log('❌ Error fetching locations:', error);
+      Alert.alert('Error', 'Failed to load locations.');
     }
   };
 
@@ -176,7 +198,7 @@ const LoginScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <TouchableOpacity onPress={handleForgotPasswordClick}>
           <Text style={styles.forgotPassword}>Forgot Password?</Text>
         </TouchableOpacity>
 
@@ -218,7 +240,7 @@ const LoginScreen: React.FC = () => {
             <BranchPicker
               visible={branchPickerVisible}
               onClose={() => setBranchPickerVisible(false)}
-              branches={BRANCHES.filter(b => b !== 'All')}
+              branches={locationNames.filter(b => b !== 'All')}
               onSelect={branch => setOfficeLocation(branch)}
             />
 

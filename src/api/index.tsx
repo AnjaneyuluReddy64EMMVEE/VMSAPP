@@ -123,22 +123,138 @@ export const vmsApi = createApi({
     }),
 
     // 🔍 Get visitors by selected branch and date
+    // getVisitorsByBranch: builder.query({
+    //   query: ({ officeLocation }) => {
+    //     const params = new URLSearchParams();
+
+    //     // Always append officeLocation — if "All", send as empty string
+    //     params.append(
+    //       'officeLocation',
+    //       officeLocation === 'All' ? '' : officeLocation,
+    //     );
+
+    //     const queryStr = `visitors?${params.toString()}`;
+    //     // console.log('🔍 getVisitorsByBranchtoday →', queryStr);
+
+    //     return queryStr;
+    //   },
+    //   providesTags: ['Visitor'],
+    // }),
     getVisitorsByBranch: builder.query({
-      query: ({ officeLocation }) => {
+      query: ({ officeLocation, page = 1, limit = 100 }) => {
         const params = new URLSearchParams();
 
-        // Always append officeLocation — if "All", send as empty string
         params.append(
           'officeLocation',
           officeLocation === 'All' ? '' : officeLocation,
         );
+        params.append('page', page.toString());
+        params.append('limit', limit.toString());
 
-        const queryStr = `visitors?${params.toString()}`;
-        // console.log('🔍 getVisitorsByBranchtoday →', queryStr);
-
-        return queryStr;
+        return `visitors?${params.toString()}`;
       },
       providesTags: ['Visitor'],
+    }),
+    // getVisitorsByBranch: builder.query({
+    //   query: ({
+    //     officeLocation,
+    //     page = 1,
+    //     limit = 10,
+    //     phone,
+    //     badge,
+    //     status,
+    //   }) => {
+    //     const params = new URLSearchParams();
+    //     // console.log('page:', page, 'page:', limit);
+    //     // console.log('phone:', phone);
+    //     // 👇 Convert 'All' to empty string or backend
+    //     params.append(
+    //       'officeLocation',
+    //       officeLocation === 'All' ? '' : officeLocation,
+    //     );
+    //     params.append('page', page.toString());
+    //     params.append('limit', limit.toString());
+    //     params.append('phone', phone.toString());
+    //     params.append('badge', badge.toString());
+    //     params.append('status', status.toString());
+    //     console.log('status:', badge);
+    //     return `visitors?${params.toString()}`;
+    //   },
+    //   providesTags: ['Visitor'],
+    // }),
+    // filterVisitors: builder.query({
+    //   query: ({ officeLocation, phone, badge, status }) => {
+    //     const finalStatus = status === 'All' ? '' : status;
+
+    //     console.log('🔍 filterVisitors params:', {
+    //       officeLocation,
+    //       phone,
+    //       badge,
+    //       status: finalStatus,
+    //     });
+
+    //     return {
+    //       url: 'visitor/filter',
+    //       method: 'POST',
+    //       body: {
+    //         phone,
+    //         badge,
+    //         status: finalStatus,
+    //       },
+    //     };
+    //   },
+    // }),
+    // filterVisitors: builder.query({
+    //   query: ({ officeLocation, phone, badge, status }) => {
+    //     const requestBody: Record<string, string> = {};
+
+    //     if (officeLocation) requestBody.officeLocation = officeLocation;
+    //     if (phone) requestBody.phone = phone;
+    //     if (badge) requestBody.badge = badge;
+    //     if (status && status !== 'All') requestBody.status = status;
+
+    //     console.log('🧾 filterVisitors request body:', requestBody);
+
+    //     return {
+    //       url: 'visitor/filter',
+    //       method: 'POST',
+    //       body: requestBody,
+    //     };
+    //   },
+    // }),
+    // filterVisitors: builder.query({
+    //   query: ({ phone, badge, status }) => {
+    //     const requestBody: Record<string, string> = {};
+
+    //     if (phone?.trim()) requestBody.phone = phone.trim();
+    //     if (badge?.trim()) requestBody.badge = badge.trim();
+    //     if (status && status !== 'All') requestBody.status = status;
+
+    //     console.log('📦 filterVisitors body:', requestBody);
+
+    //     return {
+    //       url: 'visitor/filter',
+    //       method: 'POST',
+    //       body: requestBody,
+    //     };
+    //   },
+    // }),
+    filterVisitors: builder.query({
+      query: ({ phoneNumber, badge, status }) => {
+        const requestBody: Record<string, string> = {};
+
+        if (phoneNumber?.trim()) requestBody.phoneNumber = phoneNumber.trim();
+        if (badge?.trim()) requestBody.badgeNumber = badge.trim();
+        if (status && status !== 'All') requestBody.status = status;
+
+        // console.log('📦 filterVisitors body (without location):', requestBody);
+
+        return {
+          url: 'visitor/filter',
+          method: 'POST',
+          body: requestBody,
+        };
+      },
     }),
 
     // 🔍 Fetch total visitor stats based on location and date range
@@ -342,6 +458,13 @@ export const vmsApi = createApi({
         };
       },
     }),
+    getAllLocations: builder.query<string[], void>({
+      query: () => ({
+        url: 'getAllLocation',
+        method: 'GET',
+      }),
+      transformResponse: (response: { data: string[] }) => response.data,
+    }),
   }),
 });
 
@@ -354,6 +477,7 @@ export const {
   useUpdateVisitorMutation,
   useGetVisitorsQuery,
   useGetVisitorsByBranchQuery,
+  useFilterVisitorsQuery,
   useGetVisitorStatsQuery,
   useGetDayGraphQuery,
   useGetPurposeGraphQuery,
@@ -366,4 +490,5 @@ export const {
   useDeleteAdminMutation,
   useNotifyForgotPasswordMutation,
   useGetVisitorsByLocationAndDateQuery,
+  useLazyGetAllLocationsQuery,
 } = vmsApi;

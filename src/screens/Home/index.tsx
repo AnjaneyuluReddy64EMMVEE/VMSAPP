@@ -31,12 +31,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { images } from '../../utils/Images';
 
 const AdminHome = () => {
-  const { userBranch, selectedBranch, setSelectedBranch } = useAuth();
+  const { selectedBranch, setSelectedBranch } = useAuth();
   const [userName, setUserName] = useState<string | null>(null);
-  const [branch, setBranch] = useState(userBranch[0] || ['All']);
-  const [branchModalVisible, setBranchModalVisible] = useState(false);
+  // const [branch, setBranch] = useState(userBranch[0] || 'All');
+  // const [branchModalVisible, setBranchModalVisible] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [storedBranches, setStoredBranches] = useState<string[]>([]);
+  const [branchModalVisible, setBranchModalVisible] = useState(false);
+  const [branch, setBranch] = useState('All'); // default
 
   const getViewMode = (start: Date, end: Date) => {
     const diff = (end.getTime() - start.getTime()) / (1000 * 3600 * 24); // diff in days
@@ -49,14 +52,6 @@ const AdminHome = () => {
 
   const [showFromPicker, setShowFromPicker] = useState(false);
   const [showToPicker, setShowToPicker] = useState(false);
-
-  const normalizedBranches = Array.isArray(userBranch)
-    ? userBranch.length > 1
-      ? ['All', ...userBranch]
-      : userBranch
-    : userBranch
-    ? [userBranch]
-    : [];
 
   const formatDate = (date: Date) => format(date, 'yyyy-MM-dd');
   const officeLocation = selectedBranch;
@@ -143,7 +138,29 @@ const AdminHome = () => {
 
     loadUserData();
   }, []);
+  useEffect(() => {
+    const loadBranches = async () => {
+      try {
+        const stored = await AsyncStorage.getItem('officeLocation');
+        const parsed = stored ? JSON.parse(stored) : [];
+        if (Array.isArray(parsed)) {
+          const normalized = parsed.length > 1 ? ['All', ...parsed] : parsed;
+          setStoredBranches(normalized);
+          setBranch(parsed[0] || 'All');
+          setSelectedBranch(parsed[0] || 'All');
+        }
+      } catch (error) {
+        console.error(
+          'Failed to load officeLocation from AsyncStorage:',
+          error,
+        );
+      }
+    };
 
+    loadBranches();
+  }, []);
+
+  // console.log('Selected Branch:', storedBranches);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f8f9fa' }}>
       <Header title="Home" showMenuButton />
@@ -157,7 +174,7 @@ const AdminHome = () => {
             resizeMode="contain"
           />
 
-          {normalizedBranches.length > 1 ? (
+          {storedBranches.length > 1 ? (
             <View style={styles.branchPickerContainer}>
               <Text style={styles.branchLabel}>Branch: </Text>
               <TouchableOpacity
@@ -169,33 +186,18 @@ const AdminHome = () => {
               <BranchPicker
                 visible={branchModalVisible}
                 onClose={() => setBranchModalVisible(false)}
-                branches={normalizedBranches} // ✅ FIXED: use normalizedBranches
+                branches={storedBranches} // ✅ FIXED: use normalizedBranches
                 onSelect={handleBranchChange}
                 selectedBranch={branch}
               />
             </View>
-          ) : normalizedBranches.length === 1 ? (
+          ) : storedBranches.length === 1 ? (
             <Text style={styles.branchLabel}>
               Branch:{' '}
-              <Text style={styles.branchValue}>{normalizedBranches[0]}</Text>
+              <Text style={styles.branchValue}>{storedBranches[0]}</Text>
             </Text>
           ) : (
-            <View style={styles.branchPickerContainer}>
-              <Text style={styles.branchLabel}>Branch: </Text>
-              <TouchableOpacity
-                onPress={() => setBranchModalVisible(true)}
-                style={styles.branchSelector}
-              >
-                <Text style={styles.branchValue}>{branch}</Text>
-              </TouchableOpacity>
-              <BranchPicker
-                visible={branchModalVisible}
-                onClose={() => setBranchModalVisible(false)}
-                branches={BRANCHES} // ✅ fallback to full list
-                onSelect={handleBranchChange}
-                selectedBranch={branch}
-              />
-            </View>
+            ''
           )}
         </View>
 

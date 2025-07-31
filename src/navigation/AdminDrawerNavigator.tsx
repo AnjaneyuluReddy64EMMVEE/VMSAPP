@@ -8,7 +8,7 @@ import {
 
 // Import your screens
 import VisitorsScreen from '../screens/VisitorsScreen';
-import NotificationScreen from '../screens/NotificationScreen';
+import UserPasswordReset from '../screens/UserPasswordReset';
 import SecurityUsersScreen from '../screens/SecurityUsersScreen';
 import Home from '../screens/Home';
 import LogoutScreen from '../screens/LogoutScreen';
@@ -42,7 +42,7 @@ const AdminDrawerNavigator = () => {
       <Drawer.Screen name="Home" component={Home} />
       <Drawer.Screen name="Visitors" component={VisitorsScreen} />
       <Drawer.Screen name="Security Users" component={SecurityUsersScreen} />
-      <Drawer.Screen name="Notifications" component={NotificationScreen} />
+      <Drawer.Screen name="Notifications" component={UserPasswordReset} />
       <Drawer.Screen name="Logout" component={LogoutScreen} />
     </Drawer.Navigator>
   );
