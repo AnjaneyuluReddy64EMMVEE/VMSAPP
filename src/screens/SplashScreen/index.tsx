@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white',
-    fontSize: heightPercentageToDP('5.1%'),
+    fontSize: heightPercentageToDP('5%'),
     fontWeight: 'bold',
   },
 });
