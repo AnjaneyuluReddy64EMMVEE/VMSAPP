@@ -191,7 +191,7 @@ const LoginScreen: React.FC = () => {
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
             <Icon
-              name={showPassword ? 'eye-off' : 'eye'}
+              name={showPassword ? 'eye' : 'eye-off'}
               size={24}
               color="#888"
             />
@@ -233,7 +233,8 @@ const LoginScreen: React.FC = () => {
               onPress={() => setBranchPickerVisible(true)}
             >
               <Text style={styles.dropdownText}>
-                {officeLocation || 'Choose a branch'}
+                {officeLocation ||
+                  'Choose a branch                           ▼'}
               </Text>
             </TouchableOpacity>
 

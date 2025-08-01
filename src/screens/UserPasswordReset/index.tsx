@@ -18,6 +18,7 @@ import Header from '../../components/Header';
 import { useGetNotificationsQuery, useResetAppMutation } from '../../api';
 import { useAuth } from '../../contexts/AuthContext';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { heightPercentageToDP } from 'react-native-responsive-screen';
 
 const UserPasswordReset = () => {
   const [resetModalVisible, setResetModalVisible] = useState(false);
@@ -119,76 +120,78 @@ const UserPasswordReset = () => {
         transparent
         onRequestClose={() => setResetModalVisible(false)}
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            style={styles.modalWrapper}
-          >
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Reset Password</Text>
+        <View style={styles.overlay}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+              style={styles.modalWrapper}
+            >
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Reset Password</Text>
 
-              {/* Password */}
-              <View style={styles.inputWrapper}>
-                <TextInput
-                  placeholder="New Password"
-                  secureTextEntry={!showPassword}
-                  value={newPassword}
-                  onChangeText={setPassword}
-                  style={styles.input}
-                />
-                <TouchableOpacity
-                  style={styles.eyeIcon}
-                  onPress={() => setShowPassword(!showPassword)}
-                >
-                  <Icon name={showPassword ? 'eye' : 'eye-off'} size={20} />
-                </TouchableOpacity>
-              </View>
-
-              {/* Confirm Password */}
-              <View style={styles.inputWrapper}>
-                <TextInput
-                  placeholder="Confirm Password"
-                  secureTextEntry={!showConfirmPassword}
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                  style={styles.input}
-                />
-                <TouchableOpacity
-                  style={styles.eyeIcon}
-                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                >
-                  <Icon
-                    name={showConfirmPassword ? 'eye' : 'eye-off'}
-                    size={20}
+                {/* Password */}
+                <View style={styles.inputWrapper}>
+                  <TextInput
+                    placeholder="New Password"
+                    secureTextEntry={!showPassword}
+                    value={newPassword}
+                    onChangeText={setPassword}
+                    style={styles.input}
                   />
+                  <TouchableOpacity
+                    style={styles.eyeIcon}
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    <Icon name={showPassword ? 'eye' : 'eye-off'} size={20} />
+                  </TouchableOpacity>
+                </View>
+
+                {/* Confirm Password */}
+                <View style={styles.inputWrapper}>
+                  <TextInput
+                    placeholder="Confirm Password"
+                    secureTextEntry={!showConfirmPassword}
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    style={styles.input}
+                  />
+                  <TouchableOpacity
+                    style={styles.eyeIcon}
+                    onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    <Icon
+                      name={showConfirmPassword ? 'eye' : 'eye-off'}
+                      size={20}
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                <TouchableOpacity
+                  style={[
+                    styles.button,
+                    { backgroundColor: '#007AFF', marginTop: 20 },
+                  ]}
+                  onPress={handleSubmit}
+                  disabled={isResetting}
+                >
+                  <Text style={styles.buttonText}>
+                    {isResetting ? 'Submitting...' : 'Submit'}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => setResetModalVisible(false)}
+                  style={[
+                    styles.button,
+                    { backgroundColor: '#b03a3a', marginTop: 20 },
+                  ]}
+                >
+                  <Text style={{ color: 'white' }}>Cancel</Text>
                 </TouchableOpacity>
               </View>
-
-              <TouchableOpacity
-                style={[
-                  styles.button,
-                  { backgroundColor: '#007AFF', marginTop: 20 },
-                ]}
-                onPress={handleSubmit}
-                disabled={isResetting}
-              >
-                <Text style={styles.buttonText}>
-                  {isResetting ? 'Submitting...' : 'Submit'}
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => setResetModalVisible(false)}
-                style={[
-                  styles.button,
-                  { backgroundColor: '#b03a3a', marginTop: 20 },
-                ]}
-              >
-                <Text style={{ color: 'white' }}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
-          </KeyboardAvoidingView>
-        </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
+          </TouchableWithoutFeedback>
+        </View>
       </Modal>
     </SafeAreaView>
   );
@@ -236,6 +239,12 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontWeight: '600',
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: '#00000088',
+    justifyContent: 'center',
+    marginTop: heightPercentageToDP('5%'),
   },
   modalWrapper: {
     flex: 1,
