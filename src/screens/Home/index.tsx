@@ -160,7 +160,6 @@ const AdminHome = () => {
     loadBranches();
   }, []);
 
-  // console.log('Selected Branch:', storedBranches);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f8f9fa' }}>
       <Header title="Home" showMenuButton />
@@ -186,7 +185,7 @@ const AdminHome = () => {
               <BranchPicker
                 visible={branchModalVisible}
                 onClose={() => setBranchModalVisible(false)}
-                branches={storedBranches} // ✅ FIXED: use normalizedBranches
+                branches={storedBranches}
                 onSelect={handleBranchChange}
                 selectedBranch={branch}
               />
@@ -197,7 +196,22 @@ const AdminHome = () => {
               <Text style={styles.branchValue}>{storedBranches[0]}</Text>
             </Text>
           ) : (
-            ''
+            <View style={styles.branchPickerContainer}>
+              <Text style={styles.branchLabel}>Branch: </Text>
+              <TouchableOpacity
+                onPress={() => setBranchModalVisible(true)}
+                style={styles.branchSelector}
+              >
+                <Text style={styles.branchValue}>{branch}</Text>
+              </TouchableOpacity>
+              <BranchPicker
+                visible={branchModalVisible}
+                onClose={() => setBranchModalVisible(false)}
+                branches={BRANCHES} // ✅ fallback to full list
+                onSelect={handleBranchChange}
+                selectedBranch={branch}
+              />
+            </View>
           )}
         </View>
 
@@ -373,7 +387,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   resetButton: {
-    backgroundColor: '#f43f5e',
+    backgroundColor: '#b03a3a',
     padding: 10,
     borderRadius: 8,
     marginLeft: 5,

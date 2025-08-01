@@ -42,7 +42,7 @@ const AdminDrawerNavigator = () => {
       <Drawer.Screen name="Home" component={Home} />
       <Drawer.Screen name="Visitors" component={VisitorsScreen} />
       <Drawer.Screen name="Security Users" component={SecurityUsersScreen} />
-      <Drawer.Screen name="Notifications" component={UserPasswordReset} />
+      <Drawer.Screen name="User Password Reset" component={UserPasswordReset} />
       <Drawer.Screen name="Logout" component={LogoutScreen} />
     </Drawer.Navigator>
   );

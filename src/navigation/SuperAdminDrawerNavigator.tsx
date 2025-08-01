@@ -42,7 +42,6 @@ export default function AdminDrawerNavigator() {
       <Drawer.Screen name="Admin Users" component={AdminUsersScreen} />
       <Drawer.Screen name="Security Users" component={SecurityUsersScreen} />
       <Drawer.Screen name="Reports" component={ReportsScreen} />
-      <Drawer.Screen name="User Password Reset" component={UserPasswordReset} />
       <Drawer.Screen name="Logout" component={LogoutScreen} />
     </Drawer.Navigator>
   );

@@ -20,14 +20,6 @@ import { useAuth } from '../../contexts/AuthContext';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const UserPasswordReset = () => {
-  const { user, selectedBranch } = useAuth();
-  const userLocation = user?.officeLocation;
-  const {
-    data: notifications,
-    isLoading,
-    isError,
-  } = useGetNotificationsQuery();
-
   const [resetModalVisible, setResetModalVisible] = useState(false);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
     null,
@@ -36,6 +28,14 @@ const UserPasswordReset = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { user, selectedBranch } = useAuth();
+  const {
+    data: notifications,
+    isLoading,
+    isError,
+    refetch,
+    isFetching,
+  } = useGetNotificationsQuery();
 
   const [resetApp, { isLoading: isResetting }] = useResetAppMutation();
 
@@ -70,12 +70,14 @@ const UserPasswordReset = () => {
     <View style={styles.row}>
       <Text style={styles.cell}>{item.employeeId}</Text>
       <Text style={styles.cell}>{item.officeLocation}</Text>
-      <TouchableOpacity
-        style={[styles.button, { backgroundColor: '#b03a3a' }]}
-        onPress={() => openResetModal(item.employeeId)}
-      >
-        <Text style={styles.buttonText}>Reset</Text>
-      </TouchableOpacity>
+      <View style={styles.cell}>
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: '#b03a3a' }]}
+          onPress={() => openResetModal(item.employeeId)}
+        >
+          <Text style={styles.buttonText}>Reset</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -105,6 +107,8 @@ const UserPasswordReset = () => {
           renderItem={renderRow}
           keyExtractor={item => item.employeeId}
           contentContainerStyle={{ paddingBottom: 100 }}
+          refreshing={isFetching}
+          onRefresh={refetch}
         />
       )}
 
@@ -196,13 +200,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f9fbfd',
-    paddingHorizontal: 16,
+    paddingHorizontal: 0,
     paddingTop: 16,
   },
   row: {
     flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 12,
-    paddingHorizontal: 10,
     borderBottomWidth: 1,
     borderColor: '#ddd',
     backgroundColor: '#fff',
@@ -211,10 +215,12 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
     color: '#333',
+    textAlign: 'center',
   },
   headerText: {
     fontWeight: 'bold',
     color: '#003366',
+    textAlign: 'center',
   },
   headerRow: {
     backgroundColor: '#e6eef8',
