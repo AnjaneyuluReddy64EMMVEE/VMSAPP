@@ -58,12 +58,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#1f2937', // dark gray/black
+    color: '#1f2937',
   },
   drawerItemWrapper: {
     paddingHorizontal: 10,
     // paddingVertical: 0,
-    gap: 1, // Adds spacing between drawer items
+    gap: 1,
   },
   drawerLabel: {
     fontSize: 16,

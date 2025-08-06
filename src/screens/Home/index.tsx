@@ -33,8 +33,6 @@ import { images } from '../../utils/Images';
 const AdminHome = () => {
   const { selectedBranch, setSelectedBranch } = useAuth();
   const [userName, setUserName] = useState<string | null>(null);
-  // const [branch, setBranch] = useState(userBranch[0] || 'All');
-  // const [branchModalVisible, setBranchModalVisible] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [storedBranches, setStoredBranches] = useState<string[]>([]);
@@ -42,7 +40,7 @@ const AdminHome = () => {
   const [branch, setBranch] = useState('All'); // default
 
   const getViewMode = (start: Date, end: Date) => {
-    const diff = (end.getTime() - start.getTime()) / (1000 * 3600 * 24); // diff in days
+    const diff = (end.getTime() - start.getTime()) / (1000 * 3600 * 24);
     if (diff < 1) return 'hourly';
     if (diff <= 31) return 'daily';
     return 'monthly';

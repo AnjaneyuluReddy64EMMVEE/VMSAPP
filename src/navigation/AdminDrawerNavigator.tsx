@@ -6,7 +6,6 @@ import {
   DrawerItemList,
 } from '@react-navigation/drawer';
 
-// Import your screens
 import VisitorsScreen from '../screens/VisitorsScreen';
 import UserPasswordReset from '../screens/UserPasswordReset';
 import SecurityUsersScreen from '../screens/SecurityUsersScreen';
@@ -15,7 +14,6 @@ import LogoutScreen from '../screens/LogoutScreen';
 
 const Drawer = createDrawerNavigator();
 
-// ✅ Custom Drawer Content
 const CustomDrawerContent = props => {
   return (
     <DrawerContentScrollView {...props}>
@@ -29,7 +27,6 @@ const CustomDrawerContent = props => {
   );
 };
 
-// ✅ Admin Drawer Navigator
 const AdminDrawerNavigator = () => {
   return (
     <Drawer.Navigator
@@ -50,7 +47,6 @@ const AdminDrawerNavigator = () => {
 
 export default AdminDrawerNavigator;
 
-// ✅ Styles
 const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
@@ -63,13 +59,13 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#1f2937', // Optional: dark text
+    color: '#1f2937',
   },
   drawerItemWrapper: {
     paddingHorizontal: 10,
     paddingVertical: 10,
 
-    gap: 15, // Adds spacing between drawer items
+    gap: 15,
   },
   drawerLabel: {
     fontSize: 16,

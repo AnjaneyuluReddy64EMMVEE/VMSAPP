@@ -6,7 +6,6 @@ import {
   DrawerItemList,
 } from '@react-navigation/drawer';
 
-// Import your screens
 import VisitorsScreen from '../screens/VisitorsScreen';
 import VisitorFormScreen from '../screens/VisitorFormScreen';
 import Home from '../screens/Home';
@@ -14,7 +13,6 @@ import LogoutScreen from '../screens/LogoutScreen';
 
 const Drawer = createDrawerNavigator();
 
-// ✅ Custom Drawer Header
 const CustomDrawerContent = props => (
   <DrawerContentScrollView {...props}>
     <View style={styles.header}>
@@ -45,7 +43,6 @@ const SecurityDrawerNavigator = () => {
 
 export default SecurityDrawerNavigator;
 
-// ✅ Styles
 const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
@@ -64,7 +61,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
 
-    gap: 15, // Adds spacing between drawer items
+    gap: 15,
   },
   drawerLabel: {
     fontSize: 16,

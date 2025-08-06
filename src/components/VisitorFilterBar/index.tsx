@@ -37,7 +37,7 @@ const VisitorFilterBar: React.FC<VisitorFilterBarProps> = ({
 
   const handleReset = () => {
     setOpen(false);
-    onResetFilters(); // ✅ call parent-provided function
+    onResetFilters();
   };
 
   return (

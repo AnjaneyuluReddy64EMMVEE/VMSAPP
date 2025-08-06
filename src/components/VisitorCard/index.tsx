@@ -37,7 +37,7 @@ const VisitorCard = ({ item, userRole, onUpdateVisitor }) => {
   };
 
   const handleVisitorSubmit = async updatedData => {
-    onUpdateVisitor(updatedData); // 🔁 Parent should handle mutation
+    onUpdateVisitor(updatedData);
     setVisitorModalVisible(false);
   };
   const formatDate = iso => {
@@ -60,7 +60,7 @@ const VisitorCard = ({ item, userRole, onUpdateVisitor }) => {
       {/* Visitor Card */}
       <View style={styles.card}>
         <TouchableOpacity onPress={() => openImage(item.userImage)}>
-          <Image source={{ uri: item.userImage }} style={styles.avatar} />
+          <Image source={{ uri: item.userImageURL }} style={styles.avatar} />
         </TouchableOpacity>
 
         <View style={styles.details}>
@@ -86,10 +86,10 @@ const VisitorCard = ({ item, userRole, onUpdateVisitor }) => {
           </Text>
 
           {/* ID Image Preview */}
-          {item.documentImage ? (
-            <TouchableOpacity onPress={() => openImage(item.documentImage)}>
+          {item.documentImageURL ? (
+            <TouchableOpacity onPress={() => openImage(item.documentImageURL)}>
               <Image
-                source={{ uri: item.documentImage }}
+                source={{ uri: item.documentImageURL }}
                 style={styles.docImage}
                 resizeMode="cover"
               />

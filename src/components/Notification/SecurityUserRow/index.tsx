@@ -1,4 +1,3 @@
-// components/Notification/SecurityUserRow.tsx
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
@@ -13,10 +12,7 @@ const SecurityUserRow = ({ id, location, onReset }: Props) => {
     <View style={styles.row}>
       <Text style={styles.cell}>{id}</Text>
       <Text style={styles.cell}>{location}</Text>
-      <TouchableOpacity
-        onPress={() => onReset(id)}
-        style={styles.resetButton}
-      >
+      <TouchableOpacity onPress={() => onReset(id)} style={styles.resetButton}>
         <Text style={styles.resetButtonText}>Reset</Text>
       </TouchableOpacity>
     </View>

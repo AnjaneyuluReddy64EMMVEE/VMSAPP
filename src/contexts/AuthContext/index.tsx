@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [userName, setUserName] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userBranch, setUserBranch] = useState<string[]>([]);
-  // multiple branches
+
   const [selectedBranch, setSelectedBranch] = useState<string>('All'); // ✅ new global selected branch
 
   return (

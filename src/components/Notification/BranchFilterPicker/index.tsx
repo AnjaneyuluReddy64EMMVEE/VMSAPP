@@ -1,4 +1,3 @@
-// components/Notification/BranchFilterPicker.tsx
 import React from 'react';
 import { View, Text, Platform, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';

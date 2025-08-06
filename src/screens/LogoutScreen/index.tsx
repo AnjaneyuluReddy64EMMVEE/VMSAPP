@@ -52,7 +52,7 @@ const LogoutScreen = () => {
     confirmLogout();
   }, []);
 
-  return null; // No UI needed; Alert handles everything
+  return null;
 };
 
 export default LogoutScreen;

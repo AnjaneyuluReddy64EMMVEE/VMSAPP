@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const vmsApi = createApi({
   reducerPath: 'vmsApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://gatevue-backend.onrender.com/api',
+    baseUrl: 'http://4.240.61.49/apis',
     prepareHeaders: async headers => {
       // 🔐 Attach token from AsyncStorage to every request if available
       const token = await AsyncStorage.getItem('token');
@@ -39,11 +39,6 @@ export const vmsApi = createApi({
       invalidatesTags: ['Security'],
     }),
 
-    // 📥 Get all security users
-    // getAllSecurity: builder.query({
-    //   query: () => 'allsecurity',
-    //   providesTags: ['Security'],
-    // }),
     getAllSecurity: builder.query({
       query: ({ officeLocation }) => {
         const params = new URLSearchParams();
@@ -122,24 +117,6 @@ export const vmsApi = createApi({
       providesTags: ['Visitor'],
     }),
 
-    // 🔍 Get visitors by selected branch and date
-    // getVisitorsByBranch: builder.query({
-    //   query: ({ officeLocation }) => {
-    //     const params = new URLSearchParams();
-
-    //     // Always append officeLocation — if "All", send as empty string
-    //     params.append(
-    //       'officeLocation',
-    //       officeLocation === 'All' ? '' : officeLocation,
-    //     );
-
-    //     const queryStr = `visitors?${params.toString()}`;
-    //     // console.log('🔍 getVisitorsByBranchtoday →', queryStr);
-
-    //     return queryStr;
-    //   },
-    //   providesTags: ['Visitor'],
-    // }),
     getVisitorsByBranch: builder.query({
       query: ({ officeLocation, page = 1, limit = 100 }) => {
         const params = new URLSearchParams();
@@ -155,90 +132,7 @@ export const vmsApi = createApi({
       },
       providesTags: ['Visitor'],
     }),
-    // getVisitorsByBranch: builder.query({
-    //   query: ({
-    //     officeLocation,
-    //     page = 1,
-    //     limit = 10,
-    //     phone,
-    //     badge,
-    //     status,
-    //   }) => {
-    //     const params = new URLSearchParams();
-    //     // console.log('page:', page, 'page:', limit);
-    //     // console.log('phone:', phone);
-    //     // 👇 Convert 'All' to empty string or backend
-    //     params.append(
-    //       'officeLocation',
-    //       officeLocation === 'All' ? '' : officeLocation,
-    //     );
-    //     params.append('page', page.toString());
-    //     params.append('limit', limit.toString());
-    //     params.append('phone', phone.toString());
-    //     params.append('badge', badge.toString());
-    //     params.append('status', status.toString());
-    //     console.log('status:', badge);
-    //     return `visitors?${params.toString()}`;
-    //   },
-    //   providesTags: ['Visitor'],
-    // }),
-    // filterVisitors: builder.query({
-    //   query: ({ officeLocation, phone, badge, status }) => {
-    //     const finalStatus = status === 'All' ? '' : status;
 
-    //     console.log('🔍 filterVisitors params:', {
-    //       officeLocation,
-    //       phone,
-    //       badge,
-    //       status: finalStatus,
-    //     });
-
-    //     return {
-    //       url: 'visitor/filter',
-    //       method: 'POST',
-    //       body: {
-    //         phone,
-    //         badge,
-    //         status: finalStatus,
-    //       },
-    //     };
-    //   },
-    // }),
-    // filterVisitors: builder.query({
-    //   query: ({ officeLocation, phone, badge, status }) => {
-    //     const requestBody: Record<string, string> = {};
-
-    //     if (officeLocation) requestBody.officeLocation = officeLocation;
-    //     if (phone) requestBody.phone = phone;
-    //     if (badge) requestBody.badge = badge;
-    //     if (status && status !== 'All') requestBody.status = status;
-
-    //     console.log('🧾 filterVisitors request body:', requestBody);
-
-    //     return {
-    //       url: 'visitor/filter',
-    //       method: 'POST',
-    //       body: requestBody,
-    //     };
-    //   },
-    // }),
-    // filterVisitors: builder.query({
-    //   query: ({ phone, badge, status }) => {
-    //     const requestBody: Record<string, string> = {};
-
-    //     if (phone?.trim()) requestBody.phone = phone.trim();
-    //     if (badge?.trim()) requestBody.badge = badge.trim();
-    //     if (status && status !== 'All') requestBody.status = status;
-
-    //     console.log('📦 filterVisitors body:', requestBody);
-
-    //     return {
-    //       url: 'visitor/filter',
-    //       method: 'POST',
-    //       body: requestBody,
-    //     };
-    //   },
-    // }),
     filterVisitors: builder.query({
       query: ({ phoneNumber, badge, status }) => {
         const requestBody: Record<string, string> = {};
@@ -319,15 +213,6 @@ export const vmsApi = createApi({
       }),
     }),
 
-    // ➕ Create a new admin user
-    // createAdmin: builder.mutation({
-    //   query: data => ({
-    //     url: 'signup',
-    //     method: 'POST',
-    //     body: data,
-    //   }),
-    //   invalidatesTags: ['Admin'],
-    // }),
     createAdmin: builder.mutation({
       query: data => {
         console.log('📤 Creating admin with data:', data); // <-- log added
@@ -410,22 +295,7 @@ export const vmsApi = createApi({
         },
       }),
     }),
-    // getVisitorsByLocationAndDate: builder.query({
-    //   query: ({ officeLocation, fromDate, toDate, page = 0, limit = 10 }) => {
-    //     const params = new URLSearchParams();
-    //     if (officeLocation) {
-    //       params.append('officeLocation', officeLocation);
-    //     }
-    //     if (fromDate) params.append('fromDate', fromDate);
-    //     if (toDate) params.append('toDate', toDate);
-    //     params.append('page', page.toString());
-    //     params.append('limit', limit.toString());
 
-    //     const queryStr = `visitors?${params.toString()}`;
-    //     // console.log('🔍 getVisitorsByLocationAndDate →', fromDate);
-    //     return queryStr;
-    //   },
-    // }),
     getVisitorsByLocationAndDate: builder.query({
       query: ({ officeLocation, startDate, endDate, range }) => {
         const params = new URLSearchParams();

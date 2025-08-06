@@ -53,7 +53,6 @@ const VisitorFormScreen = () => {
 
   const purposeOptions = ['Meeting', 'Delivery', 'Interview', 'Other'];
 
-  // Auto-fill office location for security role
   useEffect(() => {
     if (userRole === 'security') {
       setOfficeLocation(userBranch || '');
@@ -240,8 +239,6 @@ const VisitorFormScreen = () => {
     </>
   );
 
-  // Input with icon component
-  // This component can be reused for inputs with icons
   const InputWithIcon = ({
     icon,
     placeholder,
