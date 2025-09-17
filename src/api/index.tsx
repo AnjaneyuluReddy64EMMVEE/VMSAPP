@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const vmsApi = createApi({
   reducerPath: 'vmsApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://4.240.61.49/apis',
+    baseUrl: 'https://emmveegatevue.com/apis',
     prepareHeaders: async headers => {
       // 🔐 Attach token from AsyncStorage to every request if available
       const token = await AsyncStorage.getItem('token');
